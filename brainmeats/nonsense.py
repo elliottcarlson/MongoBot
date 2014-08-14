@@ -106,8 +106,7 @@ class Nonsense(Dendrite):
         url = 'http://itsthisforthat.com/api.php?json'
 
         try:
-            out = pageopen(url).text
-            json = response.json()
+            json = pageopen(url).json()
             return 'It\'s a %s for %s' % (json.this.lower().capitalize(),
                     json.that.lower().capitalize())
         except:
