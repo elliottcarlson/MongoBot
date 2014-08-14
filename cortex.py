@@ -22,6 +22,7 @@ from util import unescape, shorten, ratelimited, postdelicious, savefromweb, \
     Browse, Butler
 from autonomic import serotonin, Neurons, Synapse
 from thalamus import Thalamus
+from id import Id
 
 import traceback
 
@@ -458,11 +459,11 @@ class Cortex:
     # If you want to restrict a command to the bot admin.
     def validate(self):
 
-        print "!!! In cortex.validate"
+        whom = Id(self.lastsender)
 
         if not self.values:
             return False
-        if self.lastsender != OWNER:
+        if not whom.is_owner:
             return False
         return True
 
