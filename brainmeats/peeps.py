@@ -58,13 +58,23 @@ class Peeps(Dendrite):
         if not self.values:
             self.chat("you need to give someone your love")
             return
+
         entity = " ".join(self.values)
-        if entity == 'jcb':
+
+        source = Id(self.lastsender)
+
+        if not source.name or not source.is_authenticated or entity == 'jcb':
+            return
+
+        if source.name == entity:
+            self.chat("Do you kick puppies too?")
+            incrementEntity(entity, -1000000)
             return
 
         if not incrementEntity(entity, random.randint(1, 100000)):
             self.chat("mongodb seems borked")
             return
+
         return self.lastsender + " brought " + entity + " to " + str(entityScore(entity))
 
 
@@ -74,13 +84,23 @@ class Peeps(Dendrite):
         if not self.values:
             self.chat("you need to give someone your hate")
             return
+
         entity = " ".join(self.values)
-        if entity == 'jcb':
+        
+        source = Id(self.lastsender)
+
+        if not source.name or not source.is_authenticated or entity == 'jcb':
             return
+
+        if source.name == entity:
+            self.chat("Do you kick puppies too?")
+            incrementEntity(entity, -1000000)
+            return        
 
         if not incrementEntity(entity, random.randint(1, 100000) * -1):
             self.chat("mongodb seems borked")
             return
+
         return self.lastsender + " brought " + entity + " to " + str(entityScore(entity))
 
 
