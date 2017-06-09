@@ -1,68 +1,57 @@
 # -*- coding: utf-8 -*-
 from __future__ import absolute_import
-import imp
-import importlib
 import logging
-import re
-import sys
-import time
-from glob import glob
-from six.moves import _thread
-from MongoBot import settings
 from MongoBot.corpuscallosum import CorpusCallosum
-#from MongoBot.cortex import Cortex
+# from MongoBot.cortex import Cortex
 from MongoBot.thalamus import Thalamus
-#from MongoBot.broca import Broca
-#from MongoBot.hyperthymesia import Hyperthymesia
+# from MongoBot.broca import Broca
+from MongoBot.hyperthymesia import load_config
+from pprint import pprint
 
 logger = logging.getLogger(__name__)
 
-"""
-The medulla oblongata (or medulla) is located in the brainstem, anterior to the
-cerebellum. It is a cone-shaped neuronal mass responsible for autonomic
-(involuntary) functions ranging from vomiting to sneezing. The medulla contains
-the cardiac, respiratory, vomiting and vasomotor centers and therefore deals
-with the autonomic functions of breathing, heart rate and blood pressure.
-"""
+
 class Medulla(object):
+    """
+    The medulla oblongata (or medulla) is located in the brainstem, anterior to
+    the cerebellum. It is a cone-shaped neuronal mass responsible for autonomic
+    (involuntary) functions ranging from vomiting to sneezing. The medulla
+    contains the cardiac, respiratory, vomiting and vasomotor centers and
+    therefore deals with the autonomic functions of breathing, heart rate and
+    blood pressure.
+
+    Mongo's Medulla makes him what he is. Don't fuck with Mongo.
+    """
 
     def __init__(self):
 
+        logger.info('* Becoming self-aware')
+
+        # Remember all the things you were programmed to remember
+        global settings
+        settings = load_config('config/settings.yaml')
+        pprint(settings)
+        secrets = load_config('config/secrets.yaml')
+
+        # Load the brainmeats
         self.corpuscallosum = CorpusCallosum()
 
+        # Reach out and touch someone
         self.thalamus = Thalamus()
 
-        print('* Becoming self-aware')
-        #self._settings = load_config('config/settings.yaml')
-        #self._secrets = load_config('config/secrets.yaml')
+        # You are alive. No wait. No you aren't. Not yet at least.
         self.alive = False
 
+    def activate(self):
 
-
-
-
-        """
-        try:
-            self.brain = Cortex(self)
-        except Exception as e:
-            logger.warn('Drain bamaged... Stroking... out...')
-            sys.exit()
-
-
-
-
-        self.brain = Cortex(self)
-        self.thalamus = Thalamus(self, self.brain)
-        """
-
-    def rise(self):
-
-        print('* Assembling brainmeats')
+        logger.info('* Assembling brainmeats')
         self.corpuscallosum.init_brainmeats()
 
-        print('* Triggering brain waves')
+        logger.info('* Connecting nuclei')
         self.thalamus.connect()
 
+        logger.info('* Activating Skynet')
+        self.alive = True
 
         while True:
             self.thalamus.process()

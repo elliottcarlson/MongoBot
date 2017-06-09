@@ -14,9 +14,9 @@ logger = logging.getLogger(__name__)
 
 class Slack(object):
 
-    def __init__(self, token):
+    def __init__(self, settings):
 
-        self.token = token
+        self.token = settings.token
         self.last_ping = 0
 
         self.client = SlackClient(self.token)
@@ -33,8 +33,6 @@ class Slack(object):
         if now > self.last_ping + 3:
             self.client.server.ping()
             self.last_ping = now
-
-        return self.send({'type': 'ping'})
 
 
     def process(self):

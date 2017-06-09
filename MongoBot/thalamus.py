@@ -1,35 +1,44 @@
 # -*- coding: utf-8 -*-
 
+from importlib import import_module
+from MongoBot.hyperthymesia import load_config
 from MongoBot.synapses import Cerebellum, Receptor
-from MongoBot.thalami.IRC import IRC
-from MongoBot.thalami.Slack import Slack
+import sys
 
-"""
-The thalamus is the large mass of gray matter in the dorsal part of the
-diencephalon of the brain with several functions such as relaying of sensory
-and motor signals to the cerebral cortex, and the regulation of consciousness,
-sleep, and alertness.
 
-In MongoBot, the Thalamus handles the regulation of connectivity to it's body,
-such as IRC or Slack.
-"""
 @Cerebellum
 class Thalamus(object):
+    """
+    The thalamus is the large mass of gray matter in the dorsal part of the
+    diencephalon of the brain with several functions such as relaying of
+    sensory and motor signals to the cerebral cortex, and the regulation of
+    consciousness, sleep, and alertness.
+
+    In MongoBot, the Thalamus handles the regulation of connectivity to it's
+    body, such as IRC or Slack.
+    """
 
     def __init__(self):
 
-        self.irc = IRC()
-        self.slack = Slack('xoxb-195965876935-PslSW24yOGtASNo9YqHy5SkZ')
+        self.providers = dict()
+        self.settings = load_config('./config/settings.yaml')
+
+        for service in self.settings.services.values():
+            if service.enabled:
+                module, class_name = service.module.rsplit('.', 1)
+                settings = service.settings
+                provider = getattr(import_module(module), class_name)(settings)
+                self.providers[class_name] = provider
 
     def connect(self):
 
-        #self.irc.connect()
-        self.slack.connect()
+        for provider in self.providers:
+            self.providers[provider].connect()
 
     def process(self):
 
-        #self.irc.process()
-        self.slack.process()
+        for provider in self.providers:
+            self.providers[provider].process()
 
     @Receptor('THALAMUS_DATA')
     def test(self, *args):

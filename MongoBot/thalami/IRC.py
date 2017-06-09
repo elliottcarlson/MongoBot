@@ -6,10 +6,11 @@ import socket
 import ssl
 import sys
 import traceback
-
 from MongoBot.synapses import Synapse
+from time import time
 
 logger = logging.getLogger(__name__)
+
 
 class IRC(object):
 
@@ -20,60 +21,55 @@ class IRC(object):
     regain_nick = False
     channels = {}
 
-    def __init__(self):
+    def __init__(self, settings):
 
-        self.secrets_bot_ident = 'fubahder'
-        self.secrets_bot_realname = 'fubahder'
-        self.secrets_channels = [
-            '#fubahder'
-        ]
+        self.ident = settings.ident
+        self.realname = settings.realname
+        self.channels = settings.channels
 
-        self.settings_bot_nick = 'fubahder'
-        self.settings_irc_host = 'chat.freenode.net'
-        self.settings_irc_port = 6697
-        self.settings_irc_ssl = True
-
+        self.nick = settings.nick
+        self.host = settings.host
+        self.port = settings.port
+        self.ssl = settings.ssl
 
     def connect(self):
 
         sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
-        logger.info('Connect to IRC server %s:%s', self.settings_irc_host,
-                self.settings_irc_port)
-        sock.connect((self.settings_irc_host, self.settings_irc_port))
+        logger.info('Connect to IRC server %s:%s', self.host, self.port)
+        sock.connect((self.host, self.port))
 
-        #if hasattr(self_settings_irc, 'ssl') and self.settings_irc_ssl:
-        self.sock = ssl.wrap_socket(sock)
-        #else:
-        #    self.sock = sock
+        if hasattr(self, 'ssl') and self.ssl:
+            self.sock = ssl.wrap_socket(sock)
+        else:
+            self.sock = sock
 
         self.sock.setblocking(0)
 
-        #if hasattr(self.secrets_irc, 'password') and self.secrets.irc.password:
-        #    self.send('PASS %s' % self.secrets.irc.password)
+        # if hasattr(self.secrets_irc, 'password') and
+        # self.secrets.irc.password:
+        #     self.send('PASS %s' % self.secrets.irc.password)
 
         self.introduce()
 
-
     def introduce(self):
-        
+
         if not self.name:
-            self.name = self.settings_bot_nick
+            self.name = self.nick
 
         self.send('USER %s %s %s : %s' % (
-            self.secrets_bot_ident,
-            self.secrets_bot_ident,
-            self.secrets_bot_ident,
-            self.secrets_bot_realname
+            self.ident,
+            self.ident,
+            self.ident,
+            self.realname
         ))
         self.send('NICK %s' % self.name)
-
 
     def read(self):
 
         try:
             data = self.sock.recv(256)
-        except Exception as e:
+        except Exception:
             return
 
         if data == b'':
@@ -88,14 +84,13 @@ class IRC(object):
 
         self.sock.send('%s%s%s' % (data, chr(015), chr(012)))
 
-
     def process(self):
 
-        if (self.name != self.settings_bot_nick and self.regain_nick and
-            time() - self.regain_nick > 20):
+        if (self.name != self.nick and self.regain_nick and
+                time() - self.regain_nick > 20):
 
             self.regain_nick = time()
-            self.send('WHOIS %s' % self.settings_bot_nick)
+            self.send('WHOIS %s' % self.nick)
 
         data = self.read()
 
@@ -116,7 +111,6 @@ class IRC(object):
             logger.info('[IRC] Data: %s', data)
 
             source = ''
-            target = ''
 
             if line[0] == ':':
                 source, line = line[1:].split(' ', 1)
@@ -148,7 +142,7 @@ class IRC(object):
 
         logger.info('[IRC] Connected to %s' % source)
 
-        for channel in self.secrets_channels:
+        for channel in self.channels:
 
             logger.info('[IRC] Joining %s' % channel)
             self.send('JOIN %s' % channel)
@@ -167,7 +161,8 @@ class IRC(object):
 
         self.channels[channel] = {
             'users': {
-                re.sub('^[@+]', '', u): re.sub('^([@+])?.*', lambda m: m.group(1) or '', u)
+                re.sub('^[@+]', '', u):
+                re.sub('^([@+])?.*', lambda m: m.group(1) or '', u)
                 for u in users.split()
             }
         }
@@ -188,7 +183,7 @@ class IRC(object):
         self.send('PONG %s' % args[-1])
 
     def _cmd_PART(self, source, args):
-        
+
         channel = args.pop(0)
         self.send('NAMES %s' % channel)
 

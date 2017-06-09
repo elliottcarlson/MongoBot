@@ -1,0 +1,29 @@
+#
+# This is the MongoBot general settings configuration file. It contains the
+# configuration directives to instructe the bot. The configuration file uses
+# standard YAML tags, as well as extended PyYAML specific tag types as
+# documented at:
+# http://pyyaml.org/wiki/PythonTagScheme
+#
+# Non-standard tags:
+#   Include another YAML config file
+#     module: !include module.yaml
+#
+# By convention, all strings are in single quotes, except dynamic resolution
+# which must be in double quotes:
+#   directory:
+#     root: '/home/MongoBot'
+#     downloads: "{directory.root}/downloads"
+#
+
+general:
+    name: 'MongoBot'
+    command_prefix: '.'
+    multi_prefix: ':'
+    flag_prefix: '-'
+    throttle: 25
+
+# Services are external services that MongoBot can connect to
+services:
+    irc: !include irc.yaml
+    slack: !include slack.yaml

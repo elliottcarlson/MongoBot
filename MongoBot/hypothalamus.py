@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 
+
 class Hypothalamus(object):
 
     def __init__(self):

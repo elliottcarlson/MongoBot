@@ -15,4 +15,7 @@ python.core
 junk/*
 deprecated/*
 config/secrets.yaml
+config/irc.yaml
+config/slack.yaml
+
 venv/*

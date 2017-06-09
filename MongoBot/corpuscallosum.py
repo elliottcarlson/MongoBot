@@ -10,14 +10,17 @@ from MongoBot.utils import to_utf8
 
 logger = logging.getLogger(__name__)
 
-"""
-The corpus callosum is a wide, flat bundle of neural fibers about 10 cm long
-beneath the cortex in the eutherian brain at the longitudinal fissure. It
-connects the left and right cerebral hemispheres and facilitates
-interhemispheric communication. It is the largest white matter structure in the
-brain, consisting of 200–250 million contralateral axonal projections.
-"""
+
 class CorpusCallosum(object):
+    """
+    The corpus callosum is a wide, flat bundle of neural fibers about 10 cm
+    long beneath the cortex in the eutherian brain at the longitudinal fissure.
+    It connects the left and right cerebral hemispheres and facilitates
+    interhemispheric communication. It is the largest white matter structure in
+    the brain, consisting of 200-250 million contralateral axonal projections.
+
+    In MongoBot, the Corpus Callosum finds and holds the brainmeats together.
+    """
 
     def __init__(self):
         pass
@@ -72,7 +75,7 @@ class CorpusCallosum(object):
 
             module_list = glob('{}/[!_]*.py'.format(path_name))
             module_list = ['.'.join((brainmeat, os.path.split(f)[-1][:-3])) for
-                f in module_list]
+                           f in module_list]
 
         for module in module_list:
 
@@ -86,6 +89,7 @@ class CorpusCallosum(object):
                 logger.exception('Failed to import "%s"', module)
 
     def get_brainmeats(self, category, text):
+
         has_matching_plugin = False
 
         if text is None:

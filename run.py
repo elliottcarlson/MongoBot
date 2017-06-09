@@ -6,6 +6,7 @@ import logging.config
 from MongoBot import settings
 from MongoBot.medulla import Medulla
 
+
 def main():
     kw = {
         'format': '[%(asctime)s] %(message)s',
@@ -14,10 +15,9 @@ def main():
         'stream': sys.stdout,
     }
     logging.basicConfig(**kw)
-    logging.getLogger('requests.packages.urllib3.connectionpool').setLevel(logging.WARNING)
 
     medulla = Medulla()
-    medulla.rise()
+    medulla.activate()
 
 if __name__ == '__main__':
     main()
