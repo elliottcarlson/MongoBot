@@ -201,7 +201,7 @@ class IRC(object):
     def _cmd_AUTHENTICATE(self, source, args):
 
         if args[0] == '+':
-            pw = b64encode('%s%s%s' % (self.name, self.name, self.password))
+            pw = b64encode('%s%s%s' % (self.nick, self.nick, self.password))
             self.send('AUTHENTICATE %s' % pw)
 
     def _cmd_CAP(self, source, args):
