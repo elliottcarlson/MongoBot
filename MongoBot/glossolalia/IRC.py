@@ -78,10 +78,9 @@ class IRC(object):
 
         if data == b'':
             pass
-            # print 'Connection lost.'
-            # sys.exit()
             self.sock.shutdown(socket.SHUT_RDWR)
             self.sock.close()
+            self.connect()
 
         return data
 
@@ -146,11 +145,6 @@ class IRC(object):
             try:
                 if method is not None:
                     method(source, args)
-                else:
-                    print('!! %s' % line)
-                    print('Unknown: %s' % command)
-                    print(' -- %s' % source)
-                    print(' -- %s' % args)
 
             except Exception as e:
 
@@ -205,8 +199,8 @@ class IRC(object):
     def _cmd_AUTHENTICATE(self, source, args):
 
         if args[0] == '+':
-            pw = b64encode('%s\0%s\0%s' % (self.nick, self.nick, self.password))
-            self.send('AUTHENTICATE %s' % pw)
+            p = b64encode('{u}\0{u}\0{p}'.format(u=self.nick, p=self.password))
+            self.send('AUTHENTICATE %s' % p)
 
     def _cmd_CAP(self, source, args):
 

@@ -39,10 +39,7 @@ class Cortex(object):
 
     def init_brainmeats(self):
 
-        if hasattr(settings, 'BRAINMEATS'):
-            brainmeats = settings.BRAINMEATS
-        else:
-            brainmeats = ['MongoBot.brainmeats']
+        brainmeats = ['MongoBot.brainmeats']
 
         for brainmeat in brainmeats:
             self._load_brainmeat(brainmeat)

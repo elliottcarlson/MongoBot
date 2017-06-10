@@ -27,7 +27,6 @@ class Medulla(object):
 
         # Remember all the things you were programmed to remember
         self.settings = load_config('config/settings.yaml')
-        self.secrets = load_config('config/secrets.yaml')
 
         # Reach out and touch someone
         self.thalamus = Thalamus()

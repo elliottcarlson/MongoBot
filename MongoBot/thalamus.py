@@ -21,7 +21,6 @@ class Thalamus(object):
 
     def __init__(self):
 
-        # self.providers = dict()
         self.settings = load_config('./config/settings.yaml')
 
         for key, service in self.settings.services.items():
@@ -40,7 +39,7 @@ class Thalamus(object):
     def process(self):
 
         for provider in self.providers:
-            Thalamus.providers[provider].process()
+            self.providers[provider].process()
 
     @Receptor('THALAMUS_INCOMING_DATA')
     def parse_incoming(self, data):

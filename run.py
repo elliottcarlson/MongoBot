@@ -11,7 +11,7 @@ def main():
     kw = {
         'format': '[%(asctime)s] - %(name)s - %(levelname)s - %(message)s',
         'datefmt': '%m/%d/%Y %H:%M:%S',
-        'level': logging.DEBUG if settings.DEBUG else logging.DEBUG,
+        'level': logging.DEBUG if settings.DEBUG else logging.INFO,
         'stream': sys.stdout,
     }
     logging.basicConfig(**kw)
@@ -20,4 +20,7 @@ def main():
     medulla.activate()
 
 if __name__ == '__main__':
-    main()
+    try:
+        main()
+    except KeyboardInterrupt:
+        sys.exit()
