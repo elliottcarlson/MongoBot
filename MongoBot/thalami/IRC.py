@@ -76,7 +76,8 @@ class IRC(object):
             return
 
         if data == b'':
-            print 'Connection lost.'
+            pass
+            #print 'Connection lost.'
             # sys.exit()
 
         return data
