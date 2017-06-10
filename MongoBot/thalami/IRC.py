@@ -198,16 +198,19 @@ class IRC(object):
         self.name += '_'
         self.introduce()
 
+    def _cmd_AUTHENTICATE(self, source, args):
+
+        if args[0] == '+':
+            pw = b64encode('%s%s%s' % (self.name, self.name, self.password))
+            self.send('AUTHENTICATE %s' % pw)
+
     def _cmd_CAP(self, source, args):
 
         print('source: %s' % source)
         print('args: %s' % args)
 
         if args[1] == 'ACK':
-            pw = b64encode('%s%s%s' % (self.name, self.name, self.password))
             self.send('AUTHENTICATE PLAIN')
-            time.sleep(2)
-            self.send('AUTHENTICATE %s' % pw)
 #        else:
 #            logger.warning('Unexpected CAP response')
 #            self.sock.shutdown(socket.SHUT_RDWR)
