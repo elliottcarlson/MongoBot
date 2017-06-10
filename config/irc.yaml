@@ -1,0 +1,18 @@
+#
+# IRC Connection settings
+#
+
+enabled: true
+module: 'MongoBot.thalami.IRC.IRC'
+
+settings:
+    ident: 'fubahder'
+    realname: 'fubahder'
+    nick: 'fubahder'
+    host: 'chat.freenode.net'
+    port: 6697
+    ssl: True
+    chanserv: False
+    channels:
+     - '#fubahder'
+

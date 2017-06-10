@@ -1,0 +1,5 @@
+enabled: true
+module: 'MongoBot.thalami.Slack.Slack'
+
+settings:
+    token: !env SLACK_TOKEN

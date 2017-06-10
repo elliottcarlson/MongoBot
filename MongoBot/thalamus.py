@@ -2,8 +2,8 @@
 
 from importlib import import_module
 from MongoBot.hyperthymesia import load_config
+from MongoBot.cortex import Cortex
 from MongoBot.synapses import Cerebellum, Receptor
-import sys
 
 
 @Cerebellum
@@ -17,18 +17,22 @@ class Thalamus(object):
     In MongoBot, the Thalamus handles the regulation of connectivity to it's
     body, such as IRC or Slack.
     """
+    providers = {}
 
     def __init__(self):
 
-        self.providers = dict()
+        # self.providers = dict()
         self.settings = load_config('./config/settings.yaml')
 
-        for service in self.settings.services.values():
+        print(self.settings)
+
+        for key, service in self.settings.services.items():
             if service.enabled:
                 module, class_name = service.module.rsplit('.', 1)
                 settings = service.settings
+                settings.__name__ = key
                 provider = getattr(import_module(module), class_name)(settings)
-                self.providers[class_name] = provider
+                self.providers[key] = provider
 
     def connect(self):
 
@@ -38,10 +42,9 @@ class Thalamus(object):
     def process(self):
 
         for provider in self.providers:
-            self.providers[provider].process()
+            Thalamus.providers[provider].process()
 
-    @Receptor('THALAMUS_DATA')
-    def test(self, *args):
-        from pprint import pprint
-        print('In thalamus receptor...')
-        pprint(args)
+    @Receptor('THALAMUS_INCOMING_DATA')
+    def parse_incoming(self, data):
+
+        Cortex.interpret(data)

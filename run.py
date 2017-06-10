@@ -9,7 +9,7 @@ from MongoBot.medulla import Medulla
 
 def main():
     kw = {
-        'format': '[%(asctime)s] %(message)s',
+        'format': '[%(asctime)s] - %(name)s - %(levelname)s - %(message)s',
         'datefmt': '%m/%d/%Y %H:%M:%S',
         'level': logging.DEBUG if settings.DEBUG else logging.INFO,
         'stream': sys.stdout,

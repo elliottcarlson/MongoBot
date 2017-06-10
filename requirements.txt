@@ -1,3 +1,5 @@
+pyparsing
+python-dotenv
 PyYAML
 requests[security]
 six

@@ -2,11 +2,14 @@
 
 import copy
 import logging
+import os
 import yaml
 from collections import OrderedDict, Sequence, Mapping
+from dotenv import load_dotenv, find_dotenv
 from os import path, listdir
 
 logger = logging.getLogger(__name__)
+load_dotenv(find_dotenv())
 
 
 class Hyperthymesia(yaml.Loader):
@@ -51,6 +54,12 @@ class Hyperthymesia(yaml.Loader):
                 self.eidetic.update({path: yaml.load(stream, Hyperthymesia)})
 
         return self.eidetic.get(path, dict())
+
+    def environment(self, node):
+
+        value = self.construct_scalar(node)
+
+        return os.environ[value]
 
 
 class YamlDict(OrderedDict):
@@ -155,3 +164,4 @@ def load_config(config_file):
 Hyperthymesia.add_constructor('!include', Hyperthymesia.include)
 Hyperthymesia.add_constructor(u'tag:yaml.org,2002:seq', Hyperthymesia.sequence)
 Hyperthymesia.add_constructor(u'tag:yaml.org,2002:map', Hyperthymesia.mapping)
+Hyperthymesia.add_constructor('!env', Hyperthymesia.environment)

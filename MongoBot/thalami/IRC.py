@@ -7,6 +7,7 @@ import ssl
 import sys
 import traceback
 from MongoBot.synapses import Synapse
+from MongoBot.utils import ratelimited
 from time import time
 
 logger = logging.getLogger(__name__)
@@ -23,9 +24,11 @@ class IRC(object):
 
     def __init__(self, settings):
 
+        self.provider = settings.__name__
+
         self.ident = settings.ident
         self.realname = settings.realname
-        self.channels = settings.channels
+        self.load_channels = settings.channels
 
         self.nick = settings.nick
         self.host = settings.host
@@ -84,6 +87,15 @@ class IRC(object):
 
         self.sock.send('%s%s%s' % (data, chr(015), chr(012)))
 
+    @ratelimited(2)
+    def chat(self, message, target=None, error=False):
+
+        if not message:
+            return
+
+        message = str(message.encode('utf-8'))
+        self.send('PRIVMSG %s :%s' % (target, message))
+
     def process(self):
 
         if (self.name != self.nick and self.regain_nick and
@@ -108,7 +120,7 @@ class IRC(object):
             if not line:
                 continue
 
-            logger.info('[IRC] Data: %s', data)
+            logger.debug('Incoming: %s', line)
 
             source = ''
 
@@ -140,11 +152,11 @@ class IRC(object):
 
     def _cmd_001(self, source, args):
 
-        logger.info('[IRC] Connected to %s' % source)
+        logger.info('Connected to %s' % source)
 
-        for channel in self.channels:
+        for channel in self.load_channels:
 
-            logger.info('[IRC] Joining %s' % channel)
+            logger.info('Joining %s' % channel)
             self.send('JOIN %s' % channel)
 
     def _cmd_004(self, source, args):
@@ -197,14 +209,17 @@ class IRC(object):
         channel = args.pop(0)
         self.send('NAMES %s' % channel)
 
-    @Synapse('THALAMUS_DATA')
+    @Synapse('THALAMUS_INCOMING_DATA')
     def _cmd_PRIVMSG(self, source, args):
 
         target = args[0]
         data = args[-1]
 
         return {
-            source: source,
-            target: target,
-            data: data
+            'provider': self.provider,
+            'service': self.__class__.__name__,
+            'module': self.__module__,
+            'source': source,
+            'target': target,
+            'data': data
         }

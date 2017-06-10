@@ -1,9 +1,10 @@
 # -*- coding: utf-8 -*-
 
-"""
-Neurons hold some vesicles. Vesicles are cool. Are you?
-"""
+
 class Neurons(object):
+    """
+    Neurons hold some vesicles. Vesicles are cool. Are you?
+    """
 
     vesicles = {}
 
@@ -53,11 +54,10 @@ class Synapse(Neurons):
         def glutamate(*args, **kwargs):
 
             neurotransmission = neuron(*args, **kwargs)
-
             vesicle, cell = self.vesicles.get(self.neuron, False)
             if vesicle:
 
-                cell(vesicle, *(neurotransmission or []))
+                cell(vesicle, neurotransmission)
 
             return neurotransmission
 

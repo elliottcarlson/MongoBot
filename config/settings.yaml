@@ -26,4 +26,5 @@ general:
 # Services are external services that MongoBot can connect to
 services:
     irc: !include irc.yaml
+    irc2: !include irc2.yaml
     slack: !include slack.yaml

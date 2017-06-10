@@ -1,12 +1,10 @@
 # -*- coding: utf-8 -*-
 from __future__ import absolute_import
 import logging
-from MongoBot.corpuscallosum import CorpusCallosum
-# from MongoBot.cortex import Cortex
+from MongoBot.cortex import Cortex
 from MongoBot.thalamus import Thalamus
 # from MongoBot.broca import Broca
 from MongoBot.hyperthymesia import load_config
-from pprint import pprint
 
 logger = logging.getLogger(__name__)
 
@@ -28,16 +26,14 @@ class Medulla(object):
         logger.info('* Becoming self-aware')
 
         # Remember all the things you were programmed to remember
-        global settings
-        settings = load_config('config/settings.yaml')
-        pprint(settings)
-        secrets = load_config('config/secrets.yaml')
-
-        # Load the brainmeats
-        self.corpuscallosum = CorpusCallosum()
+        self.settings = load_config('config/settings.yaml')
+        self.secrets = load_config('config/secrets.yaml')
 
         # Reach out and touch someone
         self.thalamus = Thalamus()
+
+        # Load the brainmeats
+        self.cortex = Cortex(self.thalamus)
 
         # You are alive. No wait. No you aren't. Not yet at least.
         self.alive = False
@@ -45,7 +41,7 @@ class Medulla(object):
     def activate(self):
 
         logger.info('* Assembling brainmeats')
-        self.corpuscallosum.init_brainmeats()
+        self.cortex.init_brainmeats()
 
         logger.info('* Connecting nuclei')
         self.thalamus.connect()
