@@ -24,8 +24,6 @@ class Thalamus(object):
         # self.providers = dict()
         self.settings = load_config('./config/settings.yaml')
 
-        print(self.settings)
-
         for key, service in self.settings.services.items():
             if service.enabled:
                 module, class_name = service.module.rsplit('.', 1)
