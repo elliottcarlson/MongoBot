@@ -8,7 +8,6 @@
     "SLACK_TOKEN": "Enter your Slack API Token"
   },
   "formation": [
-    { "process": "web", "quantity": 0 },
     { "process": "worker", "quantity": 1 }
   ]
 }
