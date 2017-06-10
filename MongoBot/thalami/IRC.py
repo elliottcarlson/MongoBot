@@ -4,7 +4,6 @@ import logging
 import re
 import socket
 import ssl
-import sys
 import traceback
 from MongoBot.synapses import Synapse
 from MongoBot.utils import ratelimited
@@ -81,8 +80,10 @@ class IRC(object):
 
         if data == b'':
             pass
-            #print 'Connection lost.'
+            # print 'Connection lost.'
             # sys.exit()
+            self.sock.shutdown(socket.SHUT_RDWR)
+            self.sock.close()
 
         return data
 
@@ -194,6 +195,18 @@ class IRC(object):
 
         self.name += '_'
         self.introduce()
+
+    def _cmd_CAP(self, source, args):
+
+        print(source)
+        print(args)
+
+        if args[0] == 'ACK':
+            self.send('AUTHENTICATE PLAIN')
+        else:
+            logger.warning('Unexpected CAP response')
+            self.sock.shutdown(socket.SHUT_RDWR)
+            self.sock.close()
 
     def _cmd_PING(self, source, args):
 
