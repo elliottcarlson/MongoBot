@@ -49,22 +49,22 @@ class IRC(object):
 
         self.sock.setblocking(0)
 
-        self.introduce() # send('CAP LS')
+        self.introduce()
 
     def introduce(self):
 
         if not self.name:
             self.name = self.nick
 
-        #self.send('CAP LS')
+        self.send('CAP REQ :sasl')
 
+        self.send('NICK %s' % self.name)
         self.send('USER %s %s %s : %s' % (
             self.ident,
             self.ident,
             self.ident,
             self.realname
         ))
-        self.send('NICK %s' % self.name)
 
     def read(self):
 

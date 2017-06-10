@@ -6,14 +6,13 @@ enabled: true
 module: 'MongoBot.thalami.IRC.IRC'
 
 settings:
-    ident: 'fubahder'
-    realname: 'fubahder'
-    nick: 'fubahder'
+    ident: "{general.name}"
+    realname: "{general.name}"
+    nick: "fake_{general.name}"
     host: 'chat.freenode.net'
     port: 6697
     ssl: True
     chanserv: False
     channels:
      - '#fubahder'
-    sasl:
-        enabled: true
+
