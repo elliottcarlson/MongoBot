@@ -11,7 +11,7 @@ def main():
     kw = {
         'format': '[%(asctime)s] - %(name)s - %(levelname)s - %(message)s',
         'datefmt': '%m/%d/%Y %H:%M:%S',
-        'level': logging.DEBUG if settings.DEBUG else logging.INFO,
+        'level': logging.DEBUG if settings.DEBUG else logging.DEBUG,
         'stream': sys.stdout,
     }
     logging.basicConfig(**kw)
