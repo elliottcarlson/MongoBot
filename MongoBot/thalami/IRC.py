@@ -89,6 +89,7 @@ class IRC(object):
 
         data = data.rstrip('\r\n')
 
+        logger.debug('CLIENT: %s', data)
         self.sock.send('%s%s%s' % (data, chr(015), chr(012)))
 
     @ratelimited(2)
@@ -124,7 +125,7 @@ class IRC(object):
             if not line:
                 continue
 
-            logger.debug('Incoming: %s', line)
+            logger.debug('SERVER: %s', line)
 
             source = ''
 
