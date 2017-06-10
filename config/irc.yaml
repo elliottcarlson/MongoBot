@@ -6,10 +6,11 @@ enabled: true
 module: 'MongoBot.thalami.IRC.IRC'
 
 settings:
-    ident: "{general.name}"
-    realname: "{general.name}"
-    nick: "fake_{general.name}"
+    ident: 'foobard'
+    realname: 'foobard'
+    nick: 'foobard'
     host: 'chat.freenode.net'
+    password: !env IRC_PASSWORD
     port: 6697
     ssl: True
     chanserv: False

@@ -33,6 +33,7 @@ class IRC(object):
         self.host = settings.host
         self.port = settings.port
         self.ssl = settings.ssl
+        self.password = settings.password
         self.sasl = settings.get('sasl')
 
     def connect(self):
@@ -58,6 +59,7 @@ class IRC(object):
 
         self.send('CAP REQ :sasl')
 
+        self.send('PASS %s' % self.password)
         self.send('NICK %s' % self.name)
         self.send('USER %s %s %s : %s' % (
             self.ident,
