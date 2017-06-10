@@ -144,10 +144,13 @@ class IRC(object):
             method = getattr(self, '_cmd_%s' % command, None)
 
             try:
-
                 if method is not None:
-
                     method(source, args)
+                else:
+                    print('!! %s' % line)
+                    print('Unknown: %s' % command)
+                    print(' -- %s' % source)
+                    print(' -- %s' % args)
 
             except Exception as e:
 
