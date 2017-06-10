@@ -1,0 +1,14 @@
+{
+  "name": "MongoBot",
+  "description": "Whatever.",
+  "repository": "https://github.com/elliottcarlson/MongoBot/tree/lobotomy",
+  "logo": "https://node-js-sample.herokuapp.com/node.png",
+  "keywords": ["mongobot"],
+  "env": {
+    "SLACK_TOKEN": "Enter your Slack API Token"
+  },
+  "formation": [
+    { "process": "web", "quantity": 0 },
+    { "process": "worker", "quantity": 1 }
+  ]
+}

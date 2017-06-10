@@ -5,9 +5,12 @@
 # documented at:
 # http://pyyaml.org/wiki/PythonTagScheme
 #
-# Non-standard tags:
+# Non-standard/custom tags:
 #   Include another YAML config file
 #     module: !include module.yaml
+#
+#   Load a string from an environment variable
+#     token: !env ENV_VARIABLE_NAME
 #
 # By convention, all strings are in single quotes, except dynamic resolution
 # which must be in double quotes:
