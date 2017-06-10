@@ -34,7 +34,7 @@ class IRC(object):
         self.host = settings.host
         self.port = settings.port
         self.ssl = settings.ssl
-        self.sasl = settings.sasl or None
+        self.sasl = settings.get('sasl')
 
     def connect(self):
 
