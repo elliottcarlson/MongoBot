@@ -49,19 +49,14 @@ class IRC(object):
 
         self.sock.setblocking(0)
 
-        # if hasattr(self.secrets_irc, 'password') and
-        # self.secrets.irc.password:
-        #     self.send('PASS %s' % self.secrets.irc.password)
-
-        self.introduce()
+        self.introduce() # send('CAP LS')
 
     def introduce(self):
 
         if not self.name:
             self.name = self.nick
 
-        if self.sasl:
-            self.send('CAP REQ :sasl')
+        #self.send('CAP LS')
 
         self.send('USER %s %s %s : %s' % (
             self.ident,
@@ -198,15 +193,15 @@ class IRC(object):
 
     def _cmd_CAP(self, source, args):
 
-        print(source)
-        print(args)
+        print('source: %s' % source)
+        print('args: %s' % args)
 
-        if args[0] == 'ACK':
-            self.send('AUTHENTICATE PLAIN')
-        else:
-            logger.warning('Unexpected CAP response')
-            self.sock.shutdown(socket.SHUT_RDWR)
-            self.sock.close()
+#        if args[0] == 'ACK':
+#            self.send('AUTHENTICATE PLAIN')
+#        else:
+#            logger.warning('Unexpected CAP response')
+#            self.sock.shutdown(socket.SHUT_RDWR)
+#            self.sock.close()
 
     def _cmd_PING(self, source, args):
 
