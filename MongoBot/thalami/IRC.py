@@ -4,10 +4,11 @@ import logging
 import re
 import socket
 import ssl
+import time
 import traceback
+from base64 import b64encode
 from MongoBot.synapses import Synapse
 from MongoBot.utils import ratelimited
-from time import time
 
 logger = logging.getLogger(__name__)
 
@@ -167,7 +168,7 @@ class IRC(object):
         self.name = args.pop(0)
         self.server = args.pop(0)
 
-        self.regain_nick = time()
+        self.regain_nick = time.time()
 
     def _cmd_353(self, source, args):
 
@@ -198,8 +199,11 @@ class IRC(object):
         print('source: %s' % source)
         print('args: %s' % args)
 
-#        if args[0] == 'ACK':
-#            self.send('AUTHENTICATE PLAIN')
+        if args[1] == 'ACK':
+            pw = b64encode('%s%s%s' % (self.name, self.name, self.password))
+            self.send('AUTHENTICATE PLAIN')
+            time.sleep(2)
+            self.send('AUTHENTICATE %s' % pw)
 #        else:
 #            logger.warning('Unexpected CAP response')
 #            self.sock.shutdown(socket.SHUT_RDWR)
