@@ -198,6 +198,10 @@ class IRC(object):
         self.name += '_'
         self.introduce()
 
+    def _cmd_903(self, source, args):
+
+        self.send('CAP END')
+
     def _cmd_AUTHENTICATE(self, source, args):
 
         if args[0] == '+':
@@ -206,34 +210,22 @@ class IRC(object):
 
     def _cmd_CAP(self, source, args):
 
-        print('source: %s' % source)
-        print('args: %s' % args)
-
         if args[1] == 'ACK':
             self.send('AUTHENTICATE PLAIN')
-#        else:
-#            logger.warning('Unexpected CAP response')
-#            self.sock.shutdown(socket.SHUT_RDWR)
-#            self.sock.close()
-
-    def _cmd_PING(self, source, args):
-
-        self.send('PONG %s' % args[-1])
-
-    def _cmd_PART(self, source, args):
-
-        channel = args.pop(0)
-        self.send('NAMES %s' % channel)
 
     def _cmd_JOIN(self, source, args):
 
         channel = args.pop(0)
         self.send('NAMES %s' % channel)
 
-    def _cmd_QUIT(self, source, args):
+    def _cmd_PART(self, source, args):
 
         channel = args.pop(0)
         self.send('NAMES %s' % channel)
+
+    def _cmd_PING(self, source, args):
+
+        self.send('PONG %s' % args[-1])
 
     @Synapse('THALAMUS_INCOMING_DATA')
     def _cmd_PRIVMSG(self, source, args):
@@ -249,3 +241,8 @@ class IRC(object):
             'target': target,
             'data': data
         }
+
+    def _cmd_QUIT(self, source, args):
+
+        channel = args.pop(0)
+        self.send('NAMES %s' % channel)
