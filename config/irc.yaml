@@ -15,4 +15,5 @@ settings:
     chanserv: False
     channels:
      - '#fubahder'
-
+    sasl:
+        enabled: true

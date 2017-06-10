@@ -34,6 +34,7 @@ class IRC(object):
         self.host = settings.host
         self.port = settings.port
         self.ssl = settings.ssl
+        self.sasl = settings.sasl or None
 
     def connect(self):
 
@@ -59,6 +60,9 @@ class IRC(object):
 
         if not self.name:
             self.name = self.nick
+
+        if self.sasl:
+            self.send('CAP REQ :sasl')
 
         self.send('USER %s %s %s : %s' % (
             self.ident,
