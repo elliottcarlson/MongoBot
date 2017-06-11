@@ -10,21 +10,20 @@ logger = logging.getLogger(__name__)
 
 @yo_dawg
 def axon(func, *args, **kwargs):
-    func.create_command = True
-
     if args:
-        Cortex.brainmeats['regex'][re.compile(*args)] = func
+        func.axon = re.compile(*args)
+        func.axon_type = 'regex'
     else:
-        Cortex.brainmeats['plain'][func.__name__] = func
+        func.axon = func.__name__
+        func.axon_type = 'plain'
 
     return func
-
-
 
 
 def caxon(func, *args, **kwargs):
     func.create_command = True
     return func
+
 
 class baxon(object):
     def __init__(self, func, obj=None, cls=None, method_type='function'):

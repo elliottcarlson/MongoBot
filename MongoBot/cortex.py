@@ -1,10 +1,11 @@
 # -*- coding: utf-8 -*-
 
+import inspect
 import logging
 import os
+import sys
+import traceback
 from glob import glob
-from importlib import import_module
-from MongoBot import settings
 from MongoBot.dendrite import Dendrite
 from MongoBot.wernicke import Wernicke
 from six import PY2
@@ -29,7 +30,8 @@ class Cortex(object):
     """
     brainmeats = {
         'plain': {},
-        'regex': {}
+        'regex': {},
+        'class': {}
     }
     wernicke = Wernicke()
     thalamus = None
@@ -68,15 +70,26 @@ class Cortex(object):
 
         if not path_name.endswith('.py'):
             module_list = glob('{}/[!_]*.py'.format(path_name))
-            module_list = ['.'.join((brainmeat, os.path.split(f)[-1][:-3])) for
-                           f in module_list]
+            module_list = [os.path.split(f)[-1][:-3] for f in module_list]
 
         for module in module_list:
 
             try:
                 logger.info('Loading brainmeat "%s"', module)
-                import_module(module)
 
+                mod = __import__(brainmeat, fromlist=[module])
+
+                mod = getattr(mod, module)
+                cls = getattr(mod, module.capitalize())
+
+                instance = cls()
+                methods = inspect.getmembers(instance)
+
+                for name, m in methods:
+                    if not hasattr(m, 'axon'):
+                        continue
+
+                    Cortex.brainmeats[m.axon_type][m.axon] = (cls, m.__name__)
             except:
                 logger.exception('Failed to import "%s"', module)
 
@@ -104,6 +117,32 @@ class Cortex(object):
         env = None
         response = None
 
+        # Don't ask. It made sense to do this at the time. - E.
+        def mixin(cls, target):
+            class_name = '%sMixIn' % cls.__class__.__name__
+
+            def __init__(self, *args, **kwargs):
+                self.__bound_instance__ = cls
+
+            methods = {}
+            for member in inspect.getmembers(cls):
+                if inspect.ismethod(member[1]):
+                    def __bound_call__(self, *args, **kwargs):
+                        mod = getattr(self.__bound_instance__, member[0])
+                        if callable(mod):
+                            mod(*args, **kwargs)
+                        else:
+                            return mod
+
+                    __bound_call__.__name__ = member[0]
+                    methods[member[0]] = __bound_call__
+                elif not callable(member[1]) and not member[0].startswith('_'):
+                    methods[member[0]] = member[1]
+
+            methods['__init__'] = __init__
+
+            return type(class_name, (target,), methods)
+
         if not actions:
             return
 
@@ -125,8 +164,23 @@ class Cortex(object):
                 else:
                     incoming['stdin'] = ' '.join([str(x) for x in parameters])
 
-                env = Dendrite(incoming, parameters, Cortex.thalamus)
-                response = command(env)
+                try:
+                    env = Dendrite(incoming, parameters, Cortex.thalamus)
+
+                    # Sure; let's try to mixin a class and classinstance...
+                    instance = mixin(env, command[0])()
+                    mod = getattr(instance, command[1])
+
+                    response = mod()
+
+                    # So damn important...
+                    del instance
+                    del mod
+
+                except Exception as e:
+                    logger.warn('Error running brainmeats: %s', e)
+                    traceback.print_exc(sys.exc_info())
+
             elif prefix == ':':
                 for parameter in parameters:
                     incoming['stdin'] = parameter
