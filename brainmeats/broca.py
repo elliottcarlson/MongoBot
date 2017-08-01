@@ -1,55 +1,56 @@
-import mongoengine
-import nltk
 import re
 import string
 import random
 import redis
 import time
 import os
-import simplejson
 
-from threading import Thread
-from autonomic import axon, alias, help, Dendrite
-from secrets import WORDNIK_API, BOT_PASS
-from settings import NICK, STORAGE, ACROLIB, LOGDIR, BOOKS, BABBLE_LIMIT, \
-    REDIS_SOCK, SMARTASS, TECH_QUESTIONS, IT_HELP, FRUSTRATION, POEMS, \
-    WEBSITE
+from autonomic import axon, alias, help, Dendrite, public, Receptor, Cerebellum
+
 from datastore import Words, Learned, Structure
 from random import choice, randint
-from util import savefromweb, Browse
-from bs4 import BeautifulSoup as bs4
+from util import savefromweb
+from staff import Browser
 from wordnik import swagger, WordApi
+from id import Id
 
 
-# Much fail here. I study up on NLTK at the rate
-# of 5 minutes a month. The miscellaneous language
-# functions usually work, and of course the markov
+# The miscellaneous language functions
+# usually work, and of course the markov
 # is done here.
+@Cerebellum
 class Broca(Dendrite):
 
-    markov = redis.StrictRedis(unix_socket_path=REDIS_SOCK)
     readstuff = False
     knowledge = False
     draft = False
 
     def __init__(self, cortex):
         super(Broca, self).__init__(cortex)
+        self.markov = redis.StrictRedis(unix_socket_path=self.cx.settings.sys.redissock)
 
+
+    # This can get stuck sometimes. Seems to be working
+    # better these days, but a .reload should handle it.
+    # All these compose functions could use a little
+    # cleaning up.
     @axon
-    @help('TITLE <have %NICK% compose poetry>')
+    @help('TITLE <compose poetry>')
     def compose(self):
-        if not self.startpoem():
-            return 'Already wrote that'
+        if not self.startpoem(): return
 
         poem = ''
         seed = self.babble()
 
         if not seed:
-            return 'Muse not with %s today' % NICK
+            return 'Muse not with %s today' % self.ego.nick
 
         seed = seed.split()
         for word in seed:
-            poem += ' ' + self.babble([word])
+            mas = self.babble([word])
+            if not mas: continue
+
+            poem = '%s %s' % (poem, mas)
 
         self.addtext(poem.split())
         res = self.finis()
@@ -71,28 +72,30 @@ class Broca(Dendrite):
 
         filename = '%s.txt' % re.sub('[^0-9a-zA-Z]+', '_', title)
 
-        if os.path.isfile(POEMS + filename):
+        if os.path.isfile('%s/%s' % (self.cx.settings.media.poems, filename)):
             self.chat('Already wrote that')
             return False
 
-        draft = open(POEMS + filename, 'a')
+        draft = open('%s/%s' % (self.cx.settings.media.poems, filename), 'a')
         draft.write('%s\n' % title)
         draft.close()
 
         self.draft = filename
 
-        return '%s think "%s" may be masterpiece' % (NICK, title)
+        self.chat('%s think "%s" may be masterpiece' % (self.ego.nick, title))
+        return True
+
 
     @axon
     @alias('write', 'explicit')
     def addtext(self, what=False):
 
-        # TODO: calling with -explicit will disable random line breaks
+        # TODO: calling with .explicit will disable random line breaks
 
         if not self.draft:
             return 'No poems open now.'
 
-        draft = open(POEMS + self.draft, 'a')
+        draft = open('%s/%s' % (self.cx.settings.media.poems, self.draft), 'a')
 
         what = what or self.values
 
@@ -110,11 +113,13 @@ class Broca(Dendrite):
 
         return 'Coming along real good'
 
+
     @axon
     def finis(self):
-        link = '%s/poem/%s' % (WEBSITE, self.draft[:-4])
+        link = '%s/poem/%s' % (self.cx.settings.website.url, self.draft[:-4])
         self.draft = False
         return 'Work complete: %s' % link
+
 
     @axon
     def mark(self, line):
@@ -134,20 +139,21 @@ class Broca(Dendrite):
                 follow = ','.join(follows)
                 self.markov.set(prefix, follow)
 
+
     @axon
-    @help('URL_OF_TEXT_FILE <Make %NICK% read something>')
+    @help('URL_OF_TEXT_FILE <Read something>')
     def read(self):
         if not self.values:
-            self.chat("Read what?")
-            return
+            return "Read what?"
+
 
         book = self.values[0]
         if book[-4:] != '.txt':
-            self.chat("Plain text file only. %s purist." % NICK)
-            return
+            return "Plain text file only. %s purist." % self.ego.nick
+
 
         name = "%s_%s.txt" % ( int(time.mktime(time.localtime())), self.lastsender )
-        path = BOOKS + name
+        path = '%s/%s' % (self.cx.settings.media.books, name)
 
         savefromweb(book, path)
         with open(path) as b:
@@ -201,9 +207,14 @@ class Broca(Dendrite):
     # Americans have some seriously fucked up problems with
     # their opinions on the nature and value of intelligence.
     @axon
-    @alias('waxrhapsodic')
-    @help('<Make %NICK% speak markov chain>')
+    @public
+    @alias('waxrhapsodic', 'preach')
+    @help('<Speak markov chain>')
     def babble(self, what=False):
+
+        suppress = False
+        if what:
+            suppress = True
 
         what = what or self.values
 
@@ -215,9 +226,8 @@ class Broca(Dendrite):
 
             matches = self.markov.keys(pattern)
 
-            if not matches:
-                self.chat('Got nothin')
-                return
+            if not matches and not suppress:
+                return 'Got nothin'
 
             seed = random.choice(matches)
         else:
@@ -232,10 +242,10 @@ class Broca(Dendrite):
         suspense = [
             'and', 'to', 'a', 'but', 'very',
             'the', 'when', 'how', '', ' ', 'my',
-            'its', 'of', 'is', 'for',
+            'its', 'of', 'is', 'for', 'the',
         ]
 
-        while len(words) < BABBLE_LIMIT:
+        while len(words) < self.config.babblelim:
             tail = "%s %s" % (words[-2], words[-1])
             follows = self.markov.get(tail)
             if not follows:
@@ -253,57 +263,36 @@ class Broca(Dendrite):
         words = words.split()
 
         # Mostly, security in babble is your
-        # problem, but BOT_PASS shows up in the
+        # problem, but botpass shows up in the
         # channel a lot.
-        while BOT_PASS in words:
-            words.remove(BOT_PASS)
+        while self.cx.secrets.system.botpass in words:
+            words.remove(self.cx.secrets.system.botpass)
 
         words = ' '.join(words)
 
+        # Tweet this
+        # First make sure it's short enough
+        # only tweet 20% of babble
+        if len(words) <= 140 and random.randrange(1,5) == 1:
+            tweet_data = []
+            for word in words.split(' '):
+                if len(word) >= 4 and random.randrange(1, 4) == 1:
+                    if random.randrange(1, 3) == 1:
+                        word = '#' + word
+                    else:
+                        word = '@' + word
+                tweet_data.append(word)
+            self.cx.commands.get('tweet')(" ".join(tweet_data))
+
         return words
 
-    # This is kind of sluggish and kldugey,
-    # and sort of spiritually been replaced by
-    # the read function above.
-    #
-    # @axon
-    # def readup(self):
-    #     if self.knowledge:
-    #         self.chat("Already read today.")
-    #         return
-
-    #     self.chat("This may take a minute.")
-    #     books = open(RAW_TEXT, 'r')
-    #     data = books.read().replace('\n', ' ')
-    #     tokens = nltk.word_tokenize(data)
-    #     self.knowledge = nltk.Text(tokens)
-
-    #     self.chat("Okay, read all the things.")
-
-    @axon
-    @help('<command %NICK% to speak>')
-    def speak2(self):
-        if not self.knowledge:
-            self.chat("Can't speak good yet. Must read.")
-            return
-
-        if not self.readstuff:
-            self.chat("Just one sec...")
-            self.knowledge.generate()
-
-        length = randint(10, 100)
-        text = ' '.join(self.knowledge._trigram_model.generate(length))
-
-        self.readstuff = True
-        self.chat(text)
-
+    # TODO: clean up relationship between whatmean/wordnik/seekdef
     @axon
     @alias('d')
     @help('WORD <get definition of word>')
     def whatmean(self):
         if not self.values:
-            self.chat("Ooohhhmmmmm")
-            return
+            return "Ooohhhmmmmm"
 
         word = self.values[0]
         which = 0
@@ -331,15 +320,18 @@ class Broca(Dendrite):
         return "Definition %s: %s" % (str(which + 1), definition)
 
     def seekdef(self, word):
-        if not WORDNIK_API:
-            self.chat("WORDNIK_API is not set.")
-            return
+        if not self.secrets.wordnik_api:
+            return "No api key is not set."
 
-        client = swagger.ApiClient(WORDNIK_API, 'http://api.wordnik.com/v4')
+        client = swagger.ApiClient(self.secrets.wordnik_api, 'http://api.wordnik.com/v4')
         wapi = WordApi.WordApi(client)
         results = wapi.getDefinitions(word.strip())
 
         count = 0
+
+        if not results:
+            self.chat('I got nothin.')
+            return
 
         for item in results:
 
@@ -362,64 +354,52 @@ class Broca(Dendrite):
             self.chat("Wordnik coughed up " + str(count) + " definitions.")
             self.chat("Definition 1:" + tempdef)
         else:
-            self.chat("I got nothin.")
+            return "I got nothin."
 
-    def parse(self, sentence, nick):
-        tokens = nltk.word_tokenize(sentence)
-        tagged = nltk.pos_tag(tokens)
-
-        structure = []
-        contents = []
-        for word, type in tagged:
-            records = Learned.objects(word=word)
-            if not records:
-                record = Learned(word=word, partofspeech=type)
-                try:
-                    record.save()
-                except:
-                    pass
-
-            try:
-                structure.append(type)
-                contents.append(word)
-            except:
-                pass
-
-        try:
-            struct = Structure(structure=structure, contents=contents)
-            struct.save()
-        except:
-            pass
 
     # This is where all the conversational tics and
     # automatic reactions are set up. Also, for some
     # reason, the mom log, because it's awesome but
     # maybe not cortex material. Is the name of this
     # function in poor taste? Yes.
-    def tourettes(self, sentence, nick):
-        if "mom" in sentence.translate(string.maketrans("", ""), string.punctuation).split():
-            open(LOGDIR + "/mom.log", 'a').write(sentence + '\n')
+    @Receptor('IRC_PRIVMSG')
+    def tourettes(self, target, source, args):
+        sentence = args[-1]
+        whom = Id(source)
+        nick = whom.nick
 
-        if re.search("^" + NICK, sentence):
-            backatcha = sentence[len(NICK):]
-            self.chat(nick + "'s MOM" + backatcha)
-            return
+        if "mom" in sentence.translate(string.maketrans("", ""), string.punctuation).split():
+            open("%s/mom.log" % self.cx.settings.directory.logdir, 'a').write(sentence + '\n')
 
         # This could be more like a dict
         if sentence.lower().find("oh snap") != -1:
-            self.chat("yeah WHAT?? Oh yes he DID")
+            self.chat("yeah WHAT?? Oh yes he DID", target=target)
+            return
+
+        if sentence.lower() == 'boom':
+            self.chat(u'(\u2022_\u2022)', target=target)
+            self.chat(u'( \u2022_\u2022)>\u2310 \u25A1-\u25A1', target=target)
+            self.chat(u'(\u2310 \u25A1_\u25A1)', target=target)
             return
 
         if sentence.lower() == "sup":
-            self.chat("chillin")
+            self.chat("chillin", target=target)
             return
 
-        if sentence.lower().find("murican") != -1:
-            self.chat("fuck yeah")
+        if sentence.lower().find("murica") != -1:
+            self.chat("fuck yeah", target=target)
+            return
+
+        if sentence.lower().find("hail satan") != -1:
+            self.chat(u"\u26E7\u26E7\u26E7\u26E7\u26E7", target=target)
+            return
+
+        if sentence.lower().find("race condition") != -1:
+            self.chat("It's never a race condition.", target=target)
             return
 
         if sentence.lower().find("rimshot") != -1:
-            self.chat("*ting*")
+            self.chat("*ting*", target=target)
             return
 
         if sentence.lower().find("stop") == len(sentence) - 4 and len(sentence) != 3:
@@ -428,88 +408,130 @@ class Broca(Dendrite):
                 "Children, what's that sound",
                 'Collaborate and listen',
             ]
-            self.chat(random.choice(stops))
+            self.chat(random.choice(stops), target=target)
             return
 
-        if sentence.lower().strip() in FRUSTRATION or sentence.lower().find('stupid') == 0:
-            self.chat(self.cx.commands.get('table')())
+        if sentence.lower().find("idk") != -1:
+            self.chat(u'\u00AF\u005C\u005F\u0028\u30C4\u0029\u005F\u002F\u00AF', target=target)
+            return
 
-        inquiries = [sentence.lower().find(t) != -1 for t in TECH_QUESTIONS]
+        if sentence.lower().strip() in self.config.frustration or sentence.lower().find('stupid') == 0:
+            self.chat(self.cx.commands.get('table')(), target=target)
+            return
 
-        if SMARTASS and True in inquiries:
+        if sentence.strip() in ['ls', 'jjk', ':wq', 'ifconfig']:
+            self.chat('Wrong window.')
+            return
+
+        inquiries = [sentence.lower().find(t) != -1 for t in self.config.questions]
+
+        if self.config.smartass and True in inquiries:
             # Naively parse out the question being asked
             try:
-                smartassery = sentence.lower().split(TECH_QUESTIONS[inquiries.index(True)])[1]
+                smartassery = sentence.lower().split(self.config.questions[inquiries.index(True)])[1]
             except:
                 return
 
-            responses = IT_HELP
+            responses = self.config.ithelp
 
             # Dynamic cases need to be appended
             responses.append('http://lmgtfy.com/?q=' + smartassery.replace(' ', '+'))
 
-            self.chat(random.choice(responses))
+            self.chat(random.choice(responses), target=target)
             return
 
         # There's a very good reason for this.
-        if sentence == "oh shit its your birthday erikbeta happy birthday" and self.lastsender == "jcb":
+        if sentence == "oh shit its your birthday erikbeta happy birthday" and nick == "jcb":
             self._act(" slaps jcb")
-            self.chat("LEAVE ERIK ALONE!")
+            self.chat("LEAVE ERIK ALONE!", target=target)
             return
 
-    @axon
-    @help('<command %NICK% to speak>')
-    def speak(self):
-        sentence = []
-        struct = choice(Structure.objects())
-        for pos in struct.structure:
-            _word = choice(Learned.objects(partofspeech=pos))
-            sentence.append(_word.word)
-
-        self.chat(" ".join(sentence))
 
     @axon
-    @help('WORD <teach %NICK% a word>')
+    @help('WORD <Learn a word>')
     def learn(self):
+        if not self.values: return "%s ponders the emptiness of meaning." % self.ego.nick
+        if not re.match("^[A-Za-z]+$", self.values[0].strip()): return "%s doesn't think that's a word." % self.ego.nick
+
+        open("%s/natwords" % self.cx.settings.directory.storage, 'a').write(self.values[0].strip() + '\n')
+        self.chat("%s learn new word!" % self.ego.nick, self.lastsender)
+
+
+    # I have this friend who kicks my ass in Scrabble
+    # a lot. Being fairly obsessive, this is mostly
+    # just to stop me from staring at the Scrabble app
+    # over two or three days trying to find a bingo.
+    # It's definitely still cheating, but it lets me
+    # stop looking, and at the end of the day, keeping
+    # my stress level down is more important than my
+    # sense of honor.
+    @axon
+    @public
+    @alias('scrabble')
+    @help('LETTERS <cheat at Scrabble>')
+    def scrabblecheat(self):
         if not self.values:
-            self.chat(NICK + " ponders the emptiness of meaning.")
-            return
+            return "Nothing to check"
 
-        if not re.match("^[A-Za-z]+$", self.values[0].strip()):
-            self.chat(NICK + " doesn't think that's a word.")
-            return
+        letters = sorted(self.values[0].lower())
+        letters = ''.join(letters)
 
-        open(STORAGE + "/natwords", 'a').write(self.values[0].strip() + '\n')
-        self.chat(NICK + " learn new word!", self.lastsender)
+        matchlen = False if 'x' in self.flags else True
+        truth = False if 'f' in self.flags else True
+
+        words = []
+
+        for line in open(self.config.scrabbledict):
+            word = line.strip()
+            if len(word) == 1: continue
+
+            if matchlen and len(letters) != len(word): continue
+
+            # TODO: account for wild cards :( may need regex
+
+            test = ''.join(sorted(word))
+            if test in letters:
+                words.append(word)
+
+
+        if truth and words:
+            return 'Yup'
+
+        if truth and not words:
+            return 'Nope'
+
+        if not words:
+            return 'Nothing found'
+
+        return ', '.join(words)
+
 
     @axon
-    @help('ACRONYM <have %NICK% decide the words for an acronym>')
+    @help('ACRONYM <decide the words for an acronym>')
     def acronym(self):
         if not self.values:
-            self.chat("About what?")
-            return
+            return "About what?"
 
-        if not re.match("^[A-Za-z]+$", self.values[0]) and self.lastsender == "erikbeta":
-            self.chat("Fuck off erik.")
-            return
+        if not re.match("^[A-Za-z]+$", self.values[0]) \
+        and self.lastsender == "erikbeta":
+            return "Fuck off erik."
 
         if not re.match("^[A-Za-z]+$", self.values[0]):
-            self.chat(NICK + " no want to think about that.")
-            return
+            return "%s no want to think about that." % self.ego.nick
 
         if self.values[0].lower() == "gross":
-            self.chat("Get Rid Of Slimey girlS")
-            return
+            return "Get Rid Of Slimey girlS"
 
         output = self.acronymit(self.values[0])
         return output
+
 
     def acronymit(self, base):
         acronym = list(base.upper())
         output = []
 
         wordbank = []
-        for line in open(STORAGE + "/" + ACROLIB):
+        for line in open("%s" % self.config.acronymlib):
             wordbank.append(line.strip())
 
         for letter in acronym:
@@ -522,29 +544,29 @@ class Broca(Dendrite):
 
         return " ".join(output)
 
+
+    # I don't remember why this got added, but
+    # it's unfailingly awesome.
     @axon
     @help('WORD [WHICH_DEFINITION] <look up etymology of word>')
     def ety(self):
         if not self.values:
-            self.chat("Enter a word")
-            return
+            return "Enter a word"
 
         word = self.values[0]
         params = {'allowed_in_frame': '0', 'searchmode': 'term', 'search': word}
 
-        site = Browse("http://www.etymonline.com/index.php", params)
-        if site.error:
-            self.chat(site.error)
-            return
+        request = Browser("http://www.etymonline.com/index.php", params)
+        if not request:
+            return 'Error'
 
-        cont = bs4(site.read())
+        cont = request.soup()
 
         heads = cont.findAll("dt")
         defs = cont.findAll("dd")
 
         if not len(defs):
-            self.chat("Couldn't find anything")
-            return
+            return "Couldn't find anything"
 
         try:
             ord = int(self.values[1])
@@ -567,52 +589,67 @@ class Broca(Dendrite):
 
         return "Etymology %s of %s for %s: %s" % (str(ord + 1), str(len(defs)), _word, _def)
 
-    @axon
-    def isitfriday(self):
-        today = time.localtime().tm_wday
-        if today == 4:
-            self.chat('Fuck YEAH it is!')
-            return
 
-        if today < 4:
-            self.chat('No. Fuck. %s more day%s.' % ((4 - today),('s' if today != 3 else '')))
-            return
-
-        self.chat('Get entirely the fuck out of here with that weekday shit')
-        return
-
-    # TODO: broken, not sure why
     @axon
     @help('WORD_OR_PHRASE <look up anagram>')
     def anagram(self):
         if not self.values:
-            self.chat("Enter a word or phrase")
-            return
+            return "Enter a word or phrase"
+
 
         word = ''.join(self.values)
         url = 'http://www.anagramica.com/best/%s' % word
 
-        site = Browse(url)
-        if site.error:
-            self.chat(site.error)
-            return
+        request = Browser(url)
+        if not request:
+            return 'Error'
 
         try:
-            json = simplejson.loads(site.read())
+            json = request.json()
             return json['best']
         except Exception as e:
             self.chat("Couldn't parse.", str(e))
+            return
+
+    # http://emalmi.kapsi.fi/battlebot/battlebot.fcgi?l=en&q=tame%20it%20before%20you%20lose%20it
+    @axon
+    @help('LINE <get phat rhymes>')
+    def rhyme(self):
+        if not self.values:
+            return "Enter a line"
+
+        url = "http://emalmi.kapsi.fi/battlebot/battlebot.fcgi"
+        params = "l=en&q=" + '+'.join(self.values)
+
+        request = Browser('%s?%s' % (url, params))
+
+        try:
+            json = request.json()
+            rhyme = choice(json["rhymes"])
+            return rhyme['line']
+        except Exception as e:
+            self.chat('...')
+            self._act("drops mic in shame.")
+            return
 
     # This pair of gems was created because Elliott kept
-    # piping -all to various * commands.
+    # piping .all to various * commands.
     @axon
     def shutup(self):
         self.chat('Shutting up now.')
         self.cx.bequiet = True
         return
 
+
     @axon
     def speakup(self):
         self.cx.bequiet = False
-        self.chat('Back.')
-        return
+        return 'Back.'
+
+
+    @axon
+    def spoonerize(self):
+        if not self.values:
+            return 'Spoonerize what?'
+        return 'http://mongobot.com/spoon/%s' % self.values[0]
+
