@@ -1,9 +1,28 @@
 plugins:
+  - acro
   - alien
+  - artsy
+  - broca
+  - channeling
   - chess
+  - facebook
+  - farkle
   - finance
+  - hangman
+  - holdem
+  - linker
+  - mail
+  - marvel
+  - memory
+  - nonsense
+  - peeps
+  - polling
+  - quotes
+  - reference
+  - sms
   - stockgame
   - system
-  - twitting
   - tester
+  - turing
+  - twitting
   - webserver

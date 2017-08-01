@@ -1,53 +1,34 @@
 import re
+import os
 import shutil
 import pkgutil
-import socket
 import string
-
-
-from os import path
-from datetime import date, timedelta, datetime
-from pytz import timezone
-from time import time, mktime, localtime, sleep
-from random import randint
-from config import load_config
-
-#from settings import PATIENCE, SCAN, STORE_URLS, \
-#    STORE_IMGS, IMGS, MULTI_PASS, HAS_CHANSERV, THUMBS, WEBSITE
-#from secrets import CHANNEL, OWNER, REALNAME, MEETUP_NOTIFY, CHANNELS
-
-
-from datastore import Drinker, connectdb
-from util import unescape, shorten, ratelimited, postdelicious, savefromweb, \
-    Browse, Butler
-from autonomic import serotonin, Neurons, Synapse
-from thalamus import Thalamus
-from id import Id
-
 import traceback
 
+from datetime import date, timedelta
+from time import time, mktime, localtime
+from random import randint, choice
+from config import load_config
+from getpass import getpass
 
-CHANNEL = '#okdrink'
-MULTI_PASS = '*'
+from datastore import connectdb, Defaults
+from util import ratelimited, zalgo
+from staff import Butler
+from autonomic import serotonin, Neurons, Synapse
+from cybernetics import metacortex
+from id import Id
 
-# TODO:
-# remove names check, use other means
-# do logging and tracebacks
 
 # Basically all the interesting interaction with
 # irc and command / content parsing happens here.
 # Also connects to mongodb.
 class Cortex:
 
-    context = CHANNEL
-
-    master = False
-    sock = False
     values = False
     lastpublic = False
-    replysms = False
     lastprivate = False
-    lastsender = False
+    lastchat = False
+    lastid = False
     gettingnames = True
     memories = False
     autobabble = False
@@ -55,16 +36,20 @@ class Cortex:
     joined = False
     operator = False
     bequiet = False
+    lastip = False
+    debugging = False
 
-    butler = False
+    thalamus = False
+    master = False
 
     channels = []
     public_commands = []
     members = []
-    guests = []
     broken = []
-    REALUSERS = []
+    realuserdata = []
+    enabled = []
 
+    flags = {}
     commands = {}
     live = {}
     helpmenu = {}
@@ -72,35 +57,42 @@ class Cortex:
     boredom = int(mktime(localtime()))
     namecheck = int(mktime(localtime()))
 
-    thalamus = False
-
-
-    def __init__(self, master):
+    def __init__(self, master, electroshock=False):
 
         print '* Initializing'
         self.master = master
         self.settings = master.settings
         self.secrets = master.secrets
         self.channels = self.secrets.channels
+        self.context = self.secrets.primary_channel
         self.personality = self.settings.bot
+
+        self.enabled = self.settings.plugins.values().pop(0)
+
+        metacortex.botnick = self.personality.nick
 
         print '* Exciting neurons'
         Neurons.cortex = self
 
-        print '* Loading brainmeats'
-        self.loadbrains()
-
-        print '* Waking butler'
-        self.butler = Butler(self)
-
-        print '* Loading users'
-        self.REALUSERS = load_config(self.settings.directory.authfile)
-
         print '* Connecting to datastore'
         connectdb()
 
-        print '* Evolving thalamus'
-        self.thalamus = Thalamus(self)
+        print '* Fondly remembering daddy'
+        admin = Id(self.secrets.owner)
+        if not admin.password:
+            print '*' * 40
+            print 'Hey %s! You haven\'t set a password yet! As my daddy you really need a password.' % self.secrets.owner
+            tmp_pass = getpass('Before I can continue, please enter a password: ')
+            print 'See? Was that so hard?'
+            admin.setpassword(tmp_pass, True)
+            tmp_pass = None
+
+        print '* Loading brainmeats'
+        self.loadbrains(electroshock)
+
+        # print '* Waking butler'
+        # self.butler = Butler(self)
+
 
     # Loads up all the files in brainmeats and runs them
     # through the hookup process.
@@ -115,7 +107,7 @@ class Cortex:
         for area in areas:
             print '{0: <25}'.format('  - %s' % area),
 
-            if area not in self.master.ENABLED:
+            if area not in self.enabled:
                 print '[\033[93mDISABLED\033[0m]'
                 continue
 
@@ -130,209 +122,50 @@ class Cortex:
             except Exception as e:
                 self.chat('Failed to load %s.' % area, error=str(e))
                 self.broken.append(area)
-                self.master.ENABLED.remove(area)
+                self.enabled.remove(area)
                 print '[\033[0;31mFAILED\033[0m]'
                 if self.settings.debug.verbose:
                     print e
                     print traceback.format_exc()
 
-
         for brainmeat in self.brainmeats:
             serotonin(self, brainmeat, electroshock)
 
-    '''
-    When you get amnesia, it's probably a good time to really
-    think and try to remember who you are.
-    '''
+
+    # When you get amnesia, it's probably a good time to really
+    # think and try to remember who you are.
     def amnesia(self):
 
         # This is an easy way out for now...
         return self.personality
 
 
-    # I'll be frank, I don't have that great a grasp on
-    # threading, and despite working with people who do,
-    # there were a number of live processes that thread
-    # solutions weren't solving.
-    #
-    # The solution was to have everything that needs to
-    # run live run on one ticker. If you need something
-    # to run continuously, add this to the __init__ of
-    # your brainmeat:
-    #
-    # self.cx.addlive(self.ticker)
-    #
-    # ticker being the function in the class that runs.
-    # see brainmeats/sms.y for a good example of this.
-    def addlive(self, func, alt=False):
-        name = alt or func.__name__
-        self.live[name] = func
-
-    def droplive(self, name):
-        del self.live[name]
-
-    # Core automatic stuff. I firmly believe boredom to
-    # be a fundamental process in both man and machine.
-    def parietal(self, currenttime):
-
-        # This should really just be an addlive. Maybe
-        # the other two functions, too.
-#        calendar = datetime.now(timezone(self.settings.general.timezone))
-#        if calendar.hour in MEETUP_NOTIFY and 'peeps' in self.brainmeats:
-#            self.brainmeats['peeps'].meetup(calendar.hour)
-
-#        if currenttime - self.boredom > PATIENCE:
-#            self.boredom = int(mktime(localtime()))
-#            if randint(1, 10) == 7:
-#                self.bored()
-
-        for func in self.live:
-            self.live[func]()
-
-    # And this is basic function that runs all the time.
+    # And this is the basic function that runs all the time.
     # The razor qualia edge of consciousness, if you will
     # (though you shouldn't). It susses out the important
     # info, logs the chat, sends PONG, finds commands, and
     # decides whether to send new information to the parser.
+    @Synapse('twitch')
     def monitor(self):
-
-        currenttime = int(mktime(localtime()))
-        self.parietal(currenttime)
-
         self.thalamus.process()
-
-# Synapse this shit so chanserv/nickserv happens on connect
-#        if HAS_CHANSERV and self.joined and not self.operator:
-#            self.sock.send('PRIVMSG ChanServ :op %s %s\n' % (CHANNEL, self.personality.nick))
-#            self.operator = True
-
-#                self.logit(line + '\n')
-
-#            elif line.find('PRIVMSG') != -1:
-#                self.boredom = currenttime
-#                content = line.split(' ', 3)
-
-
-    # Le parser. This used to be a very busy function before
-    # most of its actions got moved to the nonsense and
-    # broca brainmeats.
-    def parse(self, msg):
-
-        print "!!! In cortex.parse(%s)" % msg
-
-        pwd = re.search(':-passwd', msg)
-        if not pwd:
-            print msg
-
-        try:
-            info, content = msg[1:].split(' :', 1)
-            sender, type, room = info.strip().split()
-        except:
-            return
-
-        try:
-            nick, data = sender.split('!')
-            realname, ip = data.split('@')
-            realname = realname.strip('~')
-        except Exception as e:
-            print str(e)
-            return
-
-        # SPY
-        if room in self.channels \
-        and 'spy' in self.channels[room] \
-        and self.channels[room].spy:
-            self.context = CHANNEL
-            report = '%s %s: %s' % (room, nick, content)
-            self.announce(report)
-            return
-
-        try:
-            ip = socket.gethostbyname_ex(ip.strip())[2][0]
-            self.lastrealsender = '%s@%s' % (realname, ip)
-        except:
-            self.lastrealsender = False
-            pass
-
-        if nick not in self.members:
-            self.members.append(nick)
-
-        self.lastsender = nick
-        self.lastip = ip
-        self.lastchat = content
-
-
-        # Determine if the action is a command and the user is
-        # approved.
-        if content[:1] == self.personality.command_prefix or content[:1] == MULTI_PASS:
-
-            # Tack on last command if it's just the control
-            if content == self.personality.command_prefix or content[:2] == self.personality.command_prefix + ' ':
-                if not self.lastcommand:
-                    return
-
-                content = '%s%s %s' % (self.personality.command_prefix, self.lastcommand, content[2:])
-
-
-            if self.lastrealsender not in self.REALUSERS \
-            and content[1:].split()[0] not in self.public_commands \
-            and nick not in self.guests:
-                self.chat('My daddy says not to listen to you.')
-                return
-
-            # A hack to maintain reboot until I figure
-            # our something better.
-            if content.find('%sreboot' % self.personality.command_prefix) == 0:
-                self.command(nick, content)
-                return
-
-            self.butler.do(self.command, (nick, content))
-            return
-
-        # This is a special case for giving people meaningless
-        # points so you can feel like you're in grade school
-        # again.
-        if content[:-2] in self.members and content[-2:] in ['--', '++']:
-            self.values = [content[:-2]]
-            if content[-2:] == '++':
-                self.chat(self.commands.get('increment')())
-            if content[-2:] == '--':
-                self.chat(self.commands.get('decrement')())
-            return
-
-        # Grab urls. Mongo automatically tries to get the title
-        # and create a short link.
-        ur = 'http[s]?://(?:[a-zA-Z]|[0-9]|[$-_@.&+#]|[!*\(\),]|(?:%[0-9a-fA-F][0-9a-fA-F]))+'
-        match_urls = re.compile(ur)
-        urls = match_urls.findall(content)
-        if len(urls):
-            self.linker(urls)
-            return
-
-        # Been messing around with NLTK without much success,
-        # but there's a lot of experimenting in the broca
-        # meat. At time of writing, it does Mongo's auto responses
-        # in tourettes and adds to the markov chain.
-        if 'broca' in self.brainmeats:
-            self.brainmeats['broca'].tourettes(content, nick)
-            self.brainmeats['broca'].mark(content)
-            if self.autobabble and content.find(self.personality.nick) > 0:
-                self.brainmeats['broca'].babble()
 
 
     # If it is indeed a command, the cortex stores who sent it,
     # and any words after the command are split in a values array,
     # accessible by the brainmeats as self.values.
     multis = 0
-    def command(self, sender, cmd, piped=False):
 
-        print "!!! In cortex.command(%s, %s, %s)" % (sender, cmd, piped)
-        print '] self.context = %s' % self.context
+    def command(self, sender, context, cmd, piped=False, silent=False):
 
+        # Limit commands to allowed channels.
         if self.context in self.channels \
-        and 'command' not in self.channels[self.context]:
-            return
+            and 'command' not in self.channels[self.context]['mods']:
+                return
 
+        # This handles piping. Piping just breaks
+        # off the first command, gathers its output
+        # and runs command again on the next part
+        # of the chain until it's done.
         chain = cmd.split('|', 1)
         pipe = False
 
@@ -350,17 +183,42 @@ class Cortex:
         what = _what[1:]
         means = _what[:1]
 
+        # These are specific command malformations
+        # that cropped up.
         is_nums = re.search("^[0-9]+", what)
-        is_breaky = re.search("^" + self.personality.command_prefix + "|[^\w]+", what)
-        if is_nums or is_breaky or not what:
+        is_breaky = re.search("^" + re.escape(self.personality.command_prefix) + "|[^\w]+", what)
+
+        if is_nums or is_breaky:
             return
 
-        if components:
-            self.values = components
-        else:
-            self.values = False
+        # Small convenience feature.
+        if not what:
+            if not self.lastcommand:
+                return
+            what = self.lastcommand
 
-        self.logit('%s sent command: %s\n' % (sender, what))
+        self.values = False
+        self.flags = {}
+        flags = []
+
+        if components:
+            for component in components:
+                if component[:1] == self.personality.flag_prefix:
+                    flags.append(component)
+
+            self.values = components
+
+        # An awesome feature that's not used at all. Should be.
+        if flags:
+            for flag in flags:
+                self.values.remove(flag)
+                value = True
+                if '=' in flag:
+                    flag, value = flag.split('=')
+                flag = flag[1:]
+                self.flags[flag] = value
+
+        self.logroom('%s sent command: %s\n' % (sender, what))
         self.lastsender = sender
         self.lastcommand = what
 
@@ -377,7 +235,7 @@ class Cortex:
         #
         # Then some asshole in our chatroom said something
         # like "it'd be cool if we could pipe commands, like
-        # -tweet|babble or something."
+        # -tweet | babble or something."
         #
         # So THAT got stuck in my head even though it's
         # totally ridiculous, but I won't be able to sleep
@@ -397,11 +255,11 @@ class Cortex:
         # Point is, you can return a list or a string at
         # the end of a brainmeat command, or just use chat.
         # I probably won't worry about act and announce.
-        if means == MULTI_PASS:
+        if means == self.personality.multi_command_prefix:
 
-            # All this multi checking had to be put in
+            # The multi checking had to be put in
             # after Eli decided to enter this:
-            # -babble fork | *babble | *babble | *babble
+            # .babble fork | :babble | :babble | :babble
             # ... which of course spiked the redis server
             # to 100% CPU and eventually flooded the chat
             # room with n^4 chats until the bot had to be
@@ -409,14 +267,13 @@ class Cortex:
             # to give nice things to hackers.
             self.multis += 1
             if self.multis > 1:
-                self.chat('This look like fork bomb. You kick puppies too?')
+                self.chat('This look like fork bomb. You kick puppies too?', context)
                 self.multis = 0
                 return
 
             result = []
 
             if not components:
-                self.chat("No args to iter. Bitch.")
                 self.multis = 0
                 return
 
@@ -428,45 +285,35 @@ class Cortex:
             try:
                 result = self.commands.get(what, self.default)()
             except Exception as e:
-                # proper logging here
-
-                self.chat(str(e))
+                # self.chat(str(e))
+                self.chat(traceback.format_exc().replace('\n', ' '))
                 print traceback.format_exc()
 
         if not result:
             return
 
         if pipe:
-            # Piped output must be string!
+            # Piped output must be string
             if type(result) is list:
                 result = ' '.join(result)
-            self.command(sender, pipe, result)
+            self.command(sender, context, pipe, result)
             return
 
         if type(result) in [str, unicode]:
-            self.chat(result)
+            if silent:
+                return result
+
+            self.chat(result, context)
 
         if type(result) is list:
-            if len(result) > 20:
-                result = result[:20]
+            if len(result) > self.personality.throttle:
+                result = result[:self.personality.throttle]
                 result.append("Such result. So self throttle. Much erotic. Wow.")
 
             for line in result:
-                self.chat(line)
+                self.chat(line, context)
 
         self.multis = 0
-
-    # If you want to restrict a command to the bot admin.
-    def validate(self):
-
-        whom = Id(self.lastsender)
-
-        if not self.values:
-            return False
-        if not whom.is_owner:
-            return False
-        return True
-
 
     # Careful with this one.
     def bored(self):
@@ -475,13 +322,8 @@ class Cortex:
 
         self.announce('Chirp chirp. Chirp Chirp.')
 
-        # The behavior below is known to be highly obnoxious
-        # self.act("is bored.")
-        # self.act(choice(BOREDOM) + " " + choice(self.members))
-
-    # Simple logging.
-    # TODO: chenge to normal python logging
-    def logit(self, what):
+    # Simple log for room activity.
+    def logroom(self, what):
         with open(self.settings.directory.log, 'a') as f:
             f.write('TS:%s;%s' % (time(), what))
 
@@ -490,113 +332,36 @@ class Cortex:
             return
 
         prev = date.today() - timedelta(days=1)
-        backlog = '%s/%s-mongo.log' % (self.settings.directory.log, prev.strftime('%Y%m'))
+        backlog = '%s/%s-mongo.log' % (self.settings.directory.logdir, prev.strftime('%Y%m'))
 
-        if path.isfile(backlog):
+        if os.path.isfile(backlog):
             return
 
         shutil.move(self.settings.directory.log, backlog)
 
-    # Sort out urls.
-    @Synapse('url')
-    def linker(self, urls):
+    def debug(self, message, target=None):
+        if not self.debugging: return
+        self.chat(message, target)
 
-        return urls
-
-        for url in urls:
-            # Special behaviour for Twitter URLs
-            match_twitter_urls = re.compile('http[s]?://(www.)?twitter.com/.+/status/([0-9]+)')
-
-            twitter_urls = match_twitter_urls.findall(url)
-            if len(twitter_urls):
-                self.tweet(twitter_urls)
-                return
-
-            if url.find('gist.github') != -1:
-                return
-
-            if randint(1, 5) == 1:
-                try:
-                    self.commands.get('tweet', self.default)(url)
-                except:
-                    pass
-
-            fubs = 0
-            title = "Couldn't get title"
-
-            site = Browse(url)
-
-            if site.error:
-                self.chat('Total fail: %s' % site.error)
-                continue
-
-            roasted = shorten(url)
-            if not roasted:
-                roasted = "Couldn't roast"
-                fubs += 1
-
-            try:
-                ext = site.headers()['content-type'].split('/')[1]
-            except:
-                ext = False
-
-            images = [
-                'gif',
-                'png',
-                'jpg',
-                'jpeg',
-            ]
-
-            if ext in images:
-                title = 'Image'
-                # Switch this to a Browse method
-                if STORE_IMGS:
-                    fname = url.split('/').pop()
-                    path = IMGS + fname
-                    self.butler.do(savefromweb, (url, path, self.lastsender), 'Thumb @ %s')
-
-            elif ext == 'pdf':
-                title = 'PDF Document'
-
-            else:
-                title = site.title()
-
-            # If you have a delicious account set up. Yes, delicious
-            # still exists. Could be updated to a cooler link
-            # collecting service.
-            if STORE_URLS:
-                postdelicious(url, title, self.lastsender)
-
-            if fubs == 2:
-                self.chat("Total fail")
-            else:
-                self.chat("%s @ %s" % (unescape(title), roasted))
-
-    # This shows tweet content if a url is to a tweet.
-    def tweet(self, urls):
-        if 'twitting' not in self.brainmeats:
-            return
-
-        for url in urls:
-            self.chat(self.brainmeats['twitting'].get_tweet(url[1]))
-
-    # Announce means the chat is always sent to the channel,
+    # Announce means the chat is always sent to a channel,
     # never back as a private response.
     @ratelimited(2)
-    def announce(self, message):
-        self.chat(message, target=CHANNEL)
+    def announce(self, message, channel=None):
+        if not channel:
+            channel = self.context if self.context in self.channels else self.secrets.primary_channel
+        self.chat(message, target=channel)
 
     # Since chat is mongo's only means of communicating with
     # a room, the ratelimiting here should prevent any overflow
     # violations.
-    # NOTE: 'and not target' may be a sketchy override; test it
+    # NOTE: 'and not target' may be a sketchy override.
     @ratelimited(2)
-    def chat(self, message, target=False, error=False):
+    def chat(self, message, target=None, error=False):
 
         if self.context in self.channels \
-        and not target \
-        and not self.channels[self.context].speak:
-            return
+            and not target \
+            and 'speak' not in self.channels[self.context]['mods']:
+                return
 
         if self.bequiet:
             return
@@ -609,12 +374,21 @@ class Cortex:
         elif self.context in self.channels:
             whom = self.context
         else:
-            whom = self.lastsender
+            try:
+                user = Id(self.lastsender)
+                whom = user.nick
+            except:
+                whom = self.secrets.primary_channel
 
-        filter(lambda x: x in string.printable, message)
+        if randint(1, 170) == 13:
+            message = zalgo(message)
+
+        # test later
+        # message = filter(lambda x: x in string.printable, message)
+
         try:
             message = message.encode('utf-8')
-            self.logit('___%s: %s\n' % (self.personality.nick, str(message)))
+            self.logroom('___%s: %s\n' % (self.personality.nick, str(message)))
             m = str(message)
             if randint(1, 170) == 23:
                 i = m.split()
@@ -623,34 +397,28 @@ class Cortex:
                 m = ' '.join(i)
 
             if error:
-                m += ' ' + str(error)
-            self.thalamus.send('PRIVMSG %s :%s' % (whom,m))
-            if self.replysms:
-                to = self.replysms
-                self.replysms = False
-                self.values = [to, str(m)]
-                self.commands.get('sms')()
-        except:
+                m += ' %s' % str(error)
+
+            self.thalamus.send('PRIVMSG %s :%s' % (whom, m))
+        except Exception as e:
             try:
-                self.thalamus.send('PRIVMSG %s :Having trouble saying that for some reason' % whom)
+                self.thalamus.send('PRIVMSG %s :ERROR: ' % (whom, str(e)))
             except:
                 pass
-                 #print "Unable to say: %s" % message
 
     def act(self, message, public=False, target=False):
         message = '\001ACTION %s\001' % message
         if public:
-            self.announce(message)
+            self.announce(message, target)
         elif target:
             self.chat(message, target)
         else:
             self.chat(message)
-            if self.replysms:
-                to = self.replysms
-                self.replysms = False
-                self.values = [to, str(message)]
-                self.commands.get('sms')()
 
     # When all else fails.
     def default(self):
+        backup = Defaults.objects(command=self.lastcommand)
+        if backup:
+            return choice(backup).response
+
         self.act(" cannot do this thing :'(")

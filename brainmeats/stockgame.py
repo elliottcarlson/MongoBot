@@ -1,40 +1,28 @@
 from mongoengine import *
 
-
-from autonomic import axon, help, Dendrite
-from datastore import Drinker, Position
+from autonomic import axon, help, Dendrite, alias
+from datastore import Drinker, Position, entityScore
 from datetime import datetime
-from util import Stock
+from staff import Broker
 
 from config import load_config
 from id import Id
 
 
-'''
-The stock game, it's awesome. It has stocks. Nice.
-'''
+# The stock game, it's awesome. It has stocks. Nice.
 class Stockgame(Dendrite):
 
-    '''
-    Constructor
-    '''
     def __init__(self, cortex):
-
-        self.config = load_config('config/stockgame.yaml')
-
         super(Stockgame, self).__init__(cortex)
 
-
-    '''
-    Helper method to create a position
-    '''
+    # Helper method to create a position
     def _create_position(self, ptype):
 
         whom = self.lastsender
 
         try:
             quantity = int(self.values[0])
-            symbol = self.values[1]
+            symbol = self.values[1].upper()
         except:
             self.chat("That's not right")
             return
@@ -43,13 +31,13 @@ class Stockgame(Dendrite):
             self.chat("Do you think this is a muthafuckin game?")
             return
 
-        stock = Stock(symbol)
+        stock = Broker(symbol)
 
         if not stock:
             self.chat("Stock not found")
             return
 
-        if stock.exchange.upper() not in self.config.exchanges:
+        if stock.exchange.upper() in self.config.blacklist:
             self.chat("Stock exchange %s DENIED!" % stock.exchange)
             return
 
@@ -57,7 +45,7 @@ class Stockgame(Dendrite):
             self.chat("No penny stocks")
             return
 
-        drinker = Id(whom)
+        drinker = Id(self.lastid)
 
         if not drinker.cash:
             drinker.cash = self.config.startupcash
@@ -93,7 +81,7 @@ class Stockgame(Dendrite):
 
         try:
             quantity = int(self.values[0])
-            symbol = self.values[1]
+            symbol = self.values[1].upper()
         except:
             self.chat("That's not right")
             return
@@ -102,13 +90,13 @@ class Stockgame(Dendrite):
             self.chat("Do you think this is a muthafuckin game?")
             return
 
-        stock = Stock(symbol)
+        stock = Broker(symbol)
 
         if not stock:
             self.chat("Stock not found")
             return
 
-        drinker = Id(whom)
+        drinker = Id(self.lastid)
         if not drinker.is_authenticated:
             self.chat("You don't have a portfolio")
             return
@@ -116,7 +104,7 @@ class Stockgame(Dendrite):
         check = []
         keep = []
         for p in drinker.positions:
-            if p.symbol == stock.symbol and p.type == ptype:
+            if p.symbol.upper() == stock.symbol and p.type == ptype:
                 check.append(p)
             else:
                 keep.append(p)
@@ -195,7 +183,7 @@ class Stockgame(Dendrite):
             cash = drinker.cash
 
             for p in drinker.positions:
-                stock = Stock(p.symbol)
+                stock = Broker(p.symbol)
                 if p.type == 'long':
                     net = p.quantity * stock.price
                 else:
@@ -220,15 +208,20 @@ class Stockgame(Dendrite):
             for s in scores:
                 self.chat("%15s %10.02f %10.02f %10.02f %10.02f" % s)
 
+
     @axon
     @help("<show cash money>")
+    @alias('cash')
     def cashmoney(self):
 
         whom = self.lastsender
+        if self.values:
+            whom = self.values[0]
 
-        drinker = Id(whom)
+        s = entityScore(whom)
 
-        self.chat("You gots $%.02f" % drinker.cash)
+        self.chat("%s gots $%.02f" % (whom, s))
+
 
     @axon
     @help("[USERNAME] <show person's portfolio>")
@@ -239,12 +232,12 @@ class Stockgame(Dendrite):
             whom = self.values[0]
 
         drinker = Id(whom)
-        if not drinker.is_authenticated:
+        if not drinker.is_recognized:
             self.chat("%s doesn't exist" % whom)
             return
 
         if not drinker.positions:
-            self.chat("%s doesn't have one" % whom)
+            self.chat("%s doesn't have one" % drinker.name)
         else:
             drinker.positions.sort(key=lambda p: p.symbol)
 
@@ -253,7 +246,7 @@ class Stockgame(Dendrite):
 
             total = 0
             for p in drinker.positions:
-                stock = Stock(p.symbol)
+                stock = Broker(p.symbol)
 
                 if p.type == 'long':
                     net = p.quantity * (stock.price - p.price)
@@ -286,6 +279,3 @@ class Stockgame(Dendrite):
         for drinker in Drinker.objects:
             drinker.cash = cash
             drinker.positions = []
-
-
-
