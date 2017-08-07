@@ -1,7 +1,8 @@
-pyparsing
-python-dotenv
+bs4
+pyinotify
 PyYAML
-redis
+python-dotenv
+pyparsing
+mechanize
 requests[security]
-six
 slackclient

@@ -89,7 +89,7 @@ class IRC(object):
         data = data.rstrip('\r\n')
 
         logger.debug('CLIENT: %s', data)
-        self.sock.send('%s%s%s' % (data, chr(015), chr(012)))
+        self.sock.send(('%s\r\n' % data).encode('utf-8'))
 
     @ratelimited(2)
     def chat(self, message, target=None, error=False):
@@ -99,6 +99,32 @@ class IRC(object):
 
         message = str(message.encode('utf-8'))
         self.send('PRIVMSG %s :%s' % (target, message))
+
+    def colorize(self, text, color):
+
+        colors = {
+            'white': 0,
+            'black': 1,
+            'blue': 2,
+            'green': 3,
+            'red': 4,
+            'brown': 5,
+            'purple': 6,
+            'orange': 7,
+            'yellow': 8,
+            'lightgreen': 9,
+            'teal': 10,
+            'lightcyan': 11,
+            'lightblue': 12,
+            'pink': 13,
+            'grey': 14,
+            'lightgrey': 15,
+        }
+
+        if color in colors:
+            color = colors[color]
+
+        return '\x03%s\x02%s\x02\x03\x0f' % (str(color), text)
 
     def process(self):
 
@@ -113,12 +139,12 @@ class IRC(object):
         if not data:
             return
 
-        self.buffer += data
-        lines = self.buffer.split(chr(012))
+        self.buffer += data.decode('utf-8')
+        lines = self.buffer.split('\n')
         self.buffer = lines.pop()
 
         for line in lines:
-            if line[-1] == chr(015):
+            if line[-1] == '\n':
                 line = line[:-1]
 
             if not line:
@@ -199,8 +225,9 @@ class IRC(object):
     def _cmd_AUTHENTICATE(self, source, args):
 
         if args[0] == '+':
-            p = b64encode('{u}\0{u}\0{p}'.format(u=self.nick, p=self.password))
-            self.send('AUTHENTICATE %s' % p)
+            p = b64encode('{u}\0{u}\0{p}'.format(u=self.nick,
+                          p=self.password).encode('ascii'))
+            self.send('AUTHENTICATE %s' % p.decode('utf-8'))
 
     def _cmd_CAP(self, source, args):
 
@@ -221,7 +248,7 @@ class IRC(object):
 
         self.send('PONG %s' % args[-1])
 
-    @Synapse('THALAMUS_INCOMING_DATA')
+    @Synapse('MONGO_INCOMING_DATA')
     def _cmd_PRIVMSG(self, source, args):
 
         target = args[0]

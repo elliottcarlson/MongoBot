@@ -39,7 +39,6 @@ class Slack(object):
 
         self.client.rtm_send_message(target, message)
 
-
     def process(self):
 
         for reply in self.client.rtm_read():
@@ -48,8 +47,11 @@ class Slack(object):
 
         self.ping()
 
-    @Synapse('THALAMUS_INCOMING_DATA')
+    @Synapse('MONGO_INCOMING_DATA')
     def parse(self, data):
+
+        if 'text' not in data or 'user' not in data:
+            return
 
         return {
             'provider': self.provider,

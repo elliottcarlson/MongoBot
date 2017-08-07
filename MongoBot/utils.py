@@ -1,26 +1,31 @@
 # -*- coding: utf-8 -*-
-
 import logging
 import random
+import sys
 import time
+
 from functools import wraps
 
 logger = logging.getLogger(__name__)
 
+# Stolen from six
+PY2 = sys.version_info[0] == 2
+PY3 = sys.version_info[0] == 3
+PY34 = sys.version_info[0:2] >= (3, 4)
 
-# http://stackoverflow.com/questions/667508/whats-a-good-rate-limiting-algorithm
+
 def ratelimited(maxPerSecond):
     minInterval = 1.0 / float(maxPerSecond)
 
     def decorate(func):
         lastTimeCalled = [0.0]
 
-        def rateLimitedFunction(*args, **kargs):
+        def rateLimitedFunction(*args, **kwargs):
             elapsed = time.clock() - lastTimeCalled[0]
             leftToWait = minInterval - elapsed
             if leftToWait > 0:
                 time.sleep(leftToWait)
-            ret = func(*args, **kargs)
+            ret = func(*args, **kwargs)
             lastTimeCalled[0] = time.clock()
             return ret
         return rateLimitedFunction
@@ -37,7 +42,6 @@ def yo_dawg(func):
     """
     @wraps(func)
     def yo_dawg(*args, **kwargs):
-
         if len(args) == 1 and len(kwargs) == 0 and callable(args[0]):
             return func(args[0])
         else:
@@ -59,8 +63,7 @@ def aphasia(func):
                 i.insert(pos, 'fnord')
                 message = ' '.join(i)
         except Exception as e:
-            logger.debug('Error applying aphasia: %s' % e)
-            print(e)
+            logger.exception('Error applying aphasia: %s' % e)
             pass
 
         return func(cls, message)
@@ -154,7 +157,3 @@ def zalgo(_string):
             zalgoed = u'%s%s' % (zalgoed, tic)
 
     return u'%s%s' % (base, zalgoed)
-
-
-def test():
-    print('??')

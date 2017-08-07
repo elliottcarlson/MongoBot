@@ -1,6 +1,8 @@
 # -*- coding: utf-8 -*-
 
+import re
 import redis
+from MongoBot.autonomic import axon
 from MongoBot.synapses import Cerebellum, Receptor
 
 
@@ -46,7 +48,6 @@ class Markov(object):
     chattiness = 0.01
     max_words = 30
     message_to_generate = 5
-    prefix = 'irc'
     separator = '\x01'
     stop_word = '\02'
 
@@ -54,21 +55,77 @@ class Markov(object):
 
         self.redis_conn = redis.Redis()
 
-    @Receptor('THALAMUS_INCOMING_DATA')
-    def markov_learn(self, incoming):
+    def split_message(self, message):
 
-        message = incoming.get('data')
-
-        print('what %s' % Markov.chain_length)
-
-        words = incoming.split()
+        words = message.split()[1:]
 
         if len(words) > self.chain_length:
             words.append(self.stop_word)
 
             for i in range(len(words) - self.chain_length):
-                yield words[i:i + self.chain_length + 1]
+                print(words[i:i + self.chain_length + 1])
+                return words[i:i + self.chain_length + 1]
 
+        return words
 
-        print('markov: %s', data)
+    def sanitize_message(self, message):
 
+        return re.sub('[\"\']', message.lower(), message)
+
+    def make_key(self, key):
+        return '-'.join(('markov', key))
+
+    def mark(self, message):
+
+        for words in self.split_message(self.sanitize_message(message)):
+
+            key = self.separator.join(words[:-1])
+            self.redis_conn.sadd(self.make_key(key), words[-1])
+
+    def generate(self, seed):
+
+        key = seed
+        gen_words = []
+
+        for i in xrange(self.max_words):
+            words = key.split(self.separator)
+            gen_words.append(words[0])
+            next_word = self.redis_conn.srandmember(self.make_key(key))
+            if not next_word:
+                break
+
+            key = self.separator.join(words[1:] + [next_word])
+
+        return ' '.join(gen_words)
+
+    @axon
+    def babble(self):
+
+        print('BABBLE??')
+
+        if self.stdin:
+            key = self.stdin.split()
+            print('self.stdin: %s' % key)
+        elif self.values:
+            key = self.values
+            print('self.values: %s' % key)
+        if not self.values and not self.stdin:
+            key = self.redis_conn.srandkey()
+            print('Random key: %s' % key)
+
+        return ' '.join(key)
+        # return self.generate(['a'])
+
+    @axon
+    # @help('URL_OF_TEXT_FILE <Read something>')
+    def learn(self):
+        if not self.values and not self.stdin:
+            return 'Learn what?'
+
+    @Receptor('THALAMUS_INCOMING_DATA')
+    def markov_learn(self, incoming):
+
+        if incoming.get('data')[0:1] is not '.':
+            print('Incoming: %s' % incoming.get('data').encode('utf-8'))
+
+            self.mark(incoming.get('data'))

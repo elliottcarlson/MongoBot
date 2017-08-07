@@ -1,5 +1,4 @@
 # -*- coding: utf-8 -*-
-
 import logging
 from pyparsing import alphanums, printables, Dict, Group, LineEnd, Literal, \
         OneOrMore, Optional, ParseException, Suppress, Word, WordEnd
@@ -17,7 +16,7 @@ class Wernicke(object):
     break it down in to comprehensible commands that Mongo can understand.
     """
 
-    def __init__(self):
+    def __init__(self, command_prefix='.', multi_prefix=':'):
         """
         Mongo EBNF for command comprehension and sequencing
 
@@ -27,9 +26,9 @@ class Wernicke(object):
             :command [...]
             .command [...] | :command [...] | .command [...]
         """
-        point = Literal('.')
-        colon = Literal(':')
-        prefix = point | colon
+        single = Literal(command_prefix)
+        multi = Literal(multi_prefix)
+        prefix = single | multi
         pipe = Suppress(Optional(Literal('|')))
         eoc = WordEnd() | LineEnd()
         command = Group(prefix + Word(alphanums)) + eoc
@@ -41,16 +40,8 @@ class Wernicke(object):
         self.EBNF = command_line
 
     def parse(self, line):
-
         try:
             parsed = self.EBNF.parseString(line)
-
-            logger.debug('Parsed incoming:')
-            logger.debug('  In: %s', line)
-            logger.debug('  Out: %s', parsed.asList())
-
             return parsed.asList()
-
         except ParseException:
-
             return

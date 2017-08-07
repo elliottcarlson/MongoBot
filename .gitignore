@@ -14,6 +14,8 @@ allowed
 python.core
 junk/*
 deprecated/*
-
+.coverage
+htmlcov/*
 venv/*
+venv3/*
 .env

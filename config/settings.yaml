@@ -1,22 +1,22 @@
 #
 # This is the MongoBot general settings configuration file. It contains the
-# configuration directives to instructe the bot. The configuration file uses
+# configuration directives to instruct the bot. The configuration file uses
 # standard YAML tags, as well as extended PyYAML specific tag types as
 # documented at:
 # http://pyyaml.org/wiki/PythonTagScheme
 #
 # Non-standard/custom tags:
-#   Include another YAML config file
+#   Include another YAML config file:
 #     module: !include module.yaml
 #
-#   Load a string from an environment variable
-#     token: !env ENV_VARIABLE_NAME
+#  Load a string from an environment variable:
+#    token: !env ENV_VARIABLE_NAME
 #
 # By convention, all strings are in single quotes, except dynamic resolution
 # which must be in double quotes:
 #   directory:
 #     root: '/home/MongoBot'
-#     downloads: "{directory.root}/downloads"
+#     download: "{directory.root}/downloads"
 #
 
 general:

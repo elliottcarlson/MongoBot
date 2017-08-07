@@ -1,11 +1,9 @@
 # -*- coding: utf-8 -*-
-
 import re
 from MongoBot.autonomic import axon
-from MongoBot.dendrite import Dendrite
 
 
-class Hello(Dendrite):
+class Hello(object):
 
     def __init__(self):
         pass
