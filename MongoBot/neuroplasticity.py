@@ -3,7 +3,12 @@ import imp
 import inspect
 import logging
 import os
-import pyinotify
+try:
+    import pyinotify
+except ImportError:
+    HAS_FS_WATCHER = False
+else:
+    HAS_FS_WATCHER = True
 import sys
 import time
 
@@ -12,7 +17,15 @@ from glob import glob
 logger = logging.getLogger(__name__)
 
 
-class Neuroplasticity(pyinotify.ProcessEvent):
+if HAS_FS_WATCHER:
+    class NeuroplasticityBaseClass(pyinotify.ProcessEvent):
+        pass
+else:
+    class NeuroplasticityBaseClass(object):
+        pass
+
+
+class Neuroplasticity(NeuroplasticityBaseClass):
     """
     Neuroplasticity, also known as brain plasticity or neural plasticity, is an
     umbrella term that describes lasting change to the brain throughout an
@@ -25,7 +38,12 @@ class Neuroplasticity(pyinotify.ProcessEvent):
     """
 
     def __init__(self):
-        self.watcher = pyinotify.WatchManager()
+        if not HAS_FS_WATCHER:
+            logger.info('Watching and reloading of brainmeats not enabled.')
+            logger.info('pyinotify not installed, or system incompaitble.')
+        else:
+            self.watcher = pyinotify.WatchManager()
+
         self.notifier = None
         self.modules = {}
         self.meatpath = None
@@ -43,9 +61,10 @@ class Neuroplasticity(pyinotify.ProcessEvent):
         """
         file_name = os.path.realpath(brainmeat)
         self.modules[file_name] = module
-        mask = pyinotify.IN_MODIFY | pyinotify.IN_DELETE_SELF
-        self.watcher.add_watch(file_name, mask)
-        logger.debug('Watching %s', brainmeat)
+        if HAS_FS_WATCHER:
+            mask = pyinotify.IN_MODIFY | pyinotify.IN_DELETE_SELF
+            self.watcher.add_watch(file_name, mask)
+            logger.debug('Watching %s', brainmeat)
 
     def initialize(self):
         """
@@ -61,7 +80,8 @@ class Neuroplasticity(pyinotify.ProcessEvent):
                 path_name = [path_name]
             (fd, path_name, description) = imp.find_module(mod, path_name)
 
-        self.watcher.add_watch(path_name, pyinotify.IN_CREATE)
+        if HAS_FS_WATCHER:
+            self.watcher.add_watch(path_name, pyinotify.IN_CREATE)
 
         if not path_name.endswith('.py'):
             modules = glob('{}/[!_]*.py'.format(path_name))
@@ -146,15 +166,17 @@ class Neuroplasticity(pyinotify.ProcessEvent):
         """
         Start watching the brainmeats for changes
         """
-        if self.notifier is None:
+        if self.notifier is None and HAS_FS_WATCHER:
             self.notifier = pyinotify.ThreadedNotifier(self.watcher, self)
-        self.notifier.start()
+
+        if HAS_FS_WATCHER:
+            self.notifier.start()
 
     def stop(self):
         """
         Stop watching the brainmeats for changes
         """
-        if self.notifier is not None:
+        if self.notifier is not None and HAS_FS_WATCHER:
             self.notifier.stop()
 
     def process_IN_MODIFY(self, event):

@@ -10,7 +10,7 @@ from MongoBot.staff.browser import Browser
 class Finance(object):
 
     @axon
-    # @help('STOCK_SYMBOL <get stock quote>')
+    @help('STOCK_SYMBOL <get stock quote>')
     def q(self):
         ret = False
 

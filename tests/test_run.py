@@ -2,7 +2,7 @@ import logging
 import unittest
 
 from mock import patch
-from run import main
+from run import runMongoBot
 
 
 class TestRunner(unittest.TestCase):
@@ -12,5 +12,5 @@ class TestRunner(unittest.TestCase):
 
     @patch('MongoBot.medulla.Medulla.activate')
     def test_medulla_activated(self, mock):
-        main()
+        runMongoBot()
         self.assertTrue(mock.called)

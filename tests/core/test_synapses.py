@@ -30,7 +30,7 @@ class TestSynapses(unittest.TestCase):
 
     def test_calls_receptor(self):
 
-        with self.assertRaises(TypeError) as context:
-            self.test_class.test_synapse()
+        #with self.assertRaises(TypeError) as context:
+        self.test_class.test_synapse()
 
-        self.assertTrue('test_receptor() takes exactly 1 argument (2 given)' in context.exception)
+        #self.assertTrue('test_receptor() takes exactly 1 argument (2 given)' in context.exception)
