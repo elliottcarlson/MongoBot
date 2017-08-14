@@ -97,8 +97,10 @@ class IRC(object):
         if not message:
             return
 
-        message = str(message.encode('utf-8'))
-        self.send('PRIVMSG %s :%s' % (target, message))
+        self.send('PRIVMSG %s :%s' % (
+            target,
+            message.decode('utf-8')
+        ))
 
     def colorize(self, text, color):
 
@@ -253,6 +255,9 @@ class IRC(object):
 
         target = args[0]
         data = args[-1]
+
+        if target == self.name:
+            target = source.split('!', 1)[0]
 
         return {
             'provider': self.provider,

@@ -17,7 +17,7 @@ class Finance(object):
         try:
             stock = Broker(self.stdin)
             ret = stock.showquote()
-        except Exception as e:
+        except Exception:
             pass
 
         if not ret:
@@ -36,9 +36,13 @@ class Finance(object):
             except:
                 pass
 
-        url = 'https://www.cryptocompare.com/api/data/coinsnapshot/?fsym=%s&tsym=%s'
+        url = 'https://www.cryptocompare.com/api/data/coinsnapshot/'
+        params = {
+            'fsym': source,
+            'tsym': dest
+        }
 
-        request = Browser(url % (source, dest))
+        request = Browser(url, params)
         if not request:
             return "Couldn't retrieve %s data." % source.upper()
 
@@ -64,7 +68,12 @@ class Finance(object):
             if gdax:
                 gdax = ", GDAX: %s" % self.format_currency(gdax)
 
-            return 'Value of %s %s is %s%s' % (value_of, source.upper(), self.format_currency(value), gdax if gdax else '')
+            return 'Value of %s %s is %s%s' % (
+                value_of,
+                source.upper(),
+                self.format_currency(value),
+                gdax if gdax else ''
+            )
         else:
             response = OrderedDict()
             response['Last'] = self.format_currency(last)
@@ -74,7 +83,9 @@ class Finance(object):
             if gdax:
                 response['GDAX'] = gdax
 
-            prices = ", ".join([": ".join([key, str(val)]) for key, val in response.items()])
+            prices = ', '.join(
+                [': '.join([k, str(v)]) for k, v in response.items()]
+            )
 
             return '%s, %s' % (name, prices)
 
@@ -83,7 +94,10 @@ class Finance(object):
         Retrieve the GDAX price of a specific currency.
         """
         gdax = '(No result)'
-        gdax_url = 'https://api.gdax.com/products/%s-%s/ticker' % (source.upper(), dest.upper())
+        gdax_url = 'https://api.gdax.com/products/%s-%s/ticker' % (
+            source.upper(),
+            dest.upper()
+        )
         g_request = Browser(gdax_url)
         try:
             g_json = g_request.json()
@@ -97,7 +111,8 @@ class Finance(object):
 
     def format_currency(self, price):
         """
-        Format a currency appropriately, with a check if the price is under $0.01 to allow sub-penny display.
+        Format a currency appropriately, with a check if the price is under
+        $0.01 to allow sub-penny display.
         """
         locale.setlocale(locale.LC_ALL, 'en_US.UTF-8')
         if price < 0.01:
@@ -141,7 +156,7 @@ class Finance(object):
         if not self.values:
             return "Just what do you think you're doing, Dave?"
 
-        currency = self.stdin
+        currency = self.values[0]
 
         try:
             return getattr(self, currency.lower())()

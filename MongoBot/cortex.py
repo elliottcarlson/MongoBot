@@ -97,7 +97,11 @@ class Cortex(object):
                     del mod
                 return
         try:
-            env.chat(response)
+            if isinstance(response, list):
+                for line in response:
+                    env.chat(line)
+            else:
+                env.chat(response)
         except Exception as e:
             logger.warn('Unable to send response: %s', e)
 

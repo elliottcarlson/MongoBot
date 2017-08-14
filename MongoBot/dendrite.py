@@ -1,7 +1,9 @@
 # -*- coding: utf-8 -*-
 import inspect
+import os.path
 import re
 
+from MongoBot.hyperthymesia import load_config
 from MongoBot.utils import aphasia
 
 
@@ -34,6 +36,16 @@ def dendrate(cls, target):
             methods[member[0]] = member[1]
 
     methods['__init__'] = __init__
+
+    # If a config file exists for the brainmeats, load it in and make it
+    # available as self.config
+    config_file = './config/%s.yaml' % target.__name__.lower()
+    if os.path.isfile(config_file):
+        methods['config'] = load_config(config_file)
+
+    # Make the global config available to the brainmeats
+    methods['botconf'] = load_config('./config/settings.yaml')
+
     return type(class_name, (target,), methods)
 
 

@@ -15,6 +15,8 @@ class Hello(object):
 
     @axon
     def test2(self):
+        print(self.config)
+
         if self.stdin:
             msg = self.stdin
         else:
