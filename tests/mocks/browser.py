@@ -1,9 +1,12 @@
 # -*- coding: utf-8 -*-
 import bs4
+import functools
 import hashlib
 import inspect
 import json
 import os
+
+from MongoBot.staff.browser import Browser
 
 
 class MockBrowser(object):
@@ -23,6 +26,7 @@ class MockBrowser(object):
 
         base_path = os.path.dirname(__file__)
         stub_path = 'stubs'
+
         stub_file = os.path.join(base_path, stub_path, stub_id)
 
         try:
@@ -30,6 +34,12 @@ class MockBrowser(object):
                 self.content = stub_content.read()
         except Exception:
             print('Unable to open stub file "%s"' % stub_file)
+
+            test = Browser(url, params, method, userpass)
+            if not test.error:
+                with open(stub_file, 'w') as stub_content:
+                    stub_content.write(test.read())
+                print('Created new stub file automatically.')
 
     def soup(self):
         return bs4(self.content)

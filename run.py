@@ -19,6 +19,11 @@ def testMongoBot():
     result = runner.run(suite)
 
 def runMongoBot():
+    medulla = Medulla()
+    medulla.activate()
+
+
+if __name__ == '__main__':  # pargma: no cover
     logconfig = {
         'format': '[%(asctime)s] - %(name)s - %(levelname)s - %(message)s',
         'datefmt': '%m/%d/%Y %H:%M:%S',
@@ -27,11 +32,6 @@ def runMongoBot():
     }
     logging.basicConfig(**logconfig)
 
-    medulla = Medulla()
-    medulla.activate()
-
-
-if __name__ == '__main__':  # pargma: no cover
     parser = argparse.ArgumentParser()
     parser.add_argument('--test',
                         dest='test',

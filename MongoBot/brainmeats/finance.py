@@ -1,10 +1,13 @@
 # -*- coding: utf-8 -*-
 import locale
+import logging
 
 from collections import OrderedDict
 from MongoBot.autonomic import axon, help
 from MongoBot.staff.broker import Broker
 from MongoBot.staff.browser import Browser
+
+logger = logging.getLogger(__name__)
 
 
 class Finance(object):
@@ -17,7 +20,8 @@ class Finance(object):
         try:
             stock = Broker(self.stdin)
             ret = stock.showquote()
-        except Exception:
+        except Exception as e:
+            logger.exception(str(e))
             pass
 
         if not ret:
@@ -33,7 +37,8 @@ class Finance(object):
         if self.values:
             try:
                 value_of = float(self.values[0])
-            except:
+            except Exception as e:
+                logger.exception(str(e))
                 pass
 
         url = 'https://www.cryptocompare.com/api/data/coinsnapshot/'
@@ -48,22 +53,24 @@ class Finance(object):
 
         try:
             json = request.json()['Data']['AggregatedData']
-        except:
+        except Exception as e:
+            logger.exception(str(e))
             return "Couldn't parse %s data." % source.upper()
 
-        last = float(json['PRICE'])
-        low = float(json['LOW24HOUR'])
-        high = float(json['HIGH24HOUR'])
-        gdax = None
+        try:
+            last = float(json['PRICE'])
+            low = float(json['LOW24HOUR'])
+            high = float(json['HIGH24HOUR'])
+            gdax = None
+        except Exception as e:
+            logger.exception(str(e))
+            return 'Something went wrong...'
 
         if has_gdax:
             gdax = self.get_gdax_price(source, dest, value_of)
 
         if value_of:
-            try:
-                value = float(json['PRICE']) * float(value_of)
-            except:
-                return "Couldn't compute %s value." % source.upper()
+            value = float(json['PRICE']) * float(value_of)
 
             if gdax:
                 gdax = ", GDAX: %s" % self.format_currency(gdax)
@@ -156,7 +163,7 @@ class Finance(object):
         if not self.values:
             return "Just what do you think you're doing, Dave?"
 
-        currency = self.values[0]
+        currency = self.values.pop(0)
 
         try:
             return getattr(self, currency.lower())()
