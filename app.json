@@ -4,8 +4,10 @@
   "repository": "https://github.com/elliottcarlson/MongoBot/tree/lobotomy",
   "logo": "https://node-js-sample.herokuapp.com/node.png",
   "keywords": ["mongobot"],
+  "addons": ["heroku-redis:hobby-dev"],
   "env": {
-    "SLACK_TOKEN": "Enter your Slack API Token"
+    "SLACK_TOKEN": "Enter your Slack API Token",
+    "IRC_PASSWORD": "Enter the IRC password for the bot"
   },
   "formation": [
     { "process": "bot", "quantity": 1 }
