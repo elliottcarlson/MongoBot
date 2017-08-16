@@ -13,8 +13,6 @@ logger = logging.getLogger(__name__)
 
 class Finance(object):
 
-    _to_the_moon = False
-
     @axon
     @help('STOCK_SYMBOL <get stock quote>')
     def q(self):
@@ -60,7 +58,7 @@ class Finance(object):
             logger.exception(str(e))
             return "Couldn't parse %s data." % source.upper()
 
-        if self._to_the_moon:
+        if self.get('to_the_moon'):
             last = random.uniform(100, 100000)
             low = random.uniform(last - 100, last)
             high = random.uniform(last, last + 100)
@@ -189,7 +187,7 @@ class Finance(object):
         Because why not fuck with people and make them believe that their
         precious cryptocurrencies are all over the place.
         """
-        self._to_the_moon = True
+        self.set('to_the_moon', True)
         return 'To the moooooooooon!'
 
     @axon('return.?to.?earth')
@@ -197,5 +195,5 @@ class Finance(object):
         """
         Nevermind - come back to reality and show the real prices.
         """
-        self._to_the_moon = False
+        self.set('to_the_moon', False)
         return 'Oh, fine :(' 

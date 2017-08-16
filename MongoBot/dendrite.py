@@ -51,6 +51,8 @@ def dendrate(cls, target):
 
 class Dendrite(object):
 
+    _state = {}
+
     def __init__(self, incoming, params, thalamus):
 
         self.thalamus = thalamus
@@ -95,3 +97,10 @@ class Dendrite(object):
             return colorizer(text, color)
 
         return re.sub(r'\${((\w+):(.*?))}', do_colorization, text)
+
+    def get(self, key, default=None):
+        print(Dendrite.state)
+        return Dendrite.state.get(key, default)
+
+    def set(self, key, value):
+        Dendrite.state.update({ key: value })
