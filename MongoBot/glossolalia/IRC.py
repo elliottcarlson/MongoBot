@@ -131,9 +131,9 @@ class IRC(object):
     def process(self):
 
         if (self.name != self.nick and self.regain_nick and
-                time() - self.regain_nick > 20):
+                time.time() - self.regain_nick > 20):
 
-            self.regain_nick = time()
+            self.regain_nick = time.time()
             self.send('WHOIS %s' % self.nick)
 
         data = self.read()
@@ -211,7 +211,7 @@ class IRC(object):
 
     def _cmd_401(self, source, args):
 
-        if self.regain_nick and time() - self.regain_nick < 20:
+        if self.regain_nick and time.time() - self.regain_nick < 20:
             self.name = None
             self.introduce()
 
