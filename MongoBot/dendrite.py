@@ -99,8 +99,8 @@ class Dendrite(object):
         return re.sub(r'\${((\w+):(.*?))}', do_colorization, text)
 
     def get(self, key, default=None):
-        print(Dendrite.state)
-        return Dendrite.state.get(key, default)
+        print(Dendrite._state)
+        return Dendrite._state.get(key, default)
 
     def set(self, key, value):
-        Dendrite.state.update({ key: value })
+        Dendrite._state.update({ key: value })
