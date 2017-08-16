@@ -1,12 +1,15 @@
 # -*- coding: utf-8 -*-
-import bs4
 import functools
 import hashlib
 import inspect
 import json
+import logging
 import os
 
+from bs4 import BeautifulSoup as bs4
 from MongoBot.staff.browser import Browser
+
+logger = logging.getLogger(__name__)
 
 
 class MockBrowser(object):
@@ -33,16 +36,20 @@ class MockBrowser(object):
             with open(stub_file, 'r') as stub_content:
                 self.content = stub_content.read()
         except Exception:
-            print('Unable to open stub file "%s"' % stub_file)
+            logger.info('Unable to open MockBrowser stub "%s".' % stub_file)
 
-            test = Browser(url, params, method, userpass)
-            if not test.error:
+            content = Browser(url, params, method, userpass)
+            if not content.error:
                 with open(stub_file, 'w') as stub_content:
-                    stub_content.write(test.read())
-                print('Created new stub file automatically.')
+                    stub_content.write(content.read())
+                    self.content = content.read()
+                    logger.info('Created new stub file for request.')
+            else:
+                logger.warning('Unable to retrieve content to build stub!')
+                raise Exception
 
     def soup(self):
-        return bs4(self.content)
+        return bs4(self.content, 'html5lib')
 
     def json(self):
         return json.loads(self.content)
@@ -52,14 +59,15 @@ class MockBrowser(object):
 
     def title(self):
         try:
-            result = self.robot.title().decode('utf-8')
+            soup = self.soup()
+            result = soup.head.title.string.decode('utf-8')
         except Exception as e:
             result = str(e)
 
         return result
 
     def headers(self):
-        return self.response.info()
+        return []
 
     @staticmethod
     def shorten(url):

@@ -44,7 +44,7 @@ def dendrate(cls, target):
         methods['config'] = load_config(config_file)
 
     # Make the global config available to the brainmeats
-    methods['botconf'] = load_config('./config/settings.yaml')
+    methods['settings'] = load_config('./config/settings.yaml')
 
     return type(class_name, (target,), methods)
 

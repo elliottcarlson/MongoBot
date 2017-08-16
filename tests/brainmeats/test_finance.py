@@ -13,18 +13,31 @@ class TestFinance(unittest.TestCase):
         self.finance = Finance()
         self.finance.values = []
 
+    def _should_be_axon(func):
+        """
+        Decorator to check that method is an axon. Only use it on a test method
+        using the naming convention of test_<method to test>().
+
+        Usage:
+
+            @_should_be_axon
+            def test_advice(self):
+                ...
+        """
+        def check(self):
+            func_name = func.__name__.split('test_', 1)[1]
+            func_root = getattr(self.finance, func_name)
+            self.assertTrue(hasattr(func_root, 'axon'))
+            func(self)
+
+        return check
+
     def test_Finance(self):
         self.assertIsInstance(self.finance, Finance)
 
-    def test_q_has_axon(self):
-        self.assertTrue(hasattr(self.finance.q, 'axon'))
-
-    def test_q_has_help(self):
-        self.assertTrue(hasattr(self.finance.q, 'help'))
-        self.assertEquals(self.finance.q.help, 'STOCK_SYMBOL <get stock quote>')
-
     @mock.patch('MongoBot.brainmeats.finance.Broker', new=MockBroker)
-    def test_q_valid_quote(self):
+    @_should_be_axon
+    def test_q(self):
         self.finance.stdin = 'GOOG'
         ret = self.finance.q()
         self.assertEquals(
@@ -204,6 +217,31 @@ class TestFinance(unittest.TestCase):
         self.assertEquals(ret, 'Something went wrong...')
 
     @mock.patch('MongoBot.brainmeats.finance.Browser', new=MockBrowser)
+    def test_get_currency_price_to_the_moon(self):
+        name = 'Ethereum'
+        source = 'ETH'
+        dest = 'EUR'
+        has_gdax = False
+
+        self.finance.to_the_moon()
+        self.assertTrue(self.finance._to_the_moon)
+        ret = self.finance.get_currency_price(name, source, dest, has_gdax)
+        self.assertTrue(ret.startswith(name))
+
+    @mock.patch('MongoBot.brainmeats.finance.Browser', new=MockBrowser)
+    def test_get_currency_price_to_the_moon_with_gdax(self):
+        name = 'Ethereum'
+        source = 'ETH'
+        dest = 'EUR'
+        has_gdax = True
+
+        self.finance.to_the_moon()
+        self.assertTrue(self.finance._to_the_moon)
+        ret = self.finance.get_currency_price(name, source, dest, has_gdax)
+        self.assertTrue(ret.startswith(name))
+        self.assertTrue('GDAX' in ret)
+
+    @mock.patch('MongoBot.brainmeats.finance.Browser', new=MockBrowser)
     def test_get_gdax_price_with_value(self):
         source = 'BTC'
         dest = 'USD'
@@ -223,13 +261,11 @@ class TestFinance(unittest.TestCase):
 
         self.assertEquals(ret, '$4,294.96')
 
-    @mock.patch('MongoBot.brainmeats.finance.Browser')
+    @mock.patch('MongoBot.brainmeats.finance.Browser', side_effect=Exception)
     def test_get_gdax_price_with_exception(self, mocked_browser):
         source = 'BTC'
         dest = 'USD'
         value = 'XXX'
-
-        mocked_browser.return_value = False
 
         ret = self.finance.get_gdax_price(source, dest, value)
 
@@ -249,125 +285,62 @@ class TestFinance(unittest.TestCase):
 
         self.assertEquals(ret, '$0.0012345')
 
-    def test_eth_has_axon(self):
-        self.assertTrue(hasattr(self.finance.eth, 'axon'))
-
-    def test_eth_has_help(self):
-        self.assertTrue(hasattr(self.finance.eth, 'help'))
-        self.assertEquals(
-            self.finance.eth.help,
-            '<get current Ethereum trading information>'
-        )
-
     @mock.patch('MongoBot.brainmeats.finance.Browser', new=MockBrowser)
-    def test_eth_for_price(self):
+    @_should_be_axon
+    def test_eth(self):
         ret = self.finance.eth()
         self.assertEquals(
             ret,
             'Ethereum, Last: $298.78, Low: $292.04, High: $307.10, GDAX: $299.80'
         )
 
-    def test_etc_has_axon(self):
-        self.assertTrue(hasattr(self.finance.etc, 'axon'))
-
-    def test_etc_has_help(self):
-        self.assertTrue(hasattr(self.finance.etc, 'help'))
-        self.assertEquals(
-            self.finance.etc.help,
-            '<get current Ethereum Classic trading information>'
-        )
-
     @mock.patch('MongoBot.brainmeats.finance.Browser', new=MockBrowser)
-    def test_etc_for_price(self):
+    @_should_be_axon
+    def test_etc(self):
         ret = self.finance.etc()
         self.assertEquals(
             ret,
             'Ethereum Classic, Last: $13.92, Low: $13.74, High: $14.56'
         )
 
-    def test_btc_has_axon(self):
-        self.assertTrue(hasattr(self.finance.btc, 'axon'))
-
-    def test_btc_has_help(self):
-        self.assertTrue(hasattr(self.finance.btc, 'help'))
-        self.assertEquals(
-            self.finance.btc.help,
-            '<get current Bitcoin trading information>'
-        )
-
     @mock.patch('MongoBot.brainmeats.finance.Browser', new=MockBrowser)
-    def test_btc_for_price(self):
+    @_should_be_axon
+    def test_btc(self):
         ret = self.finance.btc()
         self.assertEquals(
             ret,
             'Bitcoin, Last: $4,047.10, Low: $3,841.92, High: $4,200.93, GDAX: $4,294.96'
         )
 
-    def test_bcc_has_axon(self):
-        self.assertTrue(hasattr(self.finance.bcc, 'axon'))
-
-    def test_bcc_has_help(self):
-        self.assertTrue(hasattr(self.finance.bcc, 'help'))
-        self.assertEquals(
-            self.finance.bcc.help,
-            '<get current Bitcoin Cash trading information>'
-        )
-
     @mock.patch('MongoBot.brainmeats.finance.Browser', new=MockBrowser)
-    def test_bcc_for_price(self):
+    @_should_be_axon
+    def test_bcc(self):
         ret = self.finance.bcc()
         self.assertEquals(
             ret,
             'Bitcoin Cash, Last: $3,600.00, Low: $3,277.00, High: $3,600.00'
         )
 
-    def test_ltc_has_axon(self):
-        self.assertTrue(hasattr(self.finance.ltc, 'axon'))
-
-    def test_ltc_has_help(self):
-        self.assertTrue(hasattr(self.finance.ltc, 'help'))
-        self.assertEquals(
-            self.finance.ltc.help,
-            '<get current Litecoin trading information>'
-        )
-
     @mock.patch('MongoBot.brainmeats.finance.Browser', new=MockBrowser)
-    def test_ltc_for_price(self):
+    @_should_be_axon
+    def test_ltc(self):
         ret = self.finance.ltc()
         self.assertEquals(
             ret,
             'Litecoin, Last: $45.43, Low: $44.92, High: $46.52, GDAX: $45.32' 
         )
 
-    def test_doge_has_axon(self):
-        self.assertTrue(hasattr(self.finance.doge, 'axon'))
-
-    def test_doge_has_help(self):
-        self.assertTrue(hasattr(self.finance.doge, 'help'))
-        self.assertEquals(
-            self.finance.doge.help,
-            '<get current Dogecoin trading information>'
-        )
-
     @mock.patch('MongoBot.brainmeats.finance.Browser', new=MockBrowser)
-    def test_doge_for_price(self):
+    @_should_be_axon
+    def test_doge(self):
         ret = self.finance.doge()
         self.assertEquals(
             ret,
             'Dogecoin, Last: $0.001722, Low: $0.001681, High: $0.001871'
         )
 
-    def test_c_has_axon(self):
-        self.assertTrue(hasattr(self.finance.c, 'axon'))
-
-    def test_c_has_help(self):
-        self.assertTrue(hasattr(self.finance.c, 'help'))
-        self.assertEquals(
-            self.finance.c.help,
-            '<get trading info for a list of crypto currencies>'
-        )
-
-    def test_c_without_values(self):
+    @_should_be_axon
+    def test_c(self):
         ret = self.finance.c()
 
         self.assertEquals(
@@ -375,7 +348,6 @@ class TestFinance(unittest.TestCase):
             'Just what do you think you\'re doing, Dave?'
         )
 
-    #@mock.patch('logging.Logger.
     @mock.patch('MongoBot.brainmeats.finance.Browser', new=MockBrowser)
     def test_c_with_valid_currency(self):
         self.finance.values = ['BTC']
@@ -387,7 +359,7 @@ class TestFinance(unittest.TestCase):
             'Bitcoin, Last: $4,047.10, Low: $3,841.92, High: $4,200.93, GDAX: $4,294.96'
         )
 
-    def test_c_with_invalid_currenct(self):
+    def test_c_with_invalid_currency(self):
         self.finance.values = ['INVALID']
 
         ret = self.finance.c()
@@ -396,3 +368,18 @@ class TestFinance(unittest.TestCase):
             ret,
             'No such currency'
         )
+
+    @_should_be_axon
+    def test_to_the_moon(self):
+        self.assertFalse(self.finance._to_the_moon)
+        ret = self.finance.to_the_moon()
+        self.assertTrue(self.finance._to_the_moon)
+        self.assertEquals(ret, 'To the moooooooooon!')
+
+    @_should_be_axon
+    def test_return_to_earth(self):
+        self.finance._to_the_moon = True
+        self.assertTrue(self.finance._to_the_moon)
+        ret = self.finance.return_to_earth()
+        self.assertFalse(self.finance._to_the_moon)
+        self.assertEquals(ret, 'Oh, fine :(')

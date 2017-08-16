@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 import locale
 import logging
+import random
 
 from collections import OrderedDict
 from MongoBot.autonomic import axon, help
@@ -11,6 +12,8 @@ logger = logging.getLogger(__name__)
 
 
 class Finance(object):
+
+    _to_the_moon = False
 
     @axon
     @help('STOCK_SYMBOL <get stock quote>')
@@ -57,17 +60,26 @@ class Finance(object):
             logger.exception(str(e))
             return "Couldn't parse %s data." % source.upper()
 
-        try:
-            last = float(json['PRICE'])
-            low = float(json['LOW24HOUR'])
-            high = float(json['HIGH24HOUR'])
+        if self._to_the_moon:
+            last = random.uniform(100, 100000)
+            low = random.uniform(last - 100, last)
+            high = random.uniform(last, last + 100)
             gdax = None
-        except Exception as e:
-            logger.exception(str(e))
-            return 'Something went wrong...'
 
-        if has_gdax:
-            gdax = self.get_gdax_price(source, dest, value_of)
+            if has_gdax:
+                gdax = random.uniform(last - 20, last + 20)
+        else:
+            try:
+                last = float(json['PRICE'])
+                low = float(json['LOW24HOUR'])
+                high = float(json['HIGH24HOUR'])
+                gdax = None
+            except Exception as e:
+                logger.exception(str(e))
+                return 'Something went wrong...'
+
+            if has_gdax:
+                gdax = self.get_gdax_price(source, dest, value_of)
 
         if value_of:
             value = float(json['PRICE']) * float(value_of)
@@ -105,8 +117,9 @@ class Finance(object):
             source.upper(),
             dest.upper()
         )
-        g_request = Browser(gdax_url)
+
         try:
+            g_request = Browser(gdax_url)
             g_json = g_request.json()
             gdax = self.format_currency(float(g_json['price']))
             if value_of:
@@ -169,3 +182,20 @@ class Finance(object):
             return getattr(self, currency.lower())()
         except:
             return 'No such currency'
+
+    @axon('to.?the.?moon')
+    def to_the_moon(self):
+        """
+        Because why not fuck with people and make them believe that their
+        precious cryptocurrencies are all over the place.
+        """
+        self._to_the_moon = True
+        return 'To the moooooooooon!'
+
+    @axon('return.?to.?earth')
+    def return_to_earth(self):
+        """
+        Nevermind - come back to reality and show the real prices.
+        """
+        self._to_the_moon = False
+        return 'Oh, fine :(' 
