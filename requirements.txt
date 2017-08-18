@@ -5,6 +5,7 @@ python-dotenv
 pyparsing
 mechanize
 requests[security]
+praw
 slackclient
 # pyinotify
 watchdog

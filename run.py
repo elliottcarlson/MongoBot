@@ -13,10 +13,12 @@ from MongoBot.medulla import Medulla
 
 
 def testMongoBot():
+    logging.disable(logging.CRITICAL)
     loader = unittest.TestLoader()
     suite = loader.discover(start_dir='./tests', pattern='test_*.py')
     runner = unittest.TextTestRunner(verbosity=2)
-    result = runner.run(suite)
+    runner.run(suite)
+
 
 def runMongoBot():
     medulla = Medulla()
@@ -67,3 +69,5 @@ if __name__ == '__main__':  # pargma: no cover
             runMongoBot()
         except KeyboardInterrupt:
             os._exit(0)
+
+    os._exit(0)

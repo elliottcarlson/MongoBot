@@ -21,6 +21,7 @@ class Acro(object):
     @axon
     @help("<print the rules for the acro game>")
     def acrorules(self):
+        print(self.source)
         return [
             "1 of 6 start game with %sacrogame start" % '.',
             "2 of 6 when the acronym comes up, type /msg %s your version of what the acronym stands for" % 'MongoBot',

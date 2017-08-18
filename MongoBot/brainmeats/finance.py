@@ -23,12 +23,11 @@ class Finance(object):
             ret = stock.showquote()
         except Exception as e:
             logger.exception(str(e))
-            pass
 
-        if not ret:
-            ret = 'Couldn\'t find company: %s' % self.stdin
+        if ret is not False:
+            return ret
 
-        return ret
+        return 'Couldn\'t find company: %s' % self.stdin
 
     def get_currency_price(self, name, source, dest='USD', has_gdax=False):
         """
@@ -65,7 +64,10 @@ class Finance(object):
             gdax = None
 
             if has_gdax:
-                gdax = random.uniform(last - 20, last + 20)
+                gdax_val = random.uniform(last - 20, last + 20)
+                gdax = self.format_currency(gdax_val)
+                if value_of:
+                    gdax = float(gdax_val) * float(value_of)
         else:
             try:
                 last = float(json['PRICE'])
@@ -80,7 +82,7 @@ class Finance(object):
                 gdax = self.get_gdax_price(source, dest, value_of)
 
         if value_of:
-            value = float(json['PRICE']) * float(value_of)
+            value = float(last) * float(value_of)
 
             if gdax:
                 gdax = ", GDAX: %s" % self.format_currency(gdax)
@@ -196,4 +198,4 @@ class Finance(object):
         Nevermind - come back to reality and show the real prices.
         """
         self.set('to_the_moon', False)
-        return 'Oh, fine :(' 
+        return 'Oh, fine :('

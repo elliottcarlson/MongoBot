@@ -1,0 +1,3 @@
+client_id: !env REDDIT_CLIENT_ID
+client_secret: !env REDDIT_CLIENT_SECRET
+user_agent: 'MongoBot by /u/locrelite and friends, github.com/huntwelch/MongoBot'

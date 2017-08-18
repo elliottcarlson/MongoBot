@@ -1,17 +1,18 @@
 # -*- coding: utf-8 -*-
 import logging
 import re
+import yaml
 
 from MongoBot.autonomic import axon, help
 from MongoBot.staff.browser import Browser
-from random import choice, randint
+from random import choice
 
 logger = logging.getLogger(__name__)
 
 
 class Nonsense(object):
-    #TODO list
     """
+    #TODO list
     munroesecurity
     reward:
     mom
@@ -68,7 +69,7 @@ class Nonsense(object):
         noun = choice(self.config['buzz']['nouns'])
         verb = choice(self.config['buzz']['verbs'])
 
-        return ' '.join([ adjective, noun, verb ])
+        return ' '.join([adjective, noun, verb])
 
     @axon
     @help('<grab a little advice>')
@@ -122,11 +123,8 @@ class Nonsense(object):
             that = json['that'].lower().capitalize()
 
             return 'It\'s a %s for %s' % (this, that)
-        except Exception as e:
+        except Exception:
             return 'It\'s a replacement for itsthisforthat.com...'
-
-        # TODO: Add munroesecurity
-        # TODO: Add reward
 
     @axon
     def cry(self):
@@ -149,7 +147,8 @@ class Nonsense(object):
     @axon
     @help('<throw table>')
     def table(self):
-        return u'\u0028\u256F\u00B0\u25A1\u00B0\uFF09\u256F\uFE35\u0020\u253B\u2501\u253B'
+        return (u'\u0028\u256F\u00B0\u25A1\u00B0\uFF09'
+                u'\u256F\uFE35\u0020\u253B\u2501\u253B')
 
     @axon
     def hate(self):
@@ -169,14 +168,15 @@ class Nonsense(object):
     @axon
     @help('<pull a quote from Shit Aleksey Says>')
     def aleksey(self):
-        url = 'https://spreadsheets.google.com/feeds/list/0Auy4L1ZnQpdYdERZOGV1bHZrMEFYQkhKVHc4eEE3U0E/od6/public/basic?alt=json'
+        url = ('https://spreadsheets.google.com/feeds/list/0Auy4L1ZnQpdYdERZO'
+               'GV1bHZrMEFYQkhKVHc4eEE3U0E/od6/public/basic?alt=json')
 
         try:
             request = Browser(url)
             json = request.json()
             entry = choice(json['feed']['entry'])
             return entry['title']['$t']
-        except Exception as e:
+        except Exception:
             return 'Somethin dun goobied.'
 
     @axon
@@ -202,16 +202,16 @@ class Nonsense(object):
         All pull requests attempting to remove this vital function will be
         denied. It refers to the acro game. And Vinay.
         """
-        self.chat(('Yep. Vinay used to have 655 points at 16 points per round. '
-                   'Now they\'re all gone, due to technical issues. Poor, poor '
-                   'baby.'))
+        self.chat(('Yep. Vinay used to have 655 points at 16 points per '
+                   'round. Now they\'re all gone, due to technical issues. '
+                   'Poor, poor baby.'))
         self.act('weeps for Vinay\'s points.')
         self.chat('The humanity!')
 
     @axon('act')
     def perform_action(self):
         if self.values:
-            self.act(' '.join(self.values), True)
+            self.act(' '.join(self.values))
         else:
             self.act('slaps %s around a bit with a large trout' % self.source)
 
@@ -219,7 +219,9 @@ class Nonsense(object):
     @help('URL <pull from distaste entries or add url to distaste options>')
     def distaste(self):
         if self.values:
-            pass
+            self.config['distaste'].append(self.values[0])
 
-        self.config['distaste'].append('http://www.google.com')
+            with open('./config/nonsense.yaml', 'w') as yaml_file:
+                yaml.dump(self.config, yaml_file, default_flow_style=False)
+
         print(self.config)

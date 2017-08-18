@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <script type="text/javascript">var _sf_startpt=(new Date()).getTime()</script>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8"/>
+    <link href="favicon.ico" rel="shortcut icon" type="image/x-icon" />
+    <title>Is google.com down?</title>
+    <link rel="stylesheet" media="all" href="/assets/domains-1ac63934a97bba6605e707669e5ea3c4b6f1e419cef0df7250f31f1217b41a0e.css" data-turbolinks-track="reload" />
+    <script src="/assets/domain-92c3473f0648bea7d72929bfdd8d429dc088dc7e364eca8a8271c61a16496b44.js" data-turbolinks-track="false"></script>
+    <script type="text/javascript">
+
+  var _gaq = _gaq || [];
+  _gaq.push(['_setAccount', 'UA-66669-29']);
+  _gaq.push(['_trackPageview']);
+
+  (function() {
+    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  })();
+
+</script>
+
+    <meta name='description' content='Check if google.com is down or if it is just me? Plus others tools for your website.&#39; /&gt;' />
+  </head>
+
+  <body id="domain_checker">
+    <div id="container">
+      <header>
+        <h1><a href="http://downforeveryoneorjustme.com/">Down For Everyone Or Just Me</a></h1>
+<div id="short-url">
+     Short URL @ <a href="http://isup.me">isup.me</a>
+</div>
+      </header>
+
+      <section id="content">
+        <h1 id="seo-h1">Is google.com down?</h1>
+
+<p>
+It's just you.  <a href='http://google.com' class="domain">google.com</a></span> is up.
+</p>
+
+
+<ul>
+  <li><a href="http://downforeveryoneorjustme.com/">Check another site?</a></li>
+  <li><a href="http://calico.rurl.me/whois">Check Whois?</a></li>
+  <li><a href="http://calico.rurl.me/hosting/google.com">Who Is Hosting This Site?</a></li>
+  <li><a href="http://calico.rurl.me/websitespeed">Check Website Speed</a></li>
+  <li><a href="http://calico.rurl.me/builtwith">Check What Site Is Built With</a></li>
+</ul>
+
+<p></p>
+
+<div id="ad">
+  <p>
+      Looking for great web hosting? <br />
+<a href="http://calico.rurl.me/dup">Move to SiteGround and get the best!</a>
+  </p>
+</div>
+
+<script>
+  window.history.replaceState('Replace', 'Page Title', '/google.com');
+</script>
+
+      </section>
+    </div>
+
+    <footer>
+      <p>Copyright 2017 | <a href="/contact">Contact Us</a></p>
+    </footer>
+  </body>
+
+  <script type="text/javascript">
+    function formSubmit() {
+      domain = document.getElementById('domain_input').value.replace(/^www\./,'').toLowerCase();
+      window.location = '/' + domain;
+      return false;
+    }
+  </script>
+
+  
+</html>

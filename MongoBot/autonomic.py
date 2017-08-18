@@ -10,6 +10,8 @@ logger = logging.getLogger(__name__)
 @yo_dawg
 def axon(func, *args, **kwargs):
     if args:
+        args = list(args)
+        args[0] = '^%s$' % args[0]
         func.axon = re.compile(*args)
         func.axon_type = 'regex'
     else:

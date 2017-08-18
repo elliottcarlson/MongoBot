@@ -31,7 +31,7 @@ class Wernicke(object):
         prefix = single | multi
         pipe = Suppress(Optional(Literal('|')))
         eoc = WordEnd() | LineEnd()
-        command = Group(prefix + Word(alphanums)) + eoc
+        command = Group(prefix + Word(alphanums + '_')) + eoc
         parameter = Word(printables, excludeChars='|')
         parameters = Optional(Group(OneOrMore(parameter)))
         command_group = Group(command + parameters) + pipe
