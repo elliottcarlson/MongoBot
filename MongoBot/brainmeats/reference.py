@@ -63,3 +63,30 @@ class Reference(object):
             logger.exception(e)
             return ('downforeveryoneorjustme.com might be down for everyone...'
                     'or just me?')
+
+    @axon
+    @help("EQUATION <run simple equation in python>, OR ruthlessly fuck with bot's codebase.")
+    def hack(self):
+        if not self.values:
+            printout = []
+            for n, f in self.config.math_functions:
+                if f is not None:
+                    printout.append(n)
+
+            return 'Available functions: %s' % ', '.join(printout)
+
+        string = ' '.join(self.values)
+
+        if string.replace(' ', '') == '6*9':
+            return '42'
+
+        # This is to stop future Kens
+        if "__" in string:
+            return 'Rejected.'
+
+        try:
+            result = "{:,}".format(eval(string, {"__builtins__": None}, self.safe_calc))
+        except:
+            result = self.ego.nick + " not smart enough to do that."
+
+        return str(result)

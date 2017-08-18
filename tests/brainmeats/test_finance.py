@@ -316,7 +316,7 @@ class TestFinance(BasketCase):
         ret = self.instance.bcc()
         self.assertEquals(
             ret,
-            'Bitcoin Cash, Last: $3,600.00, Low: $3,277.00, High: $3,600.00'
+            'Bitcoin Cash, Last: $563.21, Low: $354.05, High: $604.05'
         )
 
     @mock.patch('MongoBot.brainmeats.finance.Browser', new=MockBrowser)
