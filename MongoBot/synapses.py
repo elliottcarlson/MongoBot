@@ -1,6 +1,9 @@
 # -*- coding: utf-8 -*-
 import logging
 
+from MongoBot.cortex import Cortex
+from MongoBot.dendrite import Dendrite
+
 logger = logging.getLogger(__name__)
 
 
@@ -11,7 +14,7 @@ class Neurons(object):
     vesicles = {}
 
 
-def Cerebellum(object):
+def Cerebellum(obj):
     """
     The cerebellum is a major feature of the hindbrain of all vertebrates. In
     humans, the cerebellum plays an import role in motor control, and it may
@@ -28,21 +31,21 @@ def Cerebellum(object):
     listeners/transmitters without the class having been defined. Super hacky,
     super cool.
     """
-    #for name, method in object.__dict__.iteritems():
-    for name in object.__dict__:
-        method = object.__dict__[name]
+    for name in obj.__dict__:
+        method = obj.__dict__[name]
+
         if hasattr(method, 'is_receptor'):
             receptors = Neurons.vesicles.get(method.name, [])
 
-            if object.__module__.startswith('MongoBot.brainmeats'):
-                func = (object, method.neuron.__name__)
+            if obj.__module__.startswith('MongoBot.brainmeats'):
+                func = (obj, method.neuron.__name__)
             else:
                 func = method.neuron
 
-            receptors.append({object.__name__.lower(): func})
+            receptors.append({obj.__name__.lower(): func})
             Neurons.vesicles.update({method.name: receptors})
 
-    return object
+    return obj
 
 
 class Synapse(Neurons):
@@ -64,16 +67,16 @@ class Synapse(Neurons):
 
             if neurotransmission:
                 vesicles = self.vesicles.get(self.neuron, [])
+
                 for vesicle in vesicles:
                     for name in vesicle:
-                        logger.debug('Sending synapse to receptor "%s"', name)
-
                         if isinstance(vesicle[name], tuple):
                             instance = vesicle[name][0]()
                             mod = getattr(instance, vesicle[name][1])
                             mod.neuron(instance, neurotransmission or [])
                         else:
                             vesicle[name](object, neurotransmission or [])
+
             return neurotransmission
         return glutamate
 

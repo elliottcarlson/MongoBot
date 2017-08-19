@@ -94,7 +94,6 @@ class YamlDict(OrderedDict):
 
         self.__root = root
 
-        #for key, value in self.iteritems():
         for key in self:
             value = self[key]
             if hasattr(value, 'setAsRoot'):
@@ -150,7 +149,8 @@ def load_config(config_file):
         return data
     except Exception as e:
         logger.exception('load_config error: %s', e)
-        pass
+        raise Exception(e)
+
 
 Hyperthymesia.add_constructor('!include', Hyperthymesia.include)
 Hyperthymesia.add_constructor(u'tag:yaml.org,2002:seq', Hyperthymesia.sequence)

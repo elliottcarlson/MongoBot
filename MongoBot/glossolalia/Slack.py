@@ -47,7 +47,7 @@ class Slack(object):
 
         self.ping()
 
-    @Synapse('MONGO_INCOMING_DATA')
+    @Synapse('__data')
     def parse(self, data):
 
         if 'text' not in data or 'user' not in data:

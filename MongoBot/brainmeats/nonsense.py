@@ -216,7 +216,7 @@ class Nonsense(object):
             self.act('slaps %s around a bit with a large trout' % self.source)
 
     @axon
-    @help('URL <pull from distaste entries or add url to distaste options>')
+    @help('[URL] <pull from distaste entries or add url to distaste options>')
     def distaste(self):
         if self.values:
             self.config['distaste'].append(self.values[0])
@@ -224,4 +224,4 @@ class Nonsense(object):
             with open('./config/nonsense.yaml', 'w') as yaml_file:
                 yaml.dump(self.config, yaml_file, default_flow_style=False)
 
-        print(self.config)
+        return(choice(self.config['distaste']))

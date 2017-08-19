@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 import os
 
 from MongoBot.autonomic import axon, help
@@ -6,14 +7,23 @@ from random import choice, randint, shuffle
 from time import mktime, localtime, strftime
 
 
-# This is probably the first official brainmeat, as we
-# realized it was just too big to stuff into the cortex.
-# It's also some of the oldest and least attended code,
-# even after it was rewritten in the Great Brainmeat
-# Transition. There's at least one bug, but I haven't gotten
-# to it, as it's not a deal breaker, it's just exploitable.
 @Cerebellum
 class Acro(object):
+    """
+    Acro was probably the first official brainmeat, as we realized it was just
+    too big to stuff into the cortex. ~It's also some of the oldest and least
+    attended code, even after it was rewritten in the Great Brainmeat
+    Transition~ -- No wait, now it's been completely rewritten for the Great
+    Lobotomy of 2017. There was at least one exploitable bug, but who knows if
+    it's still here after the rewrite.
+    """
+
+    @axon
+    @help('<play the acro game>')
+    def acro(self):
+
+
+
 
     active = False
     channel = None
@@ -75,7 +85,7 @@ class Acro(object):
         self.announce("Game on", self.channel)
 
 
-    @Receptor('twitch')
+    @Receptor('heartbeat')
     def ticker(self):
 
         if not self.active or self.paused: return

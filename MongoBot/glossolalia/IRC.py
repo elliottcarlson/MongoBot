@@ -99,7 +99,7 @@ class IRC(object):
 
         self.send('PRIVMSG %s :%s' % (
             target,
-            message.decode('utf-8')
+            message
         ))
 
     def colorize(self, text, color):
@@ -250,7 +250,7 @@ class IRC(object):
 
         self.send('PONG %s' % args[-1])
 
-    @Synapse('MONGO_INCOMING_DATA')
+    @Synapse('__data')
     def _cmd_PRIVMSG(self, source, args):
 
         target = args[0]
@@ -265,7 +265,7 @@ class IRC(object):
             'module': self.__module__,
             'source': source,
             'target': target,
-            'data': data
+            'data': data.rstrip()
         }
 
     def _cmd_QUIT(self, source, args):

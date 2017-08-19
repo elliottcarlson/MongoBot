@@ -50,25 +50,35 @@ def dendrate(cls, target):
 
 
 class Dendrite(object):
+    """
 
+    """
     _state = {}
 
-    def __init__(self, incoming, params, thalamus):
+    def __init__(self, incoming, params, thalamus, name=None):
 
         self.thalamus = thalamus
 
-        self.service = incoming['service']
-        self.module = incoming['module']
-        self.provider = incoming['provider']
+        self.service = incoming.get('service')
+        self.module = incoming.get('module')
+        self.provider = incoming.get('provider')
 
-        self.target = incoming['target']
-        self.source = incoming['source']  # TODO: Implement ID on sources
+        self.target = incoming.get('target')
+        self.source = incoming.get('source')  # TODO: Implement ID on sources
 
         self.stdin = incoming.get('stdin')
-        self.raw_msg = incoming['data']
+        self.raw_msg = incoming.get('data')
         self.values = params
 
         self.link = self.thalamus.providers[self.provider]
+
+        self.config = {}
+        if name:
+            config_file = './config/%s.yaml' % name
+            if os.path.isfile(config_file):
+                print('Loading config... %s' % config_file)
+                self.config = load_config(config_file)
+
 
     @aphasia
     def chat(self, message):
@@ -103,4 +113,4 @@ class Dendrite(object):
         return Dendrite._state.get(key, default)
 
     def set(self, key, value):
-        Dendrite._state.update({ key: value })
+        Dendrite._state.update({key: value})

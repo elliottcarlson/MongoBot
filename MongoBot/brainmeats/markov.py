@@ -122,7 +122,7 @@ class Markov(object):
         if not self.values and not self.stdin:
             return 'Learn what?'
 
-    @Receptor('THALAMUS_INCOMING_DATA')
+    @Receptor('overheard')
     def markov_learn(self, incoming):
 
         if incoming.get('data')[0:1] is not '.':
