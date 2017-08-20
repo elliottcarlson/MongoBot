@@ -3,7 +3,6 @@ coverage
 PyYAML
 python-dotenv
 pyparsing
-mechanize
 requests[security]
 praw
 slackclient
