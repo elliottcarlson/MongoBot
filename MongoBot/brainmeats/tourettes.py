@@ -21,8 +21,6 @@ class Tourettes(object):
     def tourettes(self, incoming):
         message = incoming.stdin
 
-        print(Tourettes.config)
-
         if message.lower().find('oh snap') != -1:
             incoming.chat('yeah WHAT?? Oh yes he DID')
             return
@@ -72,26 +70,28 @@ class Tourettes(object):
             incoming.chat('Wrong window.')
             return
 
-        inquiries = [message.lower().find(t) != -1 for t in self.config.questions]
+        inquiries = [message.lower().find(t) != -1 for t in Tourettes.config.questions]
 
-        if self.config.smartass and True in inquiries:
+        if Tourettes.config.smartass and True in inquiries:
             # Naively parse out the question being asked
             try:
-                smartassery = sentence.lower().split(self.config.questions[inquiries.index(True)])[1]
+                smartassery = message.lower().split(Tourettes.config.questions[inquiries.index(True)])[1]
             except:
                 return
 
-            responses = self.config.ithelp
+            responses = Tourettes.config.ithelp
 
             # Dynamic cases need to be appended
-            responses.append('http://lmgtfy.com/?q=' + smartassery.replace(' ', '+'))
+            lmgtfy = 'http://lmgtfy.com/?q=' + smartassery.replace(' ', '+')
+            responses.append(lmgtfy)
 
-            self.chat(random.choice(responses), target=target)
+            incoming.chat(choice(responses))
             return
 
         # There's a very good reason for this.
-        if sentence == "oh shit its your birthday erikbeta happy birthday" and nick == "jcb":
-            self._act(" slaps jcb")
-            self.chat("LEAVE ERIK ALONE!", target=target)
+        if (message == 'oh shit its your birthday erikbeta happy birthday' and
+           incoming.source == 'jcb'):
+            incoming.act(" slaps jcb")
+            incoming.chat("LEAVE ERIK ALONE!")
             return
 

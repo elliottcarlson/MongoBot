@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 import mock
 
 from MongoBot.brainmeats.nonsense import Nonsense
