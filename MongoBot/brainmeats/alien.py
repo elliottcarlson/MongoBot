@@ -55,4 +55,4 @@ class Alien(object):
         except Exception as e:
             return 'Reddit fail. %s' % str(e)
 
-        return str(entry)
+        return entry
