@@ -17,7 +17,7 @@ def testMongoBot():
     loader = unittest.TestLoader()
     suite = loader.discover(start_dir='./tests', pattern='test_*.py')
     runner = unittest.TextTestRunner(verbosity=2)
-    runner.run(suite)
+    return runner.run(suite)
 
 
 def runMongoBot():
@@ -25,7 +25,7 @@ def runMongoBot():
     medulla.activate()
 
 
-if __name__ == '__main__':  # pargma: no cover
+if __name__ == '__main__':  # pragma: no cover
     logconfig = {
         'format': '[%(asctime)s] - %(name)s - %(levelname)s - %(message)s',
         'datefmt': '%m/%d/%Y %H:%M:%S',
@@ -58,16 +58,17 @@ if __name__ == '__main__':  # pargma: no cover
             cov.start()
             cov.exclude("#pragma: no cover")
 
-        testMongoBot()
+        tests = testMongoBot()
 
         if result.coverage:
             cov.stop()
             cov.save()
             cov.report()
+
+        sys.exit(not tests.wasSuccessful())
+
     else:
         try:
             runMongoBot()
         except KeyboardInterrupt:
             os._exit(0)
-
-    os._exit(0)

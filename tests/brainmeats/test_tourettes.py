@@ -14,6 +14,7 @@ class TestTourettes(unittest.TestCase):
         # Change multiple responses to only have one response to give.
         Tourettes.config['ithelp'] = ['Are you sure your computer is on?']
         Tourettes.config['stops'] = ['Hammertime']
+        Tourettes.config['wrong_window'] = ['ls', 'ps aufx']
 
     def test_Tourettes(self):
         self.assertIsInstance(self.instance, Tourettes)
@@ -99,6 +100,12 @@ class TestTourettes(unittest.TestCase):
 
         self.assertIn((u'\u0028\u256F\u00B0\u25A1\u00B0\uFF09\u256F\uFE35'
                        u'\u0020\u253B\u2501\u253B'), dendrite.chats)
+
+    def test_tourettes_is_wrong_window(self):
+        dendrite = MockIncomingDendrite('ls')
+        self.instance.tourettes.neuron(object, dendrite)
+
+        self.assertIn('Wrong window.', dendrite.chats)
 
     def test_tourettes_inquiries(self):
         dendrite = MockIncomingDendrite('how do i write a unittest??')

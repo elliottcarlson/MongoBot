@@ -90,3 +90,52 @@ class Reference(object):
             result = self.ego.nick + " not smart enough to do that."
 
         return str(result)
+
+    @axon
+    @help('WORD [WHICH_DEFINITION] <look up etymology of word>')
+    def ety(self):
+        """
+        I don't remember why this got added, but it's unfailingly awesome.
+        """
+        if not self.values:
+            return 'Enter a word'
+
+        word = self.values[0]
+        params = {
+            'allowed_in_frame': '0',
+            'searchmode': 'term',
+            'search': word
+        }
+
+        request = Browser('http://www.etymonline.com/index.php', params)
+        if not request:
+            return 'Error'
+
+        cont = request.soup()
+
+        heads = cont.findAll("dt")
+        defs = cont.findAll("dd")
+
+        if not len(defs):
+            return "Couldn't find anything"
+
+        try:
+            cnt = int(self.values[1])
+        except:
+            cnt = 1
+
+        if cnt > len(defs):
+            cnt = 1
+
+        cnt -= 1
+        if cnt < 0:
+            cnt = 0
+
+        try:
+            _word = ''.join(heads[cnt].findAll(text=True))
+            _def = ''.join(defs[cnt].findAll(text=True))
+        except Exception as e:
+            self.chat('Failed to parse.', error=e)
+            return
+
+        return "Etymology %s of %s for %s: %s" % (str(cnt + 1), str(len(defs)), _word, _def)

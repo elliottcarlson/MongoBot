@@ -73,12 +73,7 @@ class Tourettes(object):
         inquiries = [message.lower().find(t) != -1 for t in Tourettes.config.questions]
 
         if Tourettes.config.smartass and True in inquiries:
-            # Naively parse out the question being asked
-            try:
-                smartassery = message.lower().split(Tourettes.config.questions[inquiries.index(True)])[1]
-            except:
-                return
-
+            smartassery = message.lower().split(Tourettes.config.questions[inquiries.index(True)])[1]
             responses = Tourettes.config.ithelp
 
             # Dynamic cases need to be appended
@@ -94,4 +89,3 @@ class Tourettes(object):
             incoming.act(" slaps jcb")
             incoming.chat("LEAVE ERIK ALONE!")
             return
-
