@@ -58,8 +58,8 @@ class TestFinance(BasketCase):
 
         self.assertEquals(
             ret,
-            ('Bitcoin, Last: $4,047.10, Low: $3,841.92, High: $4,200.93, '
-             'GDAX: $4,294.96')
+            ('Bitcoin, Last: $4,569.27, Low: $4,290.73, High: $4,658.48, '
+             'GDAX: $4,566.12')
         )
 
     @mock.patch('MongoBot.brainmeats.finance.Browser', new=MockBrowser)
@@ -75,7 +75,7 @@ class TestFinance(BasketCase):
 
         self.assertEquals(
             ret,
-            'Value of 300.0 BTC is $1,214,130.00, GDAX: $1,288,488.00'
+            'Value of 300.0 BTC is $1,370,781.00, GDAX: $1,369,836.00'
         )
 
     @mock.patch('MongoBot.brainmeats.finance.Browser', new=MockBrowser)
@@ -91,7 +91,7 @@ class TestFinance(BasketCase):
 
         self.assertEquals(
             ret,
-            'Value of 2.5 BTC is $10,117.75, GDAX: $10,737.40'
+            'Value of 2.5 BTC is $11,423.18, GDAX: $11,415.30'
         )
 
     @mock.patch('MongoBot.brainmeats.finance.Browser', new=MockBrowser)
@@ -105,7 +105,7 @@ class TestFinance(BasketCase):
 
         self.assertEquals(
             ret,
-            'Bitcoin, Last: $4,047.10, Low: $3,841.92, High: $4,200.93'
+            'Bitcoin, Last: $4,569.27, Low: $4,290.73, High: $4,658.48'
         )
 
     @mock.patch('MongoBot.brainmeats.finance.Browser', new=MockBrowser)
@@ -121,7 +121,7 @@ class TestFinance(BasketCase):
 
         self.assertEquals(
             ret,
-            'Value of 300.0 BTC is $1,214,130.00'
+            'Value of 300.0 BTC is $1,370,781.00'
         )
 
     @mock.patch('MongoBot.brainmeats.finance.Browser', new=MockBrowser)
@@ -137,7 +137,7 @@ class TestFinance(BasketCase):
 
         self.assertEquals(
             ret,
-            'Value of 2.5 BTC is $10,117.75'
+            'Value of 2.5 BTC is $11,423.18'
         )
 
     @mock.patch('logging.Logger.exception')
@@ -152,10 +152,11 @@ class TestFinance(BasketCase):
 
         ret = self.instance.get_currency_price(name, source, dest, has_gdax)
 
-        mocked_logger.assert_called_with('could not convert string to float: invalid')
+        mocked_logger.assert_called()
         self.assertEquals(
             ret,
-            'Bitcoin, Last: $4,047.10, Low: $3,841.92, High: $4,200.93, GDAX: $4,294.96'
+            ('Bitcoin, Last: $4,569.27, Low: $4,290.73, High: $4,658.48, '
+             'GDAX: $4,566.12')
         )
 
     @mock.patch('MongoBot.brainmeats.finance.Browser')
@@ -196,7 +197,7 @@ class TestFinance(BasketCase):
 
         ret = self.instance.get_currency_price(name, source, dest, has_gdax)
 
-        mocked_logger.assert_called_with('could not convert string to float: XXX')
+        mocked_logger.assert_called()
         self.assertEquals(ret, 'Something went wrong...')
 
     @mock.patch('MongoBot.brainmeats.finance.Browser', new=MockBrowser)
@@ -247,7 +248,7 @@ class TestFinance(BasketCase):
 
         ret = self.instance.get_gdax_price(source, dest, value)
 
-        self.assertEquals(ret, 1288488.0)
+        self.assertEquals(ret, 1369836.0)
 
     @mock.patch('MongoBot.brainmeats.finance.Browser', new=MockBrowser)
     def test_get_gdax_price_without_value(self):
@@ -257,7 +258,7 @@ class TestFinance(BasketCase):
 
         ret = self.instance.get_gdax_price(source, dest, value)
 
-        self.assertEquals(ret, '$4,294.96')
+        self.assertEquals(ret, '$4,566.12')
 
     @mock.patch('MongoBot.brainmeats.finance.Browser', side_effect=Exception)
     def test_get_gdax_price_with_exception(self, mocked_browser):
@@ -289,7 +290,8 @@ class TestFinance(BasketCase):
         ret = self.instance.eth()
         self.assertEquals(
             ret,
-            'Ethereum, Last: $298.78, Low: $292.04, High: $307.10, GDAX: $299.80'
+            ('Ethereum, Last: $363.21, Low: $342.16, High: $368.45, '
+             'GDAX: $363.49')
         )
 
     @mock.patch('MongoBot.brainmeats.finance.Browser', new=MockBrowser)
@@ -298,7 +300,7 @@ class TestFinance(BasketCase):
         ret = self.instance.etc()
         self.assertEquals(
             ret,
-            'Ethereum Classic, Last: $13.92, Low: $13.74, High: $14.56'
+            'Ethereum Classic, Last: $15.76, Low: $15.46, High: $16.10'
         )
 
     @mock.patch('MongoBot.brainmeats.finance.Browser', new=MockBrowser)
@@ -307,7 +309,8 @@ class TestFinance(BasketCase):
         ret = self.instance.btc()
         self.assertEquals(
             ret,
-            'Bitcoin, Last: $4,047.10, Low: $3,841.92, High: $4,200.93, GDAX: $4,294.96'
+            ('Bitcoin, Last: $4,569.27, Low: $4,290.73, High: $4,658.48, '
+             'GDAX: $4,566.12')
         )
 
     @mock.patch('MongoBot.brainmeats.finance.Browser', new=MockBrowser)
@@ -316,7 +319,7 @@ class TestFinance(BasketCase):
         ret = self.instance.bcc()
         self.assertEquals(
             ret,
-            'Bitcoin Cash, Last: $563.21, Low: $354.05, High: $604.05'
+            'Bitcoin Cash, Last: $570.53, Low: $559.61, High: $601.14'
         )
 
     @mock.patch('MongoBot.brainmeats.finance.Browser', new=MockBrowser)
@@ -325,7 +328,7 @@ class TestFinance(BasketCase):
         ret = self.instance.ltc()
         self.assertEquals(
             ret,
-            'Litecoin, Last: $45.43, Low: $44.92, High: $46.52, GDAX: $45.32' 
+            'Litecoin, Last: $61.73, Low: $61.03, High: $63.88, GDAX: $61.68' 
         )
 
     @mock.patch('MongoBot.brainmeats.finance.Browser', new=MockBrowser)
@@ -334,7 +337,7 @@ class TestFinance(BasketCase):
         ret = self.instance.doge()
         self.assertEquals(
             ret,
-            'Dogecoin, Last: $0.001722, Low: $0.001681, High: $0.001871'
+            'Dogecoin, Last: $0.001885, Low: $0.00174, High: $0.0019'
         )
 
     @should_be_axon
@@ -354,7 +357,8 @@ class TestFinance(BasketCase):
 
         self.assertEquals(
             ret,
-            'Bitcoin, Last: $4,047.10, Low: $3,841.92, High: $4,200.93, GDAX: $4,294.96'
+            ('Bitcoin, Last: $4,569.27, Low: $4,290.73, High: $4,658.48, '
+             'GDAX: $4,566.12')
         )
 
     def test_c_with_invalid_currency(self):

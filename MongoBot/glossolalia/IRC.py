@@ -105,6 +105,7 @@ class IRC(object):
     def colorize(self, text, color):
 
         colors = {
+            'bold': 0,
             'white': 0,
             'black': 1,
             'blue': 2,

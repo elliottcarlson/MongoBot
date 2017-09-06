@@ -20,7 +20,7 @@ class Alien(object):
                 'client_secret': self.config.get('client_secret')
             }
 
-            if None in config.viewvalues():
+            if None in config.values():
                 raise Exception('One of Aliens config values is not set!')
         except Exception as e:
             """

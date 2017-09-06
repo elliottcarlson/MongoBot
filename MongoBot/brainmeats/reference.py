@@ -5,6 +5,7 @@ import re
 
 from MongoBot.autonomic import axon, help
 from MongoBot.staff.browser import Browser
+from MongoBot.staff.oracle import Oracle
 
 logger = logging.getLogger(__name__)
 
@@ -65,11 +66,12 @@ class Reference(object):
                     'or just me?')
 
     @axon
-    @help("EQUATION <run simple equation in python>, OR ruthlessly fuck with bot's codebase.")
+    @help(('EQUATION <run simple equation in python>, OR ruthlessly fuck with '
+           'bot\'s codebase.'))
     def hack(self):
         if not self.values:
             printout = []
-            for n, f in self.config.math_functions:
+            for n, f in self.safe_func:
                 if f is not None:
                     printout.append(n)
 
@@ -81,13 +83,21 @@ class Reference(object):
             return '42'
 
         # This is to stop future Kens
-        if "__" in string:
+        if '__' in string:
             return 'Rejected.'
 
         try:
-            result = "{:,}".format(eval(string, {"__builtins__": None}, self.safe_calc))
-        except:
-            result = self.ego.nick + " not smart enough to do that."
+            val = eval(string, {'__builtins__': None}, self.safe_calc)
+            result = '{:,}'.format(val)
+        except (TypeError, ValueError) as e:
+            try:
+                result = eval(string, {'__builtins__': None}, self.safe_calc)
+            except:
+                result = str(e)
+        except Exception as e:
+            logger.exception(e)
+            self.act('not smart enough to do that.')
+            return
 
         return str(result)
 
@@ -97,45 +107,12 @@ class Reference(object):
         """
         I don't remember why this got added, but it's unfailingly awesome.
         """
-        if not self.values:
-            return 'Enter a word'
-
-        word = self.values[0]
-        params = {
-            'allowed_in_frame': '0',
-            'searchmode': 'term',
-            'search': word
-        }
-
-        request = Browser('http://www.etymonline.com/index.php', params)
-        if not request:
-            return 'Error'
-
-        cont = request.soup()
-
-        heads = cont.findAll("dt")
-        defs = cont.findAll("dd")
-
-        if not len(defs):
-            return "Couldn't find anything"
-
         try:
-            cnt = int(self.values[1])
+            word = self.values[0]
         except:
-            cnt = 1
-
-        if cnt > len(defs):
-            cnt = 1
-
-        cnt -= 1
-        if cnt < 0:
-            cnt = 0
+            return 'Find the etymology of what?'
 
         try:
-            _word = ''.join(heads[cnt].findAll(text=True))
-            _def = ''.join(defs[cnt].findAll(text=True))
-        except Exception as e:
-            self.chat('Failed to parse.', error=e)
-            return
-
-        return "Etymology %s of %s for %s: %s" % (str(cnt + 1), str(len(defs)), _word, _def)
+            return Oracle(word).etymology()
+        except:
+            return 'Could not find the etymology for %s' % word

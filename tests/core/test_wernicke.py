@@ -39,13 +39,19 @@ class TestWernicke(unittest.TestCase):
 
         ret = self.parser.parse('*fml junk | *sms 555-1010')
         self.assertIsInstance(ret, list)
-        self.assertEquals(ret, [[['*', 'fml'], ['junk']], [['*', 'sms'], ['555-1010']]])
+        self.assertEquals(
+            ret,
+            [[['*', 'fml'], ['junk']], [['*', 'sms'], ['555-1010']]]
+        )
 
     def test_multiple_forked_commands(self):
 
         ret = self.parser.parse('*one | *two | *three | *four')
         self.assertIsInstance(ret, list)
-        self.assertEquals(ret, [[['*', 'one']], [['*', 'two']], [['*', 'three']], [['*', 'four']]])
+        self.assertEquals(
+            ret,
+            [[['*', 'one']], [['*', 'two']], [['*', 'three']], [['*', 'four']]]
+        )
 
     def test_forked_to_no_command(self):
 

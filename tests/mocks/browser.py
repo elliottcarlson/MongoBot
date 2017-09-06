@@ -1,12 +1,11 @@
 # -*- coding: utf-8 -*-
-import functools
 import hashlib
-import inspect
 import json
 import logging
 import os
 
 from bs4 import BeautifulSoup as bs4
+from collections import OrderedDict
 from MongoBot.staff.browser import Browser
 
 logger = logging.getLogger(__name__)
@@ -22,10 +21,9 @@ class MockBrowser(object):
     error = False
 
     def __init__(self, url, params={}, method='GET', userpass=False):
-        stub_id = hashlib.sha1(json.dumps(
-            [locals()[arg] for arg in
-            inspect.getargspec(MockBrowser.__init__).args[1:]]
-        )).hexdigest()
+        stub_id = hashlib.sha1(json.dumps([
+            url, OrderedDict(sorted(params.items())), method, userpass
+        ]).encode('utf-8')).hexdigest()
 
         base_path = os.path.dirname(__file__)
         stub_path = 'stubs'

@@ -1,0 +1,5 @@
+researcher:
+    wordnik_api_url: !env WORDNIK_API_URL
+    wordnik_api_key: !env WORDNIK_API_KEY
+    google_search_key: !env GOOGLE_SEARCH_KEY
+    google_search_id: !env GOOGLE_SEARCH_ID

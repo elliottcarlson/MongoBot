@@ -40,8 +40,8 @@ class Browser(object):
                 url, params=params, headers=headers, auth=auth
             )
 
-    def soup(self):
-        return bs4(self.response.text)
+    def soup(self, **kwargs):
+        return bs4(self.response.text, 'html5lib', **kwargs)
 
     def json(self):
         return self.response.json()
@@ -54,7 +54,7 @@ class Browser(object):
         return soup.title.string
 
     def headers(self):
-        return self.headers
+        return self.response.headers
 
     @staticmethod
     def shorten(url):

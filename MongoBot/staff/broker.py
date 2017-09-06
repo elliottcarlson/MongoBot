@@ -1,8 +1,11 @@
 # -*- coding: utf-8 -*-
+import logging
 import re
 
 from MongoBot.staff.browser import Browser
 from collections import OrderedDict
+
+logger = logging.getLogger(__name__)
 
 
 # For all your stock needs
@@ -17,8 +20,8 @@ class Broker(object):
         if not symbol:
             return
 
-        # Yahoo uses hyphens in the symbols; old portfolios might be saved
-        # with dots from when we were using the Google API - look up with hyphen.
+        # Yahoo uses hyphens in the symbols; old portfolios might be saved with
+        # dots from when we were using the Google API - look up with hyphen.
         symbol = symbol.replace('.', '-')
 
         # yahoo fields
@@ -43,7 +46,7 @@ class Broker(object):
             raw_list = raw_string.strip().replace('"', '').split(',')
             data = {key: raw_list.pop(0) for (key) in fields.keys()}
         except Exception as e:
-            print e
+            logger.exception(e)
             return
 
         if data['exchange'] == 'N/A':
@@ -61,6 +64,9 @@ class Broker(object):
             setattr(self, key, value)
 
         self.stock = data
+
+    def __bool__(self):
+        return self.__nonzero__()
 
     def __nonzero__(self):
         return self.stock is not None

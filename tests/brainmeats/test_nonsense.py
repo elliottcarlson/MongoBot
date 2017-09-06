@@ -40,9 +40,7 @@ class TestNonsense(BasketCase):
 
         self.assertEquals(
             ret,
-            ('The average lifespan of an outdoor-only cat is about 3 to 5 '
-             'years while an indoor-only cat can live 16 years or much '
-             'longer.')
+            'A cat lover is called an Ailurophilia (Greek: cat+lover).'
         )
 
     @mock.patch('MongoBot.brainmeats.nonsense.Browser', side_effect=Exception)

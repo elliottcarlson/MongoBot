@@ -1,0 +1,327 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+ <head>
+  <title>Online Etymology Dictionary</title>
+  <meta name="msApplication-ID" content="LongHairSoftwareLLC.EtymOnline" />
+  <meta name="msApplication-PackageFamilyName" content="LongHairSoftwareLLC.EtymOnline_p4n214xp2cs4e" />
+  <link rel="stylesheet" type="text/css" media="all" href="http://www.etymonline.com/style.css" />
+  <script type="text/javascript" src="http://www.etymonline.com/resources/js/functions.js"></script>
+  <meta http-equiv="Content-Type" content="text/html;charset=iso-8859-1" />
+    <script type="text/javascript">
+
+  var _gaq = _gaq || [];
+  _gaq.push(['_setAccount', 'UA-26425972-1']);
+  _gaq.push(['_trackPageview']);
+
+  (function() {
+    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  })();
+
+</script> </head>
+ 
+ <body onload="focus_on_initial_element_if_any(0);">
+ 
+<div id="container">
+ <div id="navigation">
+      <div id="logo">
+   <a href="http://www.etymonline.com/index.php" title="The Online Etymology Dictionary">
+    <img src="http://www.etymonline.com/graphics/header.jpg"
+         width="450" height="160"
+         alt="The Online Etymology Dictionary"
+         title="The Online Etymology Dictionary" />
+   </a>
+  </div> <!-- LOGO -->
+
+  <form action="http://www.etymonline.com/index.php" method="get">
+  <input type="hidden" name="allowed_in_frame" value="0">
+  <div id="search">
+   Search:
+   <input type="text" name="search" value="test" size="40" maxlength="255" class="initial_focus"/>
+
+<!--
+   <select name="searchmode" size="1">
+    <option value="none" selected="selected">Search Mode</option>
+    <option value="nl">Natural Language</option>
+    <option value="term">Find single term</option>
+    <option value="or">Find any term</option>
+    <option value="phrase">Find exact phrase</option>
+   </select>
+-->
+
+   <input type="submit" value="OK" />
+  </div> <!-- SEARCH -->
+  </form>
+
+  <div id="browse">
+  <ul>
+   <li><a href="http://www.etymonline.com/index.php?l=a&allowed_in_frame=0">A</a></li>
+   <li><a href="http://www.etymonline.com/index.php?l=b&allowed_in_frame=0">B</a></li>
+   <li><a href="http://www.etymonline.com/index.php?l=c&allowed_in_frame=0">C</a></li>
+   <li><a href="http://www.etymonline.com/index.php?l=d&allowed_in_frame=0">D</a></li>
+   <li><a href="http://www.etymonline.com/index.php?l=e&allowed_in_frame=0">E</a></li>
+   <li><a href="http://www.etymonline.com/index.php?l=f&allowed_in_frame=0">F</a></li>
+   <li><a href="http://www.etymonline.com/index.php?l=g&allowed_in_frame=0">G</a></li>
+   <li><a href="http://www.etymonline.com/index.php?l=h&allowed_in_frame=0">H</a></li>
+   <li><a href="http://www.etymonline.com/index.php?l=i&allowed_in_frame=0">I</a></li>
+   <li><a href="http://www.etymonline.com/index.php?l=j&allowed_in_frame=0">J</a></li>
+   <li><a href="http://www.etymonline.com/index.php?l=k&allowed_in_frame=0">K</a></li>
+   <li><a href="http://www.etymonline.com/index.php?l=l&allowed_in_frame=0">L</a></li>
+   <li><a href="http://www.etymonline.com/index.php?l=m&allowed_in_frame=0">M</a></li>
+   <li><a href="http://www.etymonline.com/index.php?l=n&allowed_in_frame=0">N</a></li>
+   <li><a href="http://www.etymonline.com/index.php?l=o&allowed_in_frame=0">O</a></li>
+   <li><a href="http://www.etymonline.com/index.php?l=p&allowed_in_frame=0">P</a></li>
+   <li><a href="http://www.etymonline.com/index.php?l=q&allowed_in_frame=0">Q</a></li>
+   <li><a href="http://www.etymonline.com/index.php?l=r&allowed_in_frame=0">R</a></li>
+   <li><a href="http://www.etymonline.com/index.php?l=s&allowed_in_frame=0">S</a></li>
+   <li><a href="http://www.etymonline.com/index.php?l=t&allowed_in_frame=0">T</a></li>
+   <li><a href="http://www.etymonline.com/index.php?l=u&allowed_in_frame=0">U</a></li>
+   <li><a href="http://www.etymonline.com/index.php?l=v&allowed_in_frame=0">V</a></li>
+   <li><a href="http://www.etymonline.com/index.php?l=w&allowed_in_frame=0">W</a></li>
+   <li><a href="http://www.etymonline.com/index.php?l=x&allowed_in_frame=0">X</a></li>
+   <li><a href="http://www.etymonline.com/index.php?l=y&allowed_in_frame=0">Y</a></li>
+   <li><a href="http://www.etymonline.com/index.php?l=z&allowed_in_frame=0">Z</a></li>
+  </ul>
+  </div> <!-- BROWSE -->
+ </div> <!-- NAVIGATION -->
+
+  <div id="dictionary">
+<div class="paging">
+<ul>
+ <li><a class="current" href="/index.php?search=test&amp;searchmode=&amp;p=0&allowed_in_frame=0">1</a></li>
+ <li><a href="/index.php?search=test&amp;searchmode=&amp;p=1&allowed_in_frame=0">2</a></li>
+</ul>
+</div> <!-- PAGING -->
+
+<dl>
+<dt class="highlight"><a href="/index.php?term=test&allowed_in_frame=0">test (v.)</a> <a href="http://dictionary.reference.com/search?q=test" class="dictionary" title="Look up test at Dictionary.com"><img src="graphics/dictionary.gif" width="16" height="16" alt="Look up test at Dictionary.com" title="Look up test at Dictionary.com" /></a></dt>
+<dd class="highlight">1748, "to examine the correctness of," from <a href="/index.php?term=test&allowed_in_frame=0" class="crossreference">test</a> (n.), on the notion of "put to the proof." Earlier "assay gold or silver" in a test (c. 1600). Meaning "to administer a test" is from 1939; sense of "undergo a test" is from 1934. Related: <span class="foreign">Tested</span>; <span class="foreign">testing</span>. </dd>
+
+<dt><a href="/index.php?term=test&allowed_in_frame=0">test (n.)</a> <a href="http://dictionary.reference.com/search?q=test" class="dictionary" title="Look up test at Dictionary.com"><img src="graphics/dictionary.gif" width="16" height="16" alt="Look up test at Dictionary.com" title="Look up test at Dictionary.com" /></a></dt>
+<dd>late 14c., "small vessel used in assaying precious metals," from Old French <span class="foreign">test</span>, from Latin <span class="foreign">testum</span> "earthen pot," related to <span class="foreign">testa</span> "piece of burned clay, earthen pot, shell" (see <a href="/index.php?term=tete&allowed_in_frame=0" class="crossreference">tete</a>).
+<BR><BR>
+Sense of "trial or examination to determine the correctness of something" is recorded from 1590s. The connecting notion is "ascertaining the quality of a metal by melting it in a pot." <span class="foreign">Test Act</span> was the name given to various laws in English history meant to exclude Catholics and Nonconformists from office, especially that of 1673, repealed 1828. <span class="foreign">Test drive</span> (v.) is first recorded 1954.</dd>
+
+<dt class="highlight"><a href="/index.php?term=test-tube&allowed_in_frame=0">test-tube (n.)</a> <a href="http://dictionary.reference.com/search?q=test-tube" class="dictionary" title="Look up test-tube at Dictionary.com"><img src="graphics/dictionary.gif" width="16" height="16" alt="Look up test-tube at Dictionary.com" title="Look up test-tube at Dictionary.com" /></a></dt>
+<dd class="highlight">1809, from <a href="/index.php?term=test&allowed_in_frame=0" class="crossreference">test</a> (n.) + <a href="/index.php?term=tube&allowed_in_frame=0" class="crossreference">tube</a> (n.). So called because it originally was used to test the properties of liquids. <span class="foreign">Test-tube baby</span> is recorded from 1935. </dd>
+
+<dt><a href="/index.php?term=Pap+test&allowed_in_frame=0">Pap test (n.)</a> <a href="http://dictionary.reference.com/search?q=Pap test" class="dictionary" title="Look up Pap test at Dictionary.com"><img src="graphics/dictionary.gif" width="16" height="16" alt="Look up Pap test at Dictionary.com" title="Look up Pap test at Dictionary.com" /></a></dt>
+<dd>1963, short for <span class="foreign">Papanicolaou</span> (1947) in reference to George Nicholas <span class="foreign">Papanicolaou</span> (1883-1962), Greek-born U.S. anatomist who developed the technique of examining secreted cells to test for cancer.</dd>
+
+<dt class="highlight"><a href="/index.php?term=tester&allowed_in_frame=0">tester (n.1)</a> <a href="http://dictionary.reference.com/search?q=tester" class="dictionary" title="Look up tester at Dictionary.com"><img src="graphics/dictionary.gif" width="16" height="16" alt="Look up tester at Dictionary.com" title="Look up tester at Dictionary.com" /></a></dt>
+<dd class="highlight">"one who tests, puts to trial, or assays," 1660s, agent noun from <a href="/index.php?term=test&allowed_in_frame=0" class="crossreference">test</a> (v.). Earlier "a crucible" for trying metals by heating them (mid-15c.).</dd>
+
+<dt><a href="/index.php?term=pretest&allowed_in_frame=0">pretest</a> <a href="http://dictionary.reference.com/search?q=pretest" class="dictionary" title="Look up pretest at Dictionary.com"><img src="graphics/dictionary.gif" width="16" height="16" alt="Look up pretest at Dictionary.com" title="Look up pretest at Dictionary.com" /></a></dt>
+<dd>also <span class="foreign">pre-test</span>, 1949 (v. and n.), from <a href="/index.php?term=pre-&allowed_in_frame=0" class="crossreference">pre-</a> + <a href="/index.php?term=test&allowed_in_frame=0" class="crossreference">test</a>.</dd>
+
+<dt class="highlight"><a href="/index.php?term=SAT&allowed_in_frame=0">SAT (n.)</a> <a href="http://dictionary.reference.com/search?q=SAT" class="dictionary" title="Look up SAT at Dictionary.com"><img src="graphics/dictionary.gif" width="16" height="16" alt="Look up SAT at Dictionary.com" title="Look up SAT at Dictionary.com" /></a></dt>
+<dd class="highlight">1961, initialism (acronym) for <span class="foreign">Scholastic Aptitude Test</span>.</dd>
+
+<dt><a href="/index.php?term=means&allowed_in_frame=0">means (n.)</a> <a href="http://dictionary.reference.com/search?q=means" class="dictionary" title="Look up means at Dictionary.com"><img src="graphics/dictionary.gif" width="16" height="16" alt="Look up means at Dictionary.com" title="Look up means at Dictionary.com" /></a></dt>
+<dd>"course of action," late 14c., from <a href="/index.php?term=mean&allowed_in_frame=0" class="crossreference">mean</a> (n.); sense of "wealth" is first recorded c. 1600. Compare French <span class="foreign">moyens</span>, German <span class="foreign">Mittel</span>. Phrase <span class="foreign">by no means</span> attested from late 15c.; <span class="foreign">means-test</span> is from 1930.</dd>
+
+<dt class="highlight"><a href="/index.php?term=litmus&allowed_in_frame=0">litmus (n.)</a> <a href="http://dictionary.reference.com/search?q=litmus" class="dictionary" title="Look up litmus at Dictionary.com"><img src="graphics/dictionary.gif" width="16" height="16" alt="Look up litmus at Dictionary.com" title="Look up litmus at Dictionary.com" /></a></dt>
+<dd class="highlight">"blue dye-stuff obtained from certain lichens," early 14c., <span class="foreign">lit-mose</span>, probably from an Old Norse word related to Norwegian dialectal <span class="foreign">litmose</span>, from Old Norse <span class="foreign">lita</span> "to dye, to stain" (from <span class="foreign">litr</span> "color, dye;" see <a href="/index.php?term=lit&allowed_in_frame=0" class="crossreference">lit</a> (n.1)) + <span class="foreign">mos</span> "moss." Said to be also in part from Middle Dutch <span class="foreign">lijkmoes</span> (Dutch <span class="foreign">lakmoes</span>), from <span class="foreign">lac</span> (see <a href="/index.php?term=lac&allowed_in_frame=0" class="crossreference">lac</a>) + <span class="foreign">moes</span> "pulp." Another idea [Watkins] connects the first element to Middle Dutch <span class="foreign">leken</span> "to drip, leak" (see <a href="/index.php?term=leak&allowed_in_frame=0" class="crossreference">leak</a> (v.)). The second element is in any case the common Germanic word for "moss, lichen" (see <a href="/index.php?term=moss&allowed_in_frame=0" class="crossreference">moss</a>).
+<BR><BR>
+The dye is obtained from certain lichens. It is naturally blue but turns red in acid and is restored to blue by alkalis. Figurative use of <span class="foreign">litmus test</span> is first attested 1957, from scientific use of litmus-treated paper as a chemical indicator. <span class="foreign">Litmus paper</span> with this meaning is from 1803.</dd>
+
+<dt><a href="/index.php?term=acid&allowed_in_frame=0">acid (adj.)</a> <a href="http://dictionary.reference.com/search?q=acid" class="dictionary" title="Look up acid at Dictionary.com"><img src="graphics/dictionary.gif" width="16" height="16" alt="Look up acid at Dictionary.com" title="Look up acid at Dictionary.com" /></a></dt>
+<dd>1620s, "of the taste of vinegar," from French <span class="foreign">acide</span> (16c.) or directly from Latin <span class="foreign">acidus</span> "sour, sharp, tart" (also figurative, "disagreeable," etc.), adjective of state from <span class="foreign">acere</span> "to be sour, be sharp," from PIE root <a href="/index.php?term=*ak-&allowed_in_frame=0" class="crossreference">*ak-</a> "be sharp, rise (out) to a point, pierce."
+<BR><BR>
+Figurative use in English is from 1775; applied to intense colors from 1916; an <span class="foreign">acid dye</span> (1888) involves an acid bath. <span class="foreign">Acid test</span> is American English, 1881, a quick way to distinguish gold from similar metals by application of nitric acid. <span class="foreign">Acid rain</span> "highly acidity in rain caused by atmospheric pollution" is first recorded 1859 in reference to England. <span class="foreign">Acid drop</span> as a kind of hard sugar candy flavored with tartaric acid is by 1835, with <span class="foreign">drop</span> (n.) in the "lozenge" sense.</dd>
+
+<dt class="highlight"><a href="/index.php?term=screen&allowed_in_frame=0">screen (n.)</a> <a href="http://dictionary.reference.com/search?q=screen" class="dictionary" title="Look up screen at Dictionary.com"><img src="graphics/dictionary.gif" width="16" height="16" alt="Look up screen at Dictionary.com" title="Look up screen at Dictionary.com" /></a></dt>
+<dd class="highlight">mid-14c., "upright piece of furniture providing protection from heat of a fire, drafts, etc.," probably from a shortened (Anglo-French? compare Anglo-Latin <span class="foreign">screna</span>) variant of Old North French <span class="foreign">escren</span>, Old French <span class="foreign">escran</span> "fire-screen" (early 14c.), perhaps from Middle Dutch <span class="foreign">scherm</span> "screen, cover, shield," or Frankish <span class="foreign">*skrank</span> "barrier," from Proto-Germanic <span class="foreign">*skerm-</span> (source also of Old High German <span class="foreign">skirm</span>, <span class="foreign">skerm</span> "protection," from PIE root <a href="/index.php?term=*sker-&allowed_in_frame=0" class="crossreference">*sker-</a> (1) "to cut."
+<BR><BR>
+Meaning "net-wire frame used in windows and doors" is recorded from 1859. Meaning "flat vertical surface for reception of projected images" is from 1810, originally in reference to magic lantern shows; later of movies. Transferred sense of "cinema world collectively" is attested from 1914; hence <span class="foreign">screen test</span> (1918), etc. <span class="foreign">Screen saver</span> first attested 1990. <span class="foreign">Screen printing</span> recorded from 1918.</dd>
+
+<dt><a href="/index.php?term=flight&allowed_in_frame=0">flight (n.1)</a> <a href="http://dictionary.reference.com/search?q=flight" class="dictionary" title="Look up flight at Dictionary.com"><img src="graphics/dictionary.gif" width="16" height="16" alt="Look up flight at Dictionary.com" title="Look up flight at Dictionary.com" /></a></dt>
+<dd>"act of flying," Old English <span class="foreign">flyht</span> "a flying, act or power of flying," from Proto-Germanic <span class="foreign">*flukhtiz</span> (source also of Dutch <span class="foreign">vlucht</span> "flight of birds," Old Norse <span class="foreign">flugr</span>, Old High German <span class="foreign">flug</span>, German <span class="foreign">Flug</span> "flight"), from Proto-Germanic <span class="foreign">*flugti-</span>, suffixed form of PIE root <a href="/index.php?term=*pleu-&allowed_in_frame=0" class="crossreference">*pleu-</a> "to flow." 
+<BR><BR>
+Spelling altered late 14c. from Middle English <span class="foreign">fliht</span> (see <a href="/index.php?term=fight&allowed_in_frame=0" class="crossreference">fight</a> (v.)). Sense of "swift motion" is from mid-13c.. Meaning "an instance of flight" is 1785, originally of ballooning. Sense of "a number of things passing through the air together" is from mid-13c. Meaning "series of stairs between landings" is from 1703. Figuratively, "an excursion" of fancy, imagination, etc., from 1660s. <span class="foreign">Flight-path</span> is from 1908; <span class="foreign">flight-test</span> (v.) from 1919; <span class="foreign">flight-simulator</span> from 1947 (originally in rocketry); <span class="foreign">flight-attendant</span> from 1946.</dd>
+
+<dt class="highlight"><a href="/index.php?term=road&allowed_in_frame=0">road (n.)</a> <a href="http://dictionary.reference.com/search?q=road" class="dictionary" title="Look up road at Dictionary.com"><img src="graphics/dictionary.gif" width="16" height="16" alt="Look up road at Dictionary.com" title="Look up road at Dictionary.com" /></a></dt>
+<dd class="highlight">Old English <span class="foreign">rad</span> "riding expedition, journey, hostile incursion," from Proto-Germanic <span class="foreign">*raido</span> (source also of Old Frisian <span class="foreign">red</span> "ride," Old Saxon <span class="foreign">reda</span>, Middle Dutch <span class="foreign">rede</span>, Old High German <span class="foreign">reita</span> "foray, raid"), from PIE <span class="foreign">*reidh-</span> "to ride" (see <a href="/index.php?term=ride&allowed_in_frame=0" class="crossreference">ride</a> (v.)). Also related to <a href="/index.php?term=raid&allowed_in_frame=0" class="crossreference">raid</a> (n.). In Middle English, "a riding, a journey;" sense of "open way for traveling between two places" is first recorded 1590s. Meaning "narrow stretch of sheltered water" is from early 14c. (as in <span class="foreign">Hampton Roads</span> in Virginia).
+<BR><BR>
+Modern spelling established 18c. In 19c. U.S. use, often meaning "railroad." <span class="foreign">On the road</span> "traveling" is from 1640s. <span class="foreign">Road test</span> (n.) is from 1906; as a verb from 1937. <span class="foreign">Road hog</span> is attested from 1886; <span class="foreign">road rage</span> is from 1988. <span class="foreign">Road map</span> is from 1786; <span class="foreign">road trip</span> is by 1950, originally of baseball teams. Old English had <span class="foreign">radwerig</span> "weary of traveling."</dd>
+
+<dt><a href="/index.php?term=testament&allowed_in_frame=0">testament (n.)</a> <a href="http://dictionary.reference.com/search?q=testament" class="dictionary" title="Look up testament at Dictionary.com"><img src="graphics/dictionary.gif" width="16" height="16" alt="Look up testament at Dictionary.com" title="Look up testament at Dictionary.com" /></a></dt>
+<dd>late 13c., "last will disposing of property," from Latin <span class="foreign">testamentum</span> "a last will, publication of a will," from <span class="foreign">testari</span> "make a will, be witness to," from <span class="foreign">testis</span> "witness," from PIE <span class="foreign">*tri-st-i-</span> "third person standing by," from root <span class="foreign">*tris-</span> "three" (see <a href="/index.php?term=three&allowed_in_frame=0" class="crossreference">three</a>) on the notion of "third person, disinterested witness."
+<BR><BR>
+Use in reference to the two divisions of the Bible (early 14c.) is from Late Latin <span class="foreign">vetus testamentum</span> and <span class="foreign">novum testamentum</span>, loan-translations of Greek <span class="foreign">palaia diatheke</span> and <span class="foreign">kaine diatheke</span>. Late Latin <span class="foreign">testamentum</span> in this case was a confusion of the two meanings of Greek <span class="foreign">diatheke</span>, which meant both "covenant, dispensation" and "will, testament," and was used in the former sense in the account of the Last Supper (see <a href="/index.php?term=testimony&allowed_in_frame=0" class="crossreference">testimony</a>) but subsequently was interpreted as Christ's "last will."</dd>
+
+<dt class="highlight"><a href="/index.php?term=testate&allowed_in_frame=0">testate (adj.)</a> <a href="http://dictionary.reference.com/search?q=testate" class="dictionary" title="Look up testate at Dictionary.com"><img src="graphics/dictionary.gif" width="16" height="16" alt="Look up testate at Dictionary.com" title="Look up testate at Dictionary.com" /></a></dt>
+<dd class="highlight">"having left a valid will," late 15c., from Latin <span class="foreign">testatus</span> "public, manifest, published," past participle of <span class="foreign">testari</span> "make a will, be witness to, declare" (see <a href="/index.php?term=testament&allowed_in_frame=0" class="crossreference">testament</a>).</dd>
+
+<dt><a href="/index.php?term=tester&allowed_in_frame=0">tester (n.2)</a> <a href="http://dictionary.reference.com/search?q=tester" class="dictionary" title="Look up tester at Dictionary.com"><img src="graphics/dictionary.gif" width="16" height="16" alt="Look up tester at Dictionary.com" title="Look up tester at Dictionary.com" /></a></dt>
+<dd>"canopy over a four-post bed," mid-14c., from Medieval Latin <span class="foreign">testerium</span>, from <span class="foreign">testera</span> "head-stall" of the bridle of a horse, extended use and form of Late Latin <span class="foreign">testa</span> "skull," in Vulgar Latin "head" (see <a href="/index.php?term=tete&allowed_in_frame=0" class="crossreference">tete</a>). From Medieval Latin <span class="foreign">testa</span> as "head" also come <span class="foreign">tester</span> in obsolete senses of "piece of armor for the head" (late 14c., via Old French <span class="foreign">testiere</span>) and "coin of Henry VIII" (1546), the first English coin to bear a true portrait.</dd>
+
+<dt class="highlight"><a href="/index.php?term=testicle&allowed_in_frame=0">testicle (n.)</a> <a href="http://dictionary.reference.com/search?q=testicle" class="dictionary" title="Look up testicle at Dictionary.com"><img src="graphics/dictionary.gif" width="16" height="16" alt="Look up testicle at Dictionary.com" title="Look up testicle at Dictionary.com" /></a></dt>
+<dd class="highlight">early 15c., alteration of <span class="foreign">testicule</span> (late 14c.), from Latin <span class="foreign">testiculus</span>, diminutive of <span class="foreign">testis</span> "testicle" (see <a href="/index.php?term=testis&allowed_in_frame=0" class="crossreference">testis</a>). Old English had <span class="foreign">beallucas</span> (see <a href="/index.php?term=ballocks&allowed_in_frame=0" class="crossreference">ballocks</a>) and <span class="foreign">her&thorn;an</span>, probably originally "leather bag" (compare <span class="foreign">heor&thorn;a</span> "deer-skin"). The commonest slang terms for them in other languages are words that mean "balls," "stones," "nuts," "eggs."</dd>
+
+<dt><a href="/index.php?term=testimony&allowed_in_frame=0">testimony (n.)</a> <a href="http://dictionary.reference.com/search?q=testimony" class="dictionary" title="Look up testimony at Dictionary.com"><img src="graphics/dictionary.gif" width="16" height="16" alt="Look up testimony at Dictionary.com" title="Look up testimony at Dictionary.com" /></a></dt>
+<dd>c. 1400, "proof or demonstration of some fact, evidence, piece of evidence;" early 15c., "legal testimony, sworn statement of a witness," from Old North French <span class="foreign">testimonie</span> (Old French <span class="foreign">testimoine</span> 11c.), from Latin <span class="foreign">testimonium</span> "evidence, proof, witness, attestation," from <span class="foreign">testis</span> "a witness, one who attests" (see <a href="/index.php?term=testament&allowed_in_frame=0" class="crossreference">testament</a>) + <span class="foreign">-monium</span>, suffix signifying action, state, condition. Despite the common modern assertion, the sense of the word is unlikely to have anything to do with <span class="foreign">testicles</span> (see <a href="/index.php?term=testis&allowed_in_frame=0" class="crossreference">testis</a>).
+<BR><BR>
+Earliest attested sense in English is "the Ten Commandments" (late 14c.), from Vulgate use of Late Latin <span class="foreign">testimonium</span>, along with Greek <span class="foreign">to martyrion</span> (Septuagint), translations of Hebrew <span class="foreign">'eduth</span> "attestation, testimony" (of the Decalogue), from <span class="foreign">'ed</span> "witness." </dd>
+
+<dt class="highlight"><a href="/index.php?term=testis&allowed_in_frame=0">testis (n.)</a> <a href="http://dictionary.reference.com/search?q=testis" class="dictionary" title="Look up testis at Dictionary.com"><img src="graphics/dictionary.gif" width="16" height="16" alt="Look up testis at Dictionary.com" title="Look up testis at Dictionary.com" /></a></dt>
+<dd class="highlight">(plural <span class="foreign">testes</span>), 1704, from Latin <span class="foreign">testis</span> "testicle," usually regarded as a special application of <span class="foreign">testis</span> "witness" (see <a href="/index.php?term=testament&allowed_in_frame=0" class="crossreference">testament</a>), presumably because it "bears witness to male virility" [Barnhart]. Stories that trace the use of the Latin word to some supposed swearing-in ceremony are modern and groundless.
+<BR><BR>
+Compare Greek <span class="foreign">parastatai</span> "testicles," from <span class="foreign">parastates</span> "one that stands by;" and French slang <span class="foreign">t&eacute;moins</span>, literally "witnesses." But Buck thinks Greek <span class="foreign">parastatai</span> "testicles" has been wrongly associated with the legal sense of <span class="foreign">parastates</span> "supporter, defender" and suggests instead <span class="foreign">parastatai</span> in the sense of twin "supporting pillars, props of a mast," etc. Or it might be a euphemistic use of the word in the sense "comrades." OED, meanwhile, points to Walde's suggestion of a connection between <span class="foreign">testis</span> and <span class="foreign">testa</span> "pot, shell, etc." (see <a href="/index.php?term=tete&allowed_in_frame=0" class="crossreference">tete</a>).</dd>
+
+<dt><a href="/index.php?term=testosterone&allowed_in_frame=0">testosterone (n.)</a> <a href="http://dictionary.reference.com/search?q=testosterone" class="dictionary" title="Look up testosterone at Dictionary.com"><img src="graphics/dictionary.gif" width="16" height="16" alt="Look up testosterone at Dictionary.com" title="Look up testosterone at Dictionary.com" /></a></dt>
+<dd>male sex hormone, 1935, from German <span class="foreign">Testosteron</span> (1935), coined from a presumed comb. form of Latin <span class="foreign">testis</span> "testicle" (see <a href="/index.php?term=testis&allowed_in_frame=0" class="crossreference">testis</a>) + first syllable of <a href="/index.php?term=sterol&allowed_in_frame=0" class="crossreference">sterol</a> + chemical ending <a href="/index.php?term=-one&allowed_in_frame=0" class="crossreference">-one</a>.</dd>
+
+<dt class="highlight"><a href="/index.php?term=testy&allowed_in_frame=0">testy (adj.)</a> <a href="http://dictionary.reference.com/search?q=testy" class="dictionary" title="Look up testy at Dictionary.com"><img src="graphics/dictionary.gif" width="16" height="16" alt="Look up testy at Dictionary.com" title="Look up testy at Dictionary.com" /></a></dt>
+<dd class="highlight">early 15c., "impetuous, rash," altered from Middle English <span class="foreign">testif</span> "headstrong" (late 14c.), from Anglo-French <span class="foreign">testif</span>, Old French <span class="foreign">testu</span> (Modern French <span class="foreign">t&#234;tu</span>) "stubborn, headstrong, obstinate," literally "heady," from <span class="foreign">teste</span> "head" (see <a href="/index.php?term=tete&allowed_in_frame=0" class="crossreference">tete</a>). Meaning "easily irritated, irascible" is first recorded 1520s. Related: <span class="foreign">Testily</span>; <span class="foreign">testiness</span>.</dd>
+
+<dt><a href="/index.php?term=testator&allowed_in_frame=0">testator (n.)</a> <a href="http://dictionary.reference.com/search?q=testator" class="dictionary" title="Look up testator at Dictionary.com"><img src="graphics/dictionary.gif" width="16" height="16" alt="Look up testator at Dictionary.com" title="Look up testator at Dictionary.com" /></a></dt>
+<dd>c. 1400, from Anglo-French <span class="foreign">testatour</span> (c. 1300), from Late Latin <span class="foreign">testator</span> "one who makes a will," from <span class="foreign">testari</span> (see <a href="/index.php?term=testate&allowed_in_frame=0" class="crossreference">testate</a>). Fem. form <span class="foreign">testatrix</span> is attested from 1590s.</dd>
+
+<dt class="highlight"><a href="/index.php?term=testamentary&allowed_in_frame=0">testamentary (adj.)</a> <a href="http://dictionary.reference.com/search?q=testamentary" class="dictionary" title="Look up testamentary at Dictionary.com"><img src="graphics/dictionary.gif" width="16" height="16" alt="Look up testamentary at Dictionary.com" title="Look up testamentary at Dictionary.com" /></a></dt>
+<dd class="highlight">"pertaining to a will or wills," mid-15c., from Latin <span class="foreign">testamentarius</span>, from <span class="foreign">testamentum</span> (see <a href="/index.php?term=testament&allowed_in_frame=0" class="crossreference">testament</a>).</dd>
+
+<dt><a href="/index.php?term=testimonial&allowed_in_frame=0">testimonial (adj.)</a> <a href="http://dictionary.reference.com/search?q=testimonial" class="dictionary" title="Look up testimonial at Dictionary.com"><img src="graphics/dictionary.gif" width="16" height="16" alt="Look up testimonial at Dictionary.com" title="Look up testimonial at Dictionary.com" /></a></dt>
+<dd>early 15c., "of or pertaining to testimony," in part from <a href="/index.php?term=testimonial&allowed_in_frame=0" class="crossreference">testimonial</a> (n.) and from Late Latin <span class="foreign">testimonialis</span>, from Latin <span class="foreign">testimonium</span> (see <a href="/index.php?term=testimony&allowed_in_frame=0" class="crossreference">testimony</a>). Originally especially in phrase <span class="foreign">letters testimonial</span> (Middle French <span class="foreign">lettres testimoniaulx</span>, Latin <span class="foreign">litter&aelig; testimoniales</span>) "document or documents attesting to a fact or to the good standing of the bearer," literally "letters serving for evidence."</dd>
+
+<dt class="highlight"><a href="/index.php?term=testicular&allowed_in_frame=0">testicular (adj.)</a> <a href="http://dictionary.reference.com/search?q=testicular" class="dictionary" title="Look up testicular at Dictionary.com"><img src="graphics/dictionary.gif" width="16" height="16" alt="Look up testicular at Dictionary.com" title="Look up testicular at Dictionary.com" /></a></dt>
+<dd class="highlight">1650s, from Latin <span class="foreign">testiculus</span> (see <a href="/index.php?term=testicle&allowed_in_frame=0" class="crossreference">testicle</a>) + <a href="/index.php?term=-ar&allowed_in_frame=0" class="crossreference">-ar</a>.</dd>
+
+<dt><a href="/index.php?term=testes&allowed_in_frame=0">testes (n.)</a> <a href="http://dictionary.reference.com/search?q=testes" class="dictionary" title="Look up testes at Dictionary.com"><img src="graphics/dictionary.gif" width="16" height="16" alt="Look up testes at Dictionary.com" title="Look up testes at Dictionary.com" /></a></dt>
+<dd>see <a href="/index.php?term=testis&allowed_in_frame=0" class="crossreference">testis</a>.</dd>
+
+<dt class="highlight"><a href="/index.php?term=testimonial&allowed_in_frame=0">testimonial (n.)</a> <a href="http://dictionary.reference.com/search?q=testimonial" class="dictionary" title="Look up testimonial at Dictionary.com"><img src="graphics/dictionary.gif" width="16" height="16" alt="Look up testimonial at Dictionary.com" title="Look up testimonial at Dictionary.com" /></a></dt>
+<dd class="highlight">"statement, declaration," also "writing testifying to one's qualification or character," early 15c. (from Old French <span class="foreign">testimonial</span>, variant of <span class="foreign">tesmoignal</span>), short for <span class="foreign">letters testimonial</span> (see <a href="/index.php?term=testimonial&allowed_in_frame=0" class="crossreference">testimonial</a> (adj.)). Meaning "gift presented as an expression of appreciation" is from 1838.</dd>
+
+<dt><a href="/index.php?term=testify&allowed_in_frame=0">testify (v.)</a> <a href="http://dictionary.reference.com/search?q=testify" class="dictionary" title="Look up testify at Dictionary.com"><img src="graphics/dictionary.gif" width="16" height="16" alt="Look up testify at Dictionary.com" title="Look up testify at Dictionary.com" /></a></dt>
+<dd>late 14c., "give legal testimony, affirm the truth of, bear witness to;" of things, c. 1400, "serve as evidence of," from Anglo-French <span class="foreign">testifier</span>, from Latin <span class="foreign">testificari</span> "bear witness, show, demonstrate," also "call to witness," from <span class="foreign">testis</span> "a witness" (see <a href="/index.php?term=testament&allowed_in_frame=0" class="crossreference">testament</a>) + combining form of <span class="foreign">facere</span> "to make" (from PIE root <a href="/index.php?term=*dhe-&allowed_in_frame=0" class="crossreference">*dhe-</a> "to set, put"). Biblical sense of "openly profess one's faith and devotion" is attested from 1520s. Related: <span class="foreign">Testified</span>; <span class="foreign">testifying</span>; <span class="foreign">testification</span>.</dd>
+
+<dt class="highlight"><a href="/index.php?term=prelim&allowed_in_frame=0">prelim (n.)</a> <a href="http://dictionary.reference.com/search?q=prelim" class="dictionary" title="Look up prelim at Dictionary.com"><img src="graphics/dictionary.gif" width="16" height="16" alt="Look up prelim at Dictionary.com" title="Look up prelim at Dictionary.com" /></a></dt>
+<dd class="highlight">1891, short for <a href="/index.php?term=preliminary&allowed_in_frame=0" class="crossreference">preliminary</a> (race, test, event, etc.).</dd>
+
+<dt><a href="/index.php?term=ink&allowed_in_frame=0">ink (n.)</a> <a href="http://dictionary.reference.com/search?q=ink" class="dictionary" title="Look up ink at Dictionary.com"><img src="graphics/dictionary.gif" width="16" height="16" alt="Look up ink at Dictionary.com" title="Look up ink at Dictionary.com" /></a></dt>
+<dd>"the black liquor with which men write" [Johnson], mid-13c., from Old French <span class="foreign">enche</span>, <span class="foreign">encre</span> "dark writing fluid" (12c.), earlier <span class="foreign">enque</span> (11c.), originally <span class="foreign">enca</span>, from Late Latin <span class="foreign">encaustum</span>, from Late Greek <span class="foreign">enkauston</span>. This is the neuter of the past-participle adjective <span class="foreign">enkaustos</span> "burned in," from the stem of <span class="foreign">enkaiein</span> "to burn in," from <span class="foreign">en-</span> "in" (see <a href="/index.php?term=en-&allowed_in_frame=0" class="crossreference">en-</a> (1)) + <span class="foreign">kaiein</span> "to burn" (see <a href="/index.php?term=caustic&allowed_in_frame=0" class="crossreference">caustic</a>).
+<BR><BR>
+In Pliny the word is the name of a kind of painting executed by fire or heat. Later it was the name of the purple-red ink, the <span class="foreign">sacrum encaustum</span>, used by the Roman emperors to sign their documents; this was said to have been obtained from the ground remains of certain shellfish, formed into writing fluid by the application of fire or heat, which explained the name. In the Code of Justinian, the making of it for common uses, or by common persons, was prohibited under penalty of death and confiscation of goods.
+<blockquote>
+It denoted a kind of painting practised by the ancients, in which the crayon was dipped in wax of various colours. <span class="foreign">Encausto pingere</span> is to practise this art, paint in encaustic or enamel. <span class="foreign">Encaustum</span> afterwards came to signify an ink for the purpose of writing; and the "sacred <span class="foreign">encaustum</span>" of Justinian's Code was an ink which the Roman Emperors used for imperial subscriptions. It was of the imperial colour, reddish purple, and was made of the purple dye, prepared in some way by the application of fire. (So that in this use of the word, the notion of burning which there is in the etymology, is still retained.) [from footnote in "The Life, Letters, and Sermons of Bishop Herbert de Losinga," Oxford, 1878]
+</blockquote>
+The usual words for "ink" in Latin was <span class="foreign">atramentum</span> (source of Old French <span class="foreign">arrement</span>), literally "anything that serves to dye black," from <span class="foreign">ater</span> "black;" the Greek word was <span class="foreign">melan</span>, neuter of <span class="foreign">melas</span> "black." The Old English word for it was <span class="foreign">bl&aelig;c</span>, literally "black," and compare Swedish <span class="foreign">bl&#228;k</span>, Danish <span class="foreign">bl&#230;k</span> "ink." Spanish and Portuguese (<span class="foreign">tinta</span>) and German (<span class="foreign">tinte</span>) get their "ink" words from Latin <span class="foreign">tinctus</span> "a dyeing."
+<BR><BR>
+Donkin credits a Greek pronunciation, with the accent at the front of the word, for the French evolution; the same Latin word, behaving regularly, became <span class="foreign">inchiostro</span> (with unetymological <span class="foreign">-r-</span>) in Italian, <span class="foreign">encausto</span> in Spanish. As an adjective, <span class="foreign">inken</span> (c. 1600) occasionally has been used. <span class="foreign">Ink-slinger</span>, contemptuous for "journalist," is from 1870. The psychologist's <span class="foreign">ink-blot test</span> attested from 1915.</dd>
+
+<dt class="highlight"><a href="/index.php?term=assay&allowed_in_frame=0">assay (n.)</a> <a href="http://dictionary.reference.com/search?q=assay" class="dictionary" title="Look up assay at Dictionary.com"><img src="graphics/dictionary.gif" width="16" height="16" alt="Look up assay at Dictionary.com" title="Look up assay at Dictionary.com" /></a></dt>
+<dd class="highlight">mid-14c., "trial, test of quality, test of character," from Anglo-French <span class="foreign">assai</span>, ultimately from Late Latin <span class="foreign">exagium</span> "a weighing" (see <a href="/index.php?term=essay&allowed_in_frame=0" class="crossreference">essay</a> (n.)). Meaning "trial of purity of a metal" is from late 14c.</dd>
+
+<dt><a href="/index.php?term=zip&allowed_in_frame=0">zip (n.2)</a> <a href="http://dictionary.reference.com/search?q=zip" class="dictionary" title="Look up zip at Dictionary.com"><img src="graphics/dictionary.gif" width="16" height="16" alt="Look up zip at Dictionary.com" title="Look up zip at Dictionary.com" /></a></dt>
+<dd>"zero," 1900, student slang for a grade of zero on a test, etc.; of unknown origin; compare <a href="/index.php?term=zilch&allowed_in_frame=0" class="crossreference">zilch</a>.</dd>
+
+<dt class="highlight"><a href="/index.php?term=Ishihara&allowed_in_frame=0">Ishihara</a> <a href="http://dictionary.reference.com/search?q=Ishihara" class="dictionary" title="Look up Ishihara at Dictionary.com"><img src="graphics/dictionary.gif" width="16" height="16" alt="Look up Ishihara at Dictionary.com" title="Look up Ishihara at Dictionary.com" /></a></dt>
+<dd class="highlight">popular type of colorblindness test, 1924, from Japanese ophthalmologist Shinobu <span class="foreign">Ishihara</span> (1879-1963), who devised it in 1917.</dd>
+
+<dt><a href="/index.php?term=tryout&allowed_in_frame=0">tryout (n.)</a> <a href="http://dictionary.reference.com/search?q=tryout" class="dictionary" title="Look up tryout at Dictionary.com"><img src="graphics/dictionary.gif" width="16" height="16" alt="Look up tryout at Dictionary.com" title="Look up tryout at Dictionary.com" /></a></dt>
+<dd>also <span class="foreign">try-out</span>, by 1900, from phrase <span class="foreign">to try out</span> "to examine, test," attested by 1785.</dd>
+
+<dt class="highlight"><a href="/index.php?term=sample&allowed_in_frame=0">sample (v.)</a> <a href="http://dictionary.reference.com/search?q=sample" class="dictionary" title="Look up sample at Dictionary.com"><img src="graphics/dictionary.gif" width="16" height="16" alt="Look up sample at Dictionary.com" title="Look up sample at Dictionary.com" /></a></dt>
+<dd class="highlight">"to test by taking a sample," 1767, from <a href="/index.php?term=sample&allowed_in_frame=0" class="crossreference">sample</a> (n.). Earlier "to be a match for" (1590s). Related: <span class="foreign">Sampled</span>; <span class="foreign">sampling</span>.</dd>
+
+<dt><a href="/index.php?term=stanine&allowed_in_frame=0">stanine (n.)</a> <a href="http://dictionary.reference.com/search?q=stanine" class="dictionary" title="Look up stanine at Dictionary.com"><img src="graphics/dictionary.gif" width="16" height="16" alt="Look up stanine at Dictionary.com" title="Look up stanine at Dictionary.com" /></a></dt>
+<dd>"nine-point scale for test scores," introduced by the U.S. Air Force in 1942, from <span class="foreign">sta(ndard)</span> + <span class="foreign">nine</span>.</dd>
+
+<dt class="highlight"><a href="/index.php?term=Wassermann&allowed_in_frame=0">Wassermann (n.)</a> <a href="http://dictionary.reference.com/search?q=Wassermann" class="dictionary" title="Look up Wassermann at Dictionary.com"><img src="graphics/dictionary.gif" width="16" height="16" alt="Look up Wassermann at Dictionary.com" title="Look up Wassermann at Dictionary.com" /></a></dt>
+<dd class="highlight">test for syphilis, 1909, from German bacteriologist August Paul <span class="foreign">Wassermann</span> (1866-1925), who devised it in 1906.</dd>
+
+<dt><a href="/index.php?term=proof&allowed_in_frame=0">proof (v.)</a> <a href="http://dictionary.reference.com/search?q=proof" class="dictionary" title="Look up proof at Dictionary.com"><img src="graphics/dictionary.gif" width="16" height="16" alt="Look up proof at Dictionary.com" title="Look up proof at Dictionary.com" /></a></dt>
+<dd>1834, "to test," from <a href="/index.php?term=proof&allowed_in_frame=0" class="crossreference">proof</a> (n.). From 1950 as short for <a href="/index.php?term=proofread&allowed_in_frame=0" class="crossreference">proofread</a> (v.). Related: <span class="foreign">Proofed</span>; <span class="foreign">proofing</span>.</dd>
+
+<dt class="highlight"><a href="/index.php?term=puzzle&allowed_in_frame=0">puzzle (n.)</a> <a href="http://dictionary.reference.com/search?q=puzzle" class="dictionary" title="Look up puzzle at Dictionary.com"><img src="graphics/dictionary.gif" width="16" height="16" alt="Look up puzzle at Dictionary.com" title="Look up puzzle at Dictionary.com" /></a></dt>
+<dd class="highlight">c. 1600, "state of being puzzled," from <a href="/index.php?term=puzzle&allowed_in_frame=0" class="crossreference">puzzle</a> (v.); meaning "perplexing question" is from 1650s; that of "a toy contrived to test one's ingenuity" is from 1814.</dd>
+
+<dt><a href="/index.php?term=in+vitro&allowed_in_frame=0">in vitro</a> <a href="http://dictionary.reference.com/search?q=in vitro" class="dictionary" title="Look up in vitro at Dictionary.com"><img src="graphics/dictionary.gif" width="16" height="16" alt="Look up in vitro at Dictionary.com" title="Look up in vitro at Dictionary.com" /></a></dt>
+<dd>1892, scientific Latin; "in a test tube, culture dish, etc.;" literally "in glass," from Latin <span class="foreign">vitrum</span> "glass" (see <a href="/index.php?term=vitreous&allowed_in_frame=0" class="crossreference">vitreous</a>).</dd>
+
+<dt class="highlight"><a href="/index.php?term=experiment&allowed_in_frame=0">experiment (n.)</a> <a href="http://dictionary.reference.com/search?q=experiment" class="dictionary" title="Look up experiment at Dictionary.com"><img src="graphics/dictionary.gif" width="16" height="16" alt="Look up experiment at Dictionary.com" title="Look up experiment at Dictionary.com" /></a></dt>
+<dd class="highlight">mid-14c., "action of observing or testing; an observation, test, or trial;" also "piece of evidence or empirical proof; feat of magic or sorcery," from Old French <span class="foreign">esperment</span> "practical knowledge, cunning; enchantment, magic spell; trial, proof, example; lesson, sign, indication," from Latin <span class="foreign">experimentum</span> "a trial, test, proof, experiment," noun of action from <span class="foreign">experiri</span> "to try, test," from <span class="foreign">ex-</span> "out of" (see <a href="/index.php?term=ex-&allowed_in_frame=0" class="crossreference">ex-</a>) + <span class="foreign">peritus</span> "experienced, tested," from PIE <span class="foreign">*per-yo-</span>, suffixed form of root <a href="/index.php?term=*per- (3)&allowed_in_frame=0" class="crossreference">*per- (3)</a> "to try, risk."</dd>
+
+<dt><a href="/index.php?term=probate&allowed_in_frame=0">probate (n.)</a> <a href="http://dictionary.reference.com/search?q=probate" class="dictionary" title="Look up probate at Dictionary.com"><img src="graphics/dictionary.gif" width="16" height="16" alt="Look up probate at Dictionary.com" title="Look up probate at Dictionary.com" /></a></dt>
+<dd>"official proving of a will," c. 1400, from Latin <span class="foreign">probatum</span> "a thing proved," neuter of <span class="foreign">probatus</span> "tried, tested, proved," past participle of <span class="foreign">probare</span> "to try, test, prove" (see <a href="/index.php?term=prove&allowed_in_frame=0" class="crossreference">prove</a>).</dd>
+
+<dt class="highlight"><a href="/index.php?term=experience&allowed_in_frame=0">experience (v.)</a> <a href="http://dictionary.reference.com/search?q=experience" class="dictionary" title="Look up experience at Dictionary.com"><img src="graphics/dictionary.gif" width="16" height="16" alt="Look up experience at Dictionary.com" title="Look up experience at Dictionary.com" /></a></dt>
+<dd class="highlight">1530s, "to test, try, learn by practical trial or proof;" see <a href="/index.php?term=experience&allowed_in_frame=0" class="crossreference">experience</a> (n.). Sense of "feel, undergo" first recorded 1580s. Related: <a href="/index.php?term=Experienced&allowed_in_frame=0" class="crossreference">Experienced</a>; <span class="foreign">experiences</span>; <span class="foreign">experiencing</span>.</dd>
+
+<dt><a href="/index.php?term=einsteinium&allowed_in_frame=0">einsteinium (n.)</a> <a href="http://dictionary.reference.com/search?q=einsteinium" class="dictionary" title="Look up einsteinium at Dictionary.com"><img src="graphics/dictionary.gif" width="16" height="16" alt="Look up einsteinium at Dictionary.com" title="Look up einsteinium at Dictionary.com" /></a></dt>
+<dd>radioactive element, discovered in the debris of a 1952 U.S. nuclear test in the Pacific, named 1955 for physicist Albert <a href="/index.php?term=Einstein&allowed_in_frame=0" class="crossreference">Einstein</a> (1879-1955). With metallic element ending <a href="/index.php?term=-ium&allowed_in_frame=0" class="crossreference">-ium</a>.</dd>
+
+<dt class="highlight"><a href="/index.php?term=fermium&allowed_in_frame=0">fermium (n.)</a> <a href="http://dictionary.reference.com/search?q=fermium" class="dictionary" title="Look up fermium at Dictionary.com"><img src="graphics/dictionary.gif" width="16" height="16" alt="Look up fermium at Dictionary.com" title="Look up fermium at Dictionary.com" /></a></dt>
+<dd class="highlight">radioactive element, discovered in the debris of a 1952 U.S. nuclear test in the Pacific, named 1955 for Italian-born U.S. physicist Enrico <span class="foreign">Fermi</span> (1901-1954). With metallic element ending <a href="/index.php?term=-ium&allowed_in_frame=0" class="crossreference">-ium</a>.</dd>
+
+<dt><a href="/index.php?term=moot&allowed_in_frame=0">moot (adj.)</a> <a href="http://dictionary.reference.com/search?q=moot" class="dictionary" title="Look up moot at Dictionary.com"><img src="graphics/dictionary.gif" width="16" height="16" alt="Look up moot at Dictionary.com" title="Look up moot at Dictionary.com" /></a></dt>
+<dd>"debatable; not worth considering" from <span class="foreign">moot case</span>, earlier simply <a href="/index.php?term=moot&allowed_in_frame=0" class="crossreference">moot</a> (n.) "discussion of a hypothetical law case" (1530s), in law student jargon. The reference is to students gathering to test their skills in mock cases.</dd>
+
+<dt class="highlight"><a href="/index.php?term=put&allowed_in_frame=0">put (n.)</a> <a href="http://dictionary.reference.com/search?q=put" class="dictionary" title="Look up put at Dictionary.com"><img src="graphics/dictionary.gif" width="16" height="16" alt="Look up put at Dictionary.com" title="Look up put at Dictionary.com" /></a></dt>
+<dd class="highlight">c. 1300, "act of throwing a weight overhand as a test of strength," from <a href="/index.php?term=put&allowed_in_frame=0" class="crossreference">put</a> (v.). General meaning "act of putting" is from early 15c. Also compare <a href="/index.php?term=putt&allowed_in_frame=0" class="crossreference">putt</a> (n.).</dd>
+
+<dt><a href="/index.php?term=probe&allowed_in_frame=0">probe (v.)</a> <a href="http://dictionary.reference.com/search?q=probe" class="dictionary" title="Look up probe at Dictionary.com"><img src="graphics/dictionary.gif" width="16" height="16" alt="Look up probe at Dictionary.com" title="Look up probe at Dictionary.com" /></a></dt>
+<dd>1640s, originally figurative; "to search thoroughly, interrogate;" from <a href="/index.php?term=probe&allowed_in_frame=0" class="crossreference">probe</a> (n.) and partly from Latin <span class="foreign">probare</span> "show, demonstrate; test, inspect." Physical sense of "to examine with a probe" is from 1680s. Related: <span class="foreign">Probed</span>; <span class="foreign">probing</span>; <span class="foreign">probingly</span>.</dd>
+
+<dt class="highlight"><a href="/index.php?term=audition&allowed_in_frame=0">audition (v.)</a> <a href="http://dictionary.reference.com/search?q=audition" class="dictionary" title="Look up audition at Dictionary.com"><img src="graphics/dictionary.gif" width="16" height="16" alt="Look up audition at Dictionary.com" title="Look up audition at Dictionary.com" /></a></dt>
+<dd class="highlight">1935 (transitive) "give (an applicant for a performance part) a trial or test," from <a href="/index.php?term=audition&allowed_in_frame=0" class="crossreference">audition</a> (n.). Intransitive sense "try out for a performance part" is from 1938. Related: <span class="foreign">Auditioned</span>; <span class="foreign">auditioning</span>.</dd>
+
+<dt><a href="/index.php?term=assay&allowed_in_frame=0">assay (v.)</a> <a href="http://dictionary.reference.com/search?q=assay" class="dictionary" title="Look up assay at Dictionary.com"><img src="graphics/dictionary.gif" width="16" height="16" alt="Look up assay at Dictionary.com" title="Look up assay at Dictionary.com" /></a></dt>
+<dd>c. 1300, "to try, endeavor, strive; test the quality of," from Anglo-French <span class="foreign">assaier</span>, from <span class="foreign">assai</span> (n.), from Old French <span class="foreign">assai</span>, variant of <span class="foreign">essai</span> "trial" (see <a href="/index.php?term=essay&allowed_in_frame=0" class="crossreference">essay</a> (n.)). Related: <span class="foreign">Assayed</span>; <span class="foreign">assaying</span>.</dd>
+
+ </dl>
+<div class="paging">
+<ul>
+ <li><a class="current" href="/index.php?search=test&amp;searchmode=&amp;p=0&allowed_in_frame=0">1</a></li>
+ <li><a href="/index.php?search=test&amp;searchmode=&amp;p=1&allowed_in_frame=0">2</a></li>
+</ul>
+</div> <!-- PAGING -->
+
+ </div> <!-- DICTIONARY -->
+
+ <div id="google-adsense">
+ <div id="ad-icon"><img src="advertising.png"></img></div>
+<script type="text/javascript"><!--
+google_ad_client = "pub-7093273770345366";
+google_ad_width = 468;
+google_ad_height = 60;
+google_ad_format = "468x60_as";
+google_ad_type = "text";
+google_ad_channel ="";
+google_color_border = "000000";
+google_color_bg = "FFFBEC";
+google_color_link = "300020";
+google_color_url = "800020";
+google_color_text = "000000";
+//--></script>
+<script type="text/javascript"
+  src="http://pagead2.googlesyndication.com/pagead/show_ads.js">
+</script> </div> <!-- GOOGLE-ADSENSE -->
+
+ <div class="blank">&nbsp;</div>
+ <div id="footer">
+  <ul id="links">
+   <li><a href="/abbr.php?allowed_in_frame=0" title="Introduction and abbreviations">Introduction and abbreviations</a></li>
+   <li><a href="/bio.php" title="Who did this?">Who did this?</a></li>
+   <li><a href="/sources.php?allowed_in_frame=0" title="Sources">Sources</a></li>
+   <li><a href="/columns/links.htm" title="Links">Links</a></li>
+  </ul>
+  <ul id="credits">
+   <li>&copy; 2001-2017 <a href="mailto:etymonline@protonmail.com" title="E-mail Douglas Harper">Douglas Harper</a></li>
+   <li><a href="http://www.logobee.com" title="Logo design by LogoBee.com">Custom logo design</a> by LogoBee.com</li>
+   <li>Web page design by <a href="http://binrock.net/" title="Binary Rock">Dan McCormack</a></li>
+<li><a href="sponsors.php" title="sponsored words">Sponsored Words</a></li>
+  </ul>
+  <div class="blank">&nbsp;</div>
+ </div> <!-- FOOTER -->
+</div> <!-- CONTAINER -->
+
+
+<!-- New site launched 20040911.1230 -->
+<!-- Counter: 1029686284 -->
+<!-- Page was generated in 0.256483 seconds. -->
+ </body>
+</html>
+<!-- Mozilla/5.0 (Macintosh; Intel Mac OS X 10_9_3) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/36.0.1985.125 Safari/537.36-->

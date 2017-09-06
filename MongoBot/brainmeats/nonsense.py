@@ -107,7 +107,8 @@ class Nonsense(object):
             fmls = soup.find_all(string=re.compile('Today,.*FML'))
             fml = choice(fmls).strip()
             return fml
-        except:
+        except Exception as e:
+            logger.exception(e)
             return 'Nobody\'s life got fucked like that'
 
     @axon
@@ -176,7 +177,8 @@ class Nonsense(object):
             json = request.json()
             entry = choice(json['feed']['entry'])
             return entry['title']['$t']
-        except Exception:
+        except Exception as e:
+            logger.exception(str(e))
             return 'Somethin dun goobied.'
 
     @axon
