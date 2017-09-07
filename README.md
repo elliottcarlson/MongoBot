@@ -1,4 +1,7 @@
-# Setup
+## MongoBot
+[![Build Status](https://travis-ci.org/elliottcarlson/MongoBot.svg?branch=lobotomy)](https://travis-ci.org/elliottcarlson/MongoBot)
+
+## Setup
 
 Clone the code locally.
 
@@ -30,7 +33,7 @@ Run the bot.
 $ ./run.py
 ```
 
-# Testing
+## Testing
 
 Unit tests can be run via:
 
