@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 import logging
+import textwrap
 
 from MongoBot.dendrite import dendrate, Dendrite
 from MongoBot.hyperthymesia import load_config
@@ -97,6 +98,8 @@ class Cortex(object):
                     del mod
                 return
         try:
+            response = textwrap.wrap(response, 300)
+
             if isinstance(response, list):
                 for line in response:
                     env.chat(line)

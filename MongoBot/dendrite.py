@@ -4,7 +4,7 @@ import os.path
 import re
 
 from MongoBot.hyperthymesia import load_config
-from MongoBot.utils import aphasia
+from MongoBot.utils import aphasia, ratelimited
 
 
 def dendrate(cls, target):
@@ -79,8 +79,8 @@ class Dendrite(object):
                 print('Loading config... %s' % config_file)
                 self.config = load_config(config_file)
 
-
     @aphasia
+    @ratelimited(2)
     def chat(self, message):
         self.link.chat(self.colorize(message), target=self.target)
 
@@ -95,6 +95,9 @@ class Dendrite(object):
         not support colorization, and does not have a colorize method, it will
         automatically strip the colorization code and only display the raw
         text.
+
+        Though; if you want cross platform compatibility ${bold:text here} is
+        the safest as this will work on both IRC and Slack.
         """
         def no_color(text, color):
             return text

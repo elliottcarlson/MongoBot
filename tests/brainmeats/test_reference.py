@@ -261,7 +261,7 @@ class TestReference(BasketCase):
              'correctness of," from test (n.), on the notion of "put to the '
              'proof." Earlier "assay gold or silver" in a test (c. 1600). '
              'Meaning "to administer a test" is from 1939; sense of "undergo a'
-             ' test" is from 1934. Related: Tested; testing. ')
+             ' test" is from 1934. Related: ${bold:Tested}; ${bold:testing}. ')
         )
 
     @mock.patch('MongoBot.staff.oracle.Browser', new=MockBrowser)

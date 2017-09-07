@@ -132,9 +132,6 @@ class Oracle(object):
         base = "%s, %s, %s, Humidity: %s, Wind: %s, Feels like: %s, Radar: %s"
         return base % (location, condition, temp, humid, wind, feels, radar)
 
-
-
-
     def get_random_word(self):
         words_file = self.config.get('words', '/usr/share/dict/words')
         if not os.path.exists(words_file):
@@ -166,15 +163,17 @@ class Oracle(object):
         output = str()
         for i in soup:
             if i.string:
-                if re.match(
-                    u'<span class="foreign">', i.string, re.UNICODE
-                ):
+                if '<span class="foreign">' in str(i):
                     i.string = re.sub(
                         r'<span class="foreign">(.+)</span>',
                         r'${bold:\1}',
                         str(i)
                     )
                 output += ' ' + i.string
+            elif i.text:
+                for br in i.find_all('br'):
+                    br.replace_with(' ')
+                output += ' ' + i.text
         output = re.sub('^\s+', '', output)
         output = re.sub('\s{2,}', ' ', output)
         output = re.sub('\s+([,)\].;:])', '\g<1>', output)

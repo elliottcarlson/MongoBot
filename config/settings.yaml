@@ -30,6 +30,7 @@ general:
 services:
     irc: !include irc.yaml
     slack: !include slack.yaml
+    fcgi: !include fcgi.yaml
 
 hippocampus:
     redis: !env REDIS_URL

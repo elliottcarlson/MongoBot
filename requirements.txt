@@ -5,6 +5,7 @@ PyYAML
 python-dotenv
 pyparsing
 requests[security]
+mock
 praw
 slackclient
 pyinotify; platform_system == 'Linux'

@@ -1,0 +1,5 @@
+enabled: false 
+module: 'MongoBot.glossolalia.FCGI.FCGI'
+
+settings:
+    sockfile: '/tmp/test.sock'
