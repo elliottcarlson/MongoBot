@@ -7,6 +7,7 @@ pyparsing
 requests[security]
 praw
 slackclient
-# pyinotify
+pyinotify; platform_system == 'Linux'
 watchdog
-wordnik
+wordnik; python_version == '2.7'
+wordnik-py3; python_version >= '3.3'

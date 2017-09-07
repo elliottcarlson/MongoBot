@@ -65,7 +65,7 @@ if __name__ == '__main__':  # pragma: no cover
             cov.save()
             cov.report()
 
-        sys.exit(not tests.wasSuccessful())
+        os._exit(not tests.wasSuccessful())
 
     else:
         try:
