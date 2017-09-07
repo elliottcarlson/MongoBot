@@ -254,13 +254,14 @@ class TestReference(BasketCase):
         self.instance.values = ['test']
         ret = self.instance.ety()
 
+        self.maxDiff = None
         self.assertEqual(
             ret,
             ('Etymology for ${bold:test (v.)} 1748, "to examine the '
              'correctness of," from test (n.), on the notion of "put to the '
              'proof." Earlier "assay gold or silver" in a test (c. 1600). '
              'Meaning "to administer a test" is from 1939; sense of "undergo a'
-             ' test" is from 1934. Related: ${bold:Tested}; ${bold:testing}. ')
+             ' test" is from 1934. Related: Tested; testing. ')
         )
 
     @mock.patch('MongoBot.staff.oracle.Browser', new=MockBrowser)

@@ -159,7 +159,7 @@ class Oracle(object):
         hits = [x.a.text for x in soup.findAll('dt', search)]
         etys = [self.ety_clean(x) for x in soup.findAll('dd', search)]
 
-        results = zip(hits, etys)
+        results = list(zip(hits, etys))
         return results
 
     def ety_clean(self, soup):
@@ -167,7 +167,7 @@ class Oracle(object):
         for i in soup:
             if i.string:
                 if re.match(
-                    r'<span class="foreign">', i.encode('utf-8'), re.UNICODE
+                    u'<span class="foreign">', i.string, re.UNICODE
                 ):
                     i.string = re.sub(
                         r'<span class="foreign">(.+)</span>',
