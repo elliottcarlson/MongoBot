@@ -1,5 +1,7 @@
 # -*- coding: utf-8 -*-
+import gevent
 import logging
+import time
 
 from importlib import import_module
 from MongoBot.cortex import Cortex
@@ -44,8 +46,42 @@ class Thalamus(object):
         """
         Connect to all known service providers.
         """
+        def start_provider(provider):
+            provider.connect()
+
+        def run_forever():
+            try:
+                while any(map(lambda x: self.providers[x].connected,
+                              self.providers)):
+                    for provider in self.providers:
+                        if self.providers[provider].connected:
+                            self.providers[provider].process()
+            except KeyboardInterrupt:
+                logger.info('^C Pressed. Terminating...')
+
+            for provider in self.providers:
+                self.providers[provider].auto_reconnect = False
+
+                if self.providers[provider].connected:
+                    self.providers[provider].disconnect()
+
         for provider in self.providers:
-            self.providers[provider].connect()
+            gevent.spawn(start_provider, self.providers[provider])
+
+        print('HERE????')
+        print('HERE????')
+        print('HERE????')
+        print('HERE????')
+        print('HERE????')
+        print('HERE????')
+        print('HERE????')
+        print('HERE????')
+        print('HERE????')
+        print('HERE????')
+        print('HERE????')
+        print('HERE????')
+        time.sleep(2)
+        run_forever()
 
     @Synapse('heartbeat')
     def process(self):
@@ -55,8 +91,8 @@ class Thalamus(object):
         the perfect place to send out a synapse of the heart beat for anything
         else that wishes to remain in cyclic sync with the core system.
         """
-        for provider in self.providers:
-            self.providers[provider].process()
+        # for provider in self.providers:
+        #    self.providers[provider].process()
 
     @Receptor('__data')
     @Synapse('overheard')

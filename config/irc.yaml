@@ -1,7 +1,3 @@
-#
-# IRC Connection settings
-#
-
 enabled: true
 module: 'MongoBot.glossolalia.IRC.IRC'
 

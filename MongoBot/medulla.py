@@ -37,5 +37,5 @@ class Medulla(object):
         logger.info('* Activating Skynet')
         self.alive = True
 
-        while True:
-            self.thalamus.process()
+        # while True:
+        #    self.thalamus.process()

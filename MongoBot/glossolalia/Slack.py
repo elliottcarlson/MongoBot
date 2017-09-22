@@ -1,5 +1,4 @@
 # -*- coding: utf-8 -*-
-
 from __future__ import print_function, absolute_import
 import logging
 import time
@@ -13,18 +12,20 @@ logger = logging.getLogger(__name__)
 class Slack(object):
 
     def __init__(self, settings):
-
         self.provider = settings.__name__
 
+        self.auto_reconnect = True
         self.token = settings.token
         self.last_ping = 0
 
         self.client = SlackClient(self.token)
+        self.connected = True if self.client else False
 
     def connect(self):
-
-        logger.info('Connecting to Slack')
         self.client.rtm_connect()
+
+    def connected(self):
+        return self.client.server.connected
 
     def ping(self):
 
@@ -36,11 +37,9 @@ class Slack(object):
 
     @ratelimited(2)
     def chat(self, message, target=None, error=False):
-
         self.client.rtm_send_message(target, message)
 
     def process(self):
-
         for reply in self.client.rtm_read():
             if 'type' in reply and reply['type'] == 'message':
                 self.parse(reply)

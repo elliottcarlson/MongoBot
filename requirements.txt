@@ -1,5 +1,7 @@
 bs4
 coverage
+gevent
+gevent-eventemitter
 html5lib
 PyYAML
 python-dotenv

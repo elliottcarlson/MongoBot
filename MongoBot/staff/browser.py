@@ -2,6 +2,9 @@
 import requests
 
 from bs4 import BeautifulSoup as bs4
+from gevent import monkey as curious_george
+
+curious_george.patch_all(thread=False, select=False)
 
 
 # Better browsing through technology

@@ -50,7 +50,6 @@ class Finance(object):
         request = Browser(url, params)
         if not request:
             return "Couldn't retrieve %s data." % source.upper()
-
         try:
             json = request.json()['Data']['AggregatedData']
         except Exception as e:
@@ -80,7 +79,6 @@ class Finance(object):
 
             if has_gdax:
                 gdax = self.get_gdax_price(source, dest, value_of)
-
         if value_of:
             value = float(last) * float(value_of)
 
