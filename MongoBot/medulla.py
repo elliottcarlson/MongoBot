@@ -31,11 +31,8 @@ class Medulla(object):
 
     def activate(self):
 
-        logger.info('* Connecting nuclei')
-        self.thalamus.connect()
-
         logger.info('* Activating Skynet')
         self.alive = True
 
-        # while True:
-        #    self.thalamus.process()
+        logger.info('* Connecting nuclei')
+        self.thalamus.connect()
