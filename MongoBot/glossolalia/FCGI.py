@@ -79,6 +79,7 @@ class FCGI(object):
 
     server = False
     sockets = []
+    connected = True
 
     def __init__(self, settings):
 

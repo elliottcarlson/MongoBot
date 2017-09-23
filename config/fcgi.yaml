@@ -1,4 +1,4 @@
-enabled: false
+enabled: true
 module: 'MongoBot.glossolalia.FCGI.FCGI'
 
 settings:
