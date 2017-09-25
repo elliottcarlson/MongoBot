@@ -68,18 +68,6 @@ class Thalamus(object):
         for provider in self.providers:
             gevent.spawn(start_provider, self.providers[provider])
 
-        print('HERE????')
-        print('HERE????')
-        print('HERE????')
-        print('HERE????')
-        print('HERE????')
-        print('HERE????')
-        print('HERE????')
-        print('HERE????')
-        print('HERE????')
-        print('HERE????')
-        print('HERE????')
-        print('HERE????')
         time.sleep(2)
         run_forever()
 
