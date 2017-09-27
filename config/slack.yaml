@@ -1,4 +1,4 @@
-enabled: true
+enabled: false
 module: 'MongoBot.glossolalia.Slack.Slack'
 
 settings:

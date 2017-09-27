@@ -97,16 +97,16 @@ class Cortex(object):
                     del instance
                     del mod
                 return
-        try:
-            response = textwrap.wrap(response, 300)
+        # try:
+        response = textwrap.wrap(response, 300)
 
-            if isinstance(response, list):
-                for line in response:
-                    env.chat(line)
-            else:
-                env.chat(response)
-        except Exception as e:
-            logger.warn('Unable to send response: %s', e)
+        if isinstance(response, list):
+            for line in response:
+                env.chat(line)
+        else:
+            env.chat(response)
+        # except Exception as e:
+        #     logger.warn('Unable to send response: %s', e)
 
     def brain_dead(self):
         self.cortical_map.stop()

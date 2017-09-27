@@ -24,6 +24,10 @@ class Slack(object):
     def connect(self):
         self.client.rtm_connect()
 
+    def disconnect(self):
+        # TODO: See what needs to happen with the Slack client for
+        pass
+
     def connected(self):
         return self.client.server.connected
 

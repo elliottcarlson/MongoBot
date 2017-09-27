@@ -203,8 +203,8 @@ class IRC(EventEmitter):
             logger.debug('Not connected!')
             return
 
-        if isinstance(line, str):
-            line = line.encode('utf-8')
+        # if isinstance(line, str):
+        line = line.encode('utf-8')
 
         # self.send_queue.put_nowait(line.rstrip(b'\r\n ') + b'\r\n')
         self._sock.send(line.rstrip(b'\r\n ') + b'\r\n')
@@ -214,10 +214,37 @@ class IRC(EventEmitter):
         if not message:
             return
 
-        self.send_raw('PRIVMSG %s :%s' % (
+        self.send_raw(u'PRIVMSG %s :%s' % (
             target,
             message
         ))
+
+    def colorize(self, text, color):
+
+        colors = {
+            'white': 0,
+            'bold': 0,
+            'black': 1,
+            'blue': 2,
+            'green': 3,
+            'red': 4,
+            'brown': 5,
+            'purple': 6,
+            'orange': 7,
+            'yellow': 8,
+            'lightgreen': 9,
+            'teal': 10,
+            'lightcyan': 11,
+            'lightblue': 12,
+            'pink': 13,
+            'grey': 14,
+            'lightgrey': 15,
+        }
+
+        if color in colors:
+            color = colors[color]
+
+        return '\x03%s\x02%s\x02\x03\x0f' % (str(color), text)
 
     def process(self):
         if self.connected:
