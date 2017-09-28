@@ -6,6 +6,7 @@ import logging
 import logging.config
 import os
 import sys
+import traceback
 import unittest
 
 from MongoBot import settings
@@ -70,5 +71,7 @@ if __name__ == '__main__':  # pragma: no cover
     else:
         try:
             runMongoBot()
-        except KeyboardInterrupt:
+        except:
+            traceback.print_exc(file=sys.stdout)
+        finally:
             os._exit(0)

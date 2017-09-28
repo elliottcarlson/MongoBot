@@ -60,7 +60,6 @@ class Cortex(object):
         for action in actions:
             (prefix, command) = action.pop(0)[:2]
             parameters = action.pop() if len(action) else []
-
             command = Cortex.cortical_map.get(command)
 
             if not command:
@@ -76,6 +75,7 @@ class Cortex(object):
                     incoming['stdin'] = ' '.join([str(x) for x in parameters])
 
                 try:
+                    print(command)
                     env = Dendrite(incoming, parameters, Cortex.thalamus)
                     instance = dendrate(env, command[0])()
                     mod = getattr(instance, command[1])

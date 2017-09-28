@@ -18,11 +18,12 @@ from eventemitter import EventEmitter
 from collections import namedtuple
 from pyparsing import printables, Suppress, Literal, Optional, Word, \
     ZeroOrMore, restOfLine, Combine, srange
+from MongoBot.glossolalia import GlossolaliaLogger
 from MongoBot.synapses import Synapse
 from MongoBot.utils import ratelimited
 
 logger = logging.getLogger(__name__)
-RawCmd = namedtuple('RawCmd', 'cmd arg prefix tags')
+logger.addHandler(GlossolaliaLogger(__name__))
 
 
 class IRCMessage(object):

@@ -60,8 +60,6 @@ class Thalamus(object):
                 logger.info('^C Pressed. Terminating...')
 
             for provider in self.providers:
-                self.providers[provider].auto_reconnect = False
-
                 if self.providers[provider].connected:
                     self.providers[provider].disconnect()
 

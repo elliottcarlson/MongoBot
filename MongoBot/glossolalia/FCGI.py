@@ -1,229 +1,216 @@
-# -*- coding: utf-8 -*-
+#!/usr/bin/env python
 import gevent.monkey
-import logging
-import os
 
 gevent.monkey.patch_socket()
 gevent.monkey.patch_ssl()
 gevent.monkey.patch_dns()
 
+import errno
+import logging
+import signal
+import sys
+
+# from flup.server.fcgi import WSGIServer
+from flup.server.fcgi_base import BaseFCGIServer, FCGI_RESPONDER
+from flup.server.threadpool import ThreadPool
+# from flup.server.threadedserver import ThreadedServer, setCloseOnExec
+from flup.server.threadedserver import setCloseOnExec
 from gevent import socket
 from gevent.select import select as gselect
-from hexdump import hexdump
+from MongoBot.cortex import Cortex
+from MongoBot.dendrite import dendrate, Dendrite
+from pyparsing import Suppress, Literal, Optional, Word, Group, \
+    OneOrMore, alphanums
 
 logger = logging.getLogger(__name__)
 
 
-FCGI_MAX_REQS = 1
-FCGI_MAX_CONNS = 1
-FCGI_VERSION = 1
-FCGI_MPXS_CONNS = 0
+class FCGIRouter(object):
+    def __init__(self):
+        """
+        /api/<command>[/<params>...]
+        """
+        slash = Suppress(Literal('/'))
+        prefix = slash + Suppress(Literal('api'))
+        component = slash + Word(alphanums + '_.')
+        command = Group(prefix + component)('command')
+        parameters = Optional(OneOrMore(component))('params')
 
-FCGI_BEGIN_REQUEST = 1
-FCGI_ABORT_REQUEST = 2
-FCGI_END_REQUEST = 3
-FCGI_PARAMS = 4
-FCGI_STDIN = 5
-FCGI_STDOUT = 6
-FCGI_STDERR = 7
-FCGI_DATA = 8
-FCGI_GET_VALUES = 9
-FCGI_GET_VALUES_RESULT = 10
-FCGI_UNKNOWN_TYPE = 11
-FCGI_MAXTYPE = FCGI_UNKNOWN_TYPE
+        self.EBNF = command + parameters
 
-
-class FCGI_Socket(object):
-
-    buffer_size = 65536
-
-    def __init__(self, sock=None):
-        self.sock = sock or socket.socket(socket.AF_UNIX, socket.SOCK_STREAM)
-        self.sock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
-        self.recv_buffer = ''
-
-    def listen(self, sockpath='', queue=5):
-        self.sockaddr = sockpath
-        if os.path.exists(sockpath):
-            os.remove(sockpath)
-        self.sock.bind(sockpath)
-        os.chmod(sockpath, 0o777)
-        self.sock.listen(5)
-
-    def close(self):
-        self.sock.close()
-
-    def recv(self, size):
-        data = self.sock.recv(size)
-        if len(data) == 0:
-            raise EOFError
-
-        return data
-
-    def recv_until(self, boundary='\r\n\r\n'):
-        while self.recv_buffer.rfind(boundary) == -1:
-            self.recv_buffer += self.recv(self.buffer_size)
-        data, part, self.recv_buffer = self.recv_buffer.partition(boundary)
-
-        return data
-
-    def recv_length(self, length):
-        while len(self.recv_buffer) < length:
-            self.recv_buffer += self.recv(length - len(self.recv_buffer))
-
-        if len(self.recv_buffer) != length:
-            data = self.recv_bugger[:length]
-            self.recv_buffer = self.recv_buffer[length:]
-        else:
-            data, self.recv_buffer = self.recv_buffer, ''
-
-        return data
+    def parse(self, line):
+        parsed = self.EBNF.parseString(line)
+        return parsed.asDict()
 
 
-class FCGI(object):
+class RequestHandler(object):
+    def __call__(self, env, response):
+        logger.info(env.get('PATH_INFO'))
 
-    server = False
-    sockets = []
-    connected = True
+        try:
+            router = FCGIRouter()
+            route = router.parse(env.get('PATH_INFO'))
+        except:
+            response('404 Not Found', [('Content-Type', 'text/plain')])
+            return ['404 Not Found.']
 
-    def __init__(self, settings):
+        command = Cortex.cortical_map.get(route.get('command')[0])
 
-        self.provider = settings.__name__
-        self.sockfile = settings.get('sockfile', '/tmp/MongoBot.sock')
+        if not command:
+            response('501 Not Implemented', [('Content-Type', 'text/plain')])
+            return ['501 Method Not Implemented.']
 
-        if os.path.exists(self.sockfile):
-            os.remove(self.sockfile)
+        request = {
+            'target': 'web',
+            'service': 'FCGI',
+            'stdin': ' '.join(route.get('params', [])),
+            'module': __name__,
+            'source': {},
+            'provider': 'fcgi',
+            'data': env.get('PATH_INFO')
+        }
+
+        env = Dendrite(request, route.get('params', []), Cortex.thalamus)
+        instance = dendrate(env, command[0])()
+        mod = getattr(instance, command[1])
+        res = mod()
+
+        print(str(res))
+
+        response('200 OK', [('Content-Type', 'text/plain')])
+        return [str(res)]
+
+
+class MyThreadedServer(object):
+    def __init__(self, jobClass=None, jobArgs=(), **kw):
+        self._jobClass = jobClass
+        self._jobArgs = jobArgs
+
+        self._threadPool = ThreadPool(**kw)
+
+    def run(self, sock, timeout=1.0):
+        self._keepGoing = True
+        self._hupReceived = False
+
+        if not sys.platform.startswith('win'):
+            self._installSignalHandlers()
+
+        setCloseOnExec(sock)
+
+        while self._keepGoing:
+            try:
+                r, w, e = gselect([sock], [], [], timeout)
+            except gselect.error as e:
+                if e.args[0] == errno.EINTR:
+                    continue
+
+            if r:
+                try:
+                    clientSock, addr = sock.accept()
+                except socket.error as e:
+                    if e.args[0] in (errno.EINTR, errno.EAGAIN):
+                        continue
+                    raise
+
+                setCloseOnExec(clientSock)
+
+                conn = self._jobClass(clientSock, addr, *self._jobArgs)
+                if not self._threadPool.addJob(conn, allowQueuing=False):
+                    clientSock.close()
+
+            self._mainloopPeriodic()
+
+        if not sys.platform.startswith('win'):
+            self._restoreSignalHandlers()
+
+        return self._hupReceived
+
+    def shutdown(self):
+        # self._threadPool.shutdown()
+        pass
+
+    def _mainloopPeriodic(self):
+        pass
+
+    def _exit(self, reload=False):
+        if self._keepGoing:
+            self._keepGoing = False
+            self._hupReceived = reload
+
+    def _hupHandler(self, signum, frame):
+        self._hupReceived = True
+        self._keepGoing = False
+
+    def _intHandler(self, signum, frame):
+        self._keepGoing = False
+
+    def _installSignalHandlers(self):
+        supportedSignals = [signal.SIGINT, signal.SIGTERM]
+        if hasattr(signal, 'SIGHUP'):
+            supportedSignals.append(signal.SIGHUP)
+
+        self._oldSIGs = [(x, signal.getsignal(x)) for x in supportedSignals]
+
+        for sig in supportedSignals:
+            if hasattr(signal, 'SIGHUP') and sig == signal.SIGHUP:
+                signal.signal(sig, self._hupHandler)
+            else:
+                signal.signal(sig, self._intHandler)
+
+    def _restoreSignalHandlers(self):
+        for signum, handler in self._oldSIGs:
+            signal.signal(signum, handler)
+
+
+class FCGI(BaseFCGIServer, MyThreadedServer):
+    sockfile = '/tmp/auth.unorignl.sock'
+
+    def __init__(self, environ=None, multithreaded=True, multiprocess=False,
+                 bindAddress=None, umask=0, multiplexed=False, debug=False,
+                 roles=(FCGI_RESPONDER,), forceCGI=False, **kwargs):
+
+        opts = {
+            'environ': environ,
+            'multithreaded': multithreaded,
+            'multiprocess': multiprocess,
+            'bindAddress': self.sockfile,
+            'umask': umask,
+            'multiplexed': multiplexed,
+            'debug': True,
+            'roles': roles,
+            'forceCGI': False,
+        }
+
+        if kwargs:
+            opts.update(kwargs)
+
+        BaseFCGIServer.__init__(self, RequestHandler(), **opts)
+
+        for key in ('jobClass', 'jobArgs'):
+            if key in kwargs:
+                del kwargs[key]
+
+        MyThreadedServer.__init__(self, jobClass=self._connectionClass,
+                                  jobArgs=(self,), **kwargs)
+
+        self.connected = True
 
     def connect(self):
+        self.sock = self._setupSocket()
 
-        self.server = socket.socket(socket.AF_UNIX, socket.SOCK_STREAM)
-        self.server.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
-        self.server.setblocking(0)
-        self.server.bind(self.sockfile)
-        os.chmod(self.sockfile, 0o777)
-        self.server.listen(5)
+        ret = MyThreadedServer.run(self, self.sock)
+        self._cleanupSocket(self.sock)
+        self.shutdown()
 
-        FCGI.sockets.append(self.server)
-
-        logger.info('FCGI Server listening at %s', self.sockfile)
-
-    def disconnect(self):
-        readable, writable, errored = gselect(self.sockets, [], [], 0)
-        for sock in readable:
-            if sock in readable:
-                sock.close()
-                FCGI.sockets.remove(sock)
+        return ret
 
     def process(self):
-        readable, writable, errored = gselect(self.sockets, [], [], 0)
+        gevent.sleep(0.2)
+        pass
 
-        for sock in readable:
-            if sock in readable:
-                if sock is self.server:
-                    conn, addr = self.server.accept()
-                    FCGI.sockets.append(conn)
-                    logger.info('FCGI Connection from %s', addr)
-                else:
-                    # timeout = time() + 15  # 15 second timeout
+    def disconnect(self):
+        pass
 
-                    data = sock.recv(8)
-                    print(hexdump(data))
-                    header = FCGI_Header(data)
-                    print(header)
-                    content = ''
-
-                    while len(content) < header.contentLength:
-                        data = sock.recv(10)  # header.contentLength - len(content))
-                        content = content + data
-
-                    if header.paddingLength != 0:
-                        padding = sock.recv(header.paddingLength)
-
-                    FCGI.sockets.remove(sock)
-                    """
-                    while True:
-                        try:
-                            chunk = s.recv(1024)
-                        except:
-                            FCGI.sockets.remove(s)
-                            break
-
-                        if not chunk:
-                            FCGI.sockets.remove(s)
-                            break
-
-                        if time() > timeout:
-                            logger.info('Breaking out of FCGI process loop due to timeout')
-                            FCGI.sockets.remove(s)
-                            break
-
-                        data.append(chunk)
-                    """
-                    print(hexdump(content))
-                    print(hexdump(padding))
-                    # FCGI_Record(''.join(data))
-
-
-class FCGI_Header(object):
-    def __init__(self, data):
-        header = map(ord, data)
-        self.version = header[0]
-        self.type = header[1]
-        self.requestIdB1 = header[2]
-        self.requestIdB0 = header[3]
-        self.requestId = (header[2] << 8) + header[3]
-        self.contentLengthB1 = header[4]
-        self.contentLengthB0 = header[5]
-        self.contentLength = (header[4] << 8) + header[5]
-        self.paddingLength = header[6]
-        self.reserved = None
-
-        print('Version:', self.version)
-        print('Type:', self.type)
-        print('RequestId:', self.requestId)
-        print('Content Length:', self.contentLength)
-        print('Padding Length:', self.paddingLength)
-
-
-class FCGI_Record(object):
-    """
-    http://www.mit.edu/~yandros/doc/specs/fcgi-spec.html 3.3 Records
-
-    All data that flows over the transport connection is carried in FastCGI
-    records. FastCGI records accomplish two things. First, records multiplex
-    the transport connection between several independent FastCGI requests. This
-    multiplexing supports applications that are able to process concurrent
-    requests using event-driven or multi-threaded programming techniques.
-    Second, records provide several independent data streams in each direction
-    within a single request. This way, for instance, both stdout and stderr
-    data can pass over a single transport connection from the application to
-    the Web server, rather than requiring separate connections.
-    """
-    def __init__(self, record):
-        self.version = FCGI_VERSION
-        self.type = FCGI_UNKNOWN_TYPE
-        self.requestId = 0
-        self.contentLength = 0
-        self.paddingLength = 0
-        self.contentData = ''
-        self.paddingData = ''
-
-        self.parse(record)
-
-    def parse(self, record):
-        print(hexdump(record[0:8]))
-        header = map(ord, record[0:8])
-
-        self.version = header[0]
-        self.type = header[1]
-        self.requestId = (header[2] << 8) + header[3]
-        self.contentLength = (header[4] << 8) + header[5]
-        self.paddingLength = header[6]
-
-        print('Version:', self.version)
-        print('Type:', self.type)
-        print('Request ID:', self.requestId)
-        print('Length of record: ', len(record))
-        print('Content Length: ', self.contentLength)
-        print('Padding Length: ', self.paddingLength)
-#        while len(self.contentData) < self.contentLength:
+if __name__ == '__main__':
+    # WSGIServer(RequestHandler(), bindAddress=FCGI.sock, umask=0).run()
+    FCGI().connect()

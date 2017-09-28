@@ -2,11 +2,13 @@
 from __future__ import print_function, absolute_import
 import logging
 import time
+from MongoBot.glossolalia import GlossolaliaLogger
 from MongoBot.synapses import Synapse
 from MongoBot.utils import ratelimited
 from slackclient import SlackClient
 
 logger = logging.getLogger(__name__)
+logger.addHandler(GlossolaliaLogger(__name__))
 
 
 class Slack(object):
