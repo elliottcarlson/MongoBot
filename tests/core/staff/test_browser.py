@@ -4,7 +4,7 @@ import mock
 import unittest
 
 from MongoBot.staff.browser import Browser
-from tests.mocks.requests import MockRequest
+from tests.mocks.mock_requests import MockRequest
 
 logger = logging.getLogger(__name__)
 

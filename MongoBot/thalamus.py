@@ -26,16 +26,18 @@ class Thalamus(object):
     """
     providers = {}
 
-    def __init__(self):
+    def __init__(self, enabled=[], disabled=[]):
         """
-        Determine which services we will be connecting to from the config file.
+        Determine which services we will be connecting to from the config file,
+        allowing manual overrides from the command line --enable and --disable
+        flags.
         """
         self.settings = load_config('./config/settings.yaml')
 
         for key in self.settings.services:
             service = self.settings.services[key]
 
-            if service.enabled:
+            if (service.enabled and key not in disabled) or key in enabled:
                 (module, class_name) = service.module.rsplit('.', 1)
                 settings = service.settings
                 settings.__name__ = key

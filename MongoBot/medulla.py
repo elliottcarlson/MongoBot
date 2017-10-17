@@ -19,10 +19,10 @@ class Medulla(object):
     Mongo's medulla makes him what he is. Don't fuck with Mongo.
     """
 
-    def __init__(self):
+    def __init__(self, enabled=[], disabled=[]):
         logger.info('Becoming self-aware.')
 
-        self.thalamus = Thalamus()
+        self.thalamus = Thalamus(enabled, disabled)
 
         logger.info('* Assembling brainmeats')
         self.cortex = Cortex(self.thalamus)

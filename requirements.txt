@@ -1,17 +1,18 @@
+PyYAML
 bs4
 coverage
 gevent
 gevent-eventemitter
 hexdump
 html5lib
-PyYAML
-python-dotenv
-pyparsing
-requests[security]
 mock
 praw
-slackclient
 pyinotify; platform_system == 'Linux'
+pyparsing
+python-dotenv
+requests[security]
+slackclient
+tweepy
 watchdog
-wordnik; python_version == '2.7'
 wordnik-py3; python_version >= '3.3'
+wordnik; python_version == '2.7'

@@ -19,10 +19,14 @@ from gevent import socket
 from gevent.select import select as gselect
 from MongoBot.cortex import Cortex
 from MongoBot.dendrite import dendrate, Dendrite
+from MongoBot.glossolalia import GlossolaliaLogger
 from pyparsing import Suppress, Literal, Optional, Word, Group, \
     OneOrMore, alphanums
 
 logger = logging.getLogger(__name__)
+logfmt = ('%(ip)s %(user_id)s %(user_name)s [%(asctime)s] "%(request)s" '
+          '%(status)s %(bytes)s "%(referer)s" "%(ua)s"')
+logger.addHandler(GlossolaliaLogger(__name__, logfmt, '%d/%b/%Y:%H:%M:%S %z'))
 
 
 class FCGIRouter(object):
@@ -32,7 +36,7 @@ class FCGIRouter(object):
         """
         slash = Suppress(Literal('/'))
         prefix = slash + Suppress(Literal('api'))
-        component = slash + Word(alphanums + '_.')
+        component = slash + Word(alphanums + '.-_~!$&\'()*+,;=:@')
         command = Group(prefix + component)('command')
         parameters = Optional(OneOrMore(component))('params')
 
@@ -44,8 +48,24 @@ class FCGIRouter(object):
 
 
 class RequestHandler(object):
+    def log(self, env):
+        extra = {
+            'ip': env.get('REMOTE_ADDR'),
+            'user_id': '-',
+            'user_name': '-',
+            'request': '%s %s %s' % (env.get('REQUEST_METHOD'),
+                                     env.get('REQUEST_URI'),
+                                     env.get('SERVER_PROTOCOL')),
+            'status': '200',
+            'bytes': 0,
+            'referer': env.get('HTTP_REFERER', '-'),
+            'ua': env.get('HTTP_USER_AGENT', '-')
+        }
+
+        logger.info(extra.get('request'), extra=extra)
+
     def __call__(self, env, response):
-        logger.info(env.get('PATH_INFO'))
+        self.log(env)
 
         try:
             router = FCGIRouter()
@@ -74,8 +94,6 @@ class RequestHandler(object):
         instance = dendrate(env, command[0])()
         mod = getattr(instance, command[1])
         res = mod()
-
-        print(str(res))
 
         response('200 OK', [('Content-Type', 'text/plain')])
         return [str(res)]
@@ -118,19 +136,10 @@ class MyThreadedServer(object):
                 if not self._threadPool.addJob(conn, allowQueuing=False):
                     clientSock.close()
 
-            self._mainloopPeriodic()
-
         if not sys.platform.startswith('win'):
             self._restoreSignalHandlers()
 
         return self._hupReceived
-
-    def shutdown(self):
-        # self._threadPool.shutdown()
-        pass
-
-    def _mainloopPeriodic(self):
-        pass
 
     def _exit(self, reload=False):
         if self._keepGoing:
@@ -163,7 +172,7 @@ class MyThreadedServer(object):
 
 
 class FCGI(BaseFCGIServer, MyThreadedServer):
-    sockfile = '/tmp/auth.unorignl.sock'
+    sockfile = '/tmp/MongoBot.sock'
 
     def __init__(self, environ=None, multithreaded=True, multiprocess=False,
                  bindAddress=None, umask=0, multiplexed=False, debug=False,
@@ -200,7 +209,6 @@ class FCGI(BaseFCGIServer, MyThreadedServer):
 
         ret = MyThreadedServer.run(self, self.sock)
         self._cleanupSocket(self.sock)
-        self.shutdown()
 
         return ret
 
@@ -210,6 +218,7 @@ class FCGI(BaseFCGIServer, MyThreadedServer):
 
     def disconnect(self):
         pass
+
 
 if __name__ == '__main__':
     # WSGIServer(RequestHandler(), bindAddress=FCGI.sock, umask=0).run()

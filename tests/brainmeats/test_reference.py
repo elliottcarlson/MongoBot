@@ -257,11 +257,17 @@ class TestReference(BasketCase):
         self.maxDiff = None
         self.assertEqual(
             ret,
-            ('Etymology for ${bold:test (v.)} 1748, "to examine the '
-             'correctness of," from test (n.), on the notion of "put to the '
-             'proof." Earlier "assay gold or silver" in a test (c. 1600). '
-             'Meaning "to administer a test" is from 1939; sense of "undergo a'
-             ' test" is from 1934. Related: ${bold:Tested}; ${bold:testing}. ')
+            ('Etymology for ${bold:test (n.)} late 14c., "small vessel used '
+             'in assaying precious metals," from Old French ${bold:test}, '
+             'from Latin ${bold:testum} "earthen pot," related to '
+             '${bold:testa} "piece of burned clay, earthen pot, shell" (see '
+             'tete). Sense of "trial or examination to determine the '
+             'correctness of something" is recorded from 1590s. The '
+             'connecting notion is "ascertaining the quality of a metal by '
+             'melting it in a pot." ${bold:Test Act} was the name given to '
+             'various laws in English history meant to exclude Catholics and '
+             'Nonconformists from office, especially that of 1673, repealed '
+             '1828. ${bold:Test drive} (v.) is first recorded 1954.')
         )
 
     @mock.patch('MongoBot.staff.oracle.Browser', new=MockBrowser)

@@ -1,9 +1,6 @@
 # -*- coding: utf-8 -*-
 import logging
 
-from MongoBot.cortex import Cortex
-from MongoBot.dendrite import Dendrite
-
 logger = logging.getLogger(__name__)
 
 

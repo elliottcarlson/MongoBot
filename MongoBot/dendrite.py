@@ -35,6 +35,10 @@ def dendrate(cls, target):
         elif not callable(member[1]) and not member[0].startswith('_'):
             methods[member[0]] = member[1]
 
+    orig_init = getattr(target, '__init__', None)
+    if orig_init:
+        methods['__orig_init__'] = orig_init
+
     methods['__init__'] = __init__
 
     # If a config file exists for the brainmeats, load it in and make it
@@ -56,7 +60,6 @@ class Dendrite(object):
     _state = {}
 
     def __init__(self, incoming, params, thalamus, name=None):
-
         self.thalamus = thalamus
 
         self.service = incoming.get('service')
@@ -112,7 +115,6 @@ class Dendrite(object):
         return re.sub(r'\${((\w+):(.*?))}', do_colorization, text)
 
     def get(self, key, default=None):
-        print(Dendrite._state)
         return Dendrite._state.get(key, default)
 
     def set(self, key, value):

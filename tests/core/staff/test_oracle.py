@@ -23,7 +23,7 @@ class TestOracle(unittest.TestCase):
         oracle = Oracle()
         res = oracle.query_etymonline('test')
 
-        self.assertEquals(res[0][0], 'test (v.)')
+        self.assertEquals(res[0][0], 'test (n.)')
 
     def test_oracle_random_word(self):
         oracle = Oracle()

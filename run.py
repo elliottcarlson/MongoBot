@@ -21,8 +21,8 @@ def testMongoBot():
     return runner.run(suite)
 
 
-def runMongoBot():
-    medulla = Medulla()
+def runMongoBot(enabled=[], disabled=[]):
+    medulla = Medulla(enabled, disabled)
     medulla.activate()
 
 
@@ -48,6 +48,20 @@ if __name__ == '__main__':  # pragma: no cover
                         const=1,
                         help='Enable test coverage reporting')
 
+    parser.add_argument('--enable',
+                        dest='enabled',
+                        default=[],
+                        action='append',
+                        metavar='glossolalia',
+                        help='Manually enable specified glossolalia')
+
+    parser.add_argument('--disable',
+                        dest='disabled',
+                        default=[],
+                        action='append',
+                        metavar='glossolalia',
+                        help='Manually disable specified glossolalia')
+
     result = parser.parse_args()
 
     if result.coverage:
@@ -70,7 +84,7 @@ if __name__ == '__main__':  # pragma: no cover
 
     else:
         try:
-            runMongoBot()
+            runMongoBot(result.enabled, result.disabled)
         except:
             traceback.print_exc(file=sys.stdout)
         finally:

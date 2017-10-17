@@ -126,7 +126,6 @@ class Oracle(object):
         humid = json['relative_humidity']
         wind = json['wind_string']
         feels = json['feelslike_string']
-        hourly = 'http://www.weather.com/weather/hourbyhour/l/%s' % self.values[0]
         radar = shorten('http://www.weather.com/weather/map/interactive/l/%s' % self.values[0])
 
         base = "%s, %s, %s, Humidity: %s, Wind: %s, Feels like: %s, Radar: %s"
@@ -142,19 +141,15 @@ class Oracle(object):
         return word
 
     def query_etymonline(self, word):
-        soup = Browser('http://www.etymonline.com/index.php', {
-            'search': word
-        }).soup()
+        soup = Browser('http://www.etymonline.com/word/%s' % word).soup()
 
-        try:
-            # No-Op to test for content
-            soup.dt.a.text
-        except:
+        matches = soup.findAll('div', {'class': 'word--C9UPa'})
+
+        if not len(matches):
             raise NoResultsFound(word)
 
-        search = {'class': 'highlight'}
-        hits = [x.a.text for x in soup.findAll('dt', search)]
-        etys = [self.ety_clean(x) for x in soup.findAll('dd', search)]
+        hits = [x.h1.text for x in matches]
+        etys = [self.ety_clean(x.object) for x in matches]
 
         results = list(zip(hits, etys))
         return results

@@ -39,12 +39,14 @@ class MockBrowser(object):
             content = Browser(url, params, method, userpass)
             if not content.error:
                 with open(stub_file, 'w') as stub_content:
-                    stub_content.write(content.read())
+                    stub_content.write(content.read().encode('utf-8'))
                     self.content = content.read()
                     logger.info('Created new stub file for request.')
             else:
                 logger.warning('Unable to retrieve content to build stub!')
                 raise Exception
+        finally:
+            stub_content.close()
 
     def soup(self):
         return bs4(self.content, 'html5lib')

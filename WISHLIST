@@ -1,0 +1,12 @@
+# Random thoughts and future TODO list:
+
+## Glossolalia:
+
+- AMPR interface with AMPRNet Protal IP block, and Mongo's own HAM license
+- ICECast interface for hearing commands output being played back -- or a
+  channel run music station? or both?
+
+## Other
+
+- Keybase integration
+- D&D 5e Alignments to dictate how MongoBot behaves

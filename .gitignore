@@ -19,3 +19,5 @@ htmlcov/*
 venv/*
 venv3/*
 .env
+
+.DS_STORE

@@ -15,14 +15,34 @@ class Acro(object):
     attended code, even after it was rewritten in the Great Brainmeat
     Transition~ -- No wait, now it's been completely rewritten for the Great
     Lobotomy of 2017. There was at least one exploitable bug, but who knows if
-    it's still here after the rewrite.
+    it's still here after the rewrite. Maybe there's 10 now.
     """
 
     @axon
     @help('<play the acro game>')
     def acro(self):
+        if not self.values:
+            return 'start, pause, resume, or end?'
 
+        action = self.values.pop()
+        {
+            'start': self._acro_start,
+            'pause': self._acro_pause,
+            'resume': self._acro_resume,
+            'end': self._acro_end,
+            'rules': self._acro_rules,
+        }.get(action, lambda: self.chat('Invalid action'))()
 
+    @axon('acrorules')
+    @help('<print the help for the acro game>')
+    def _acro_help(self):
+        return [
+            '[1/6] Start a new game with `.acrogame start`.',
+            '[2/6] Submit your acronym solution to me via a private /msg.',
+            '[3/6]
+            "2 o:q
+            :wqf 6 when the acronym comes up, type /msg %s your version of what
+            the acronym stands for" % self.ego.bot,
 
 
     active = False
