@@ -1,6 +1,7 @@
 PyYAML
 bs4
 coverage
+flup
 gevent
 gevent-eventemitter
 hexdump
